@@ -1,6 +1,6 @@
 import { AppProviders } from "@/providers/app-providers";
 import "leaflet/dist/leaflet.css"
-
+import "./globals.css";
 export default function RootLayout({
   children,
 }: {
