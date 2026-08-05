@@ -4,8 +4,13 @@ import type { NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
   const role = req.cookies.get("role")?.value;
+  const { pathname } = req.nextUrl;
 
-  if (req.nextUrl.pathname.startsWith("/stores") && role !== "super_admin") {
+  if (pathname.startsWith("/stores") && role !== "SUPER_ADMIN") {
+    return NextResponse.redirect(new URL("/", req.url));
+  }
+
+  if (pathname.startsWith("/admin") && role !== "SUPER_ADMIN") {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
@@ -13,5 +18,10 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/profile/:path*", "/addresses/:path*", "/stores/:path*"],
+  matcher: [
+    "/profile/:path*",
+    "/addresses/:path*",
+    "/stores/:path*",
+    "/admin/:path*",
+  ],
 };
