@@ -15,9 +15,15 @@ export interface UsersTableProps {
   users: AdminUser[];
   onEdit: (user: AdminUser) => void;
   onDelete: (user: AdminUser) => void;
+  canManage: boolean;
 }
 
-export function UsersTable({ users, onEdit, onDelete }: UsersTableProps) {
+export function UsersTable({
+  users,
+  onEdit,
+  onDelete,
+  canManage,
+}: UsersTableProps) {
   return (
     <Table>
       <TableHeader>
@@ -27,7 +33,7 @@ export function UsersTable({ users, onEdit, onDelete }: UsersTableProps) {
           <TableHead>Role</TableHead>
           <TableHead>StoreId</TableHead>
           <TableHead>List</TableHead>
-          <TableHead>Action</TableHead>
+          {canManage && <TableHead>Action</TableHead>}
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -40,30 +46,32 @@ export function UsersTable({ users, onEdit, onDelete }: UsersTableProps) {
             </TableCell>
             <TableCell>{user.storeId ?? "—"}</TableCell>
             <TableCell>{user.createdAt}</TableCell>
-            <TableCell>
-              {user.role === "STORE_ADMIN" && (
-                <div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => {
-                      onEdit(user);
-                    }}
-                  >
-                    <Pencil className="size-4"/>
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => {
-                      onDelete(user);
-                    }}
-                  >
-                    <Trash2 className="size-4"/>
-                  </Button>
-                </div>
-              )}
-            </TableCell>
+            {canManage && (
+              <TableCell>
+                {user.role === "STORE_ADMIN" && (
+                  <div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => {
+                        onEdit(user);
+                      }}
+                    >
+                      <Pencil className="size-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => {
+                        onDelete(user);
+                      }}
+                    >
+                      <Trash2 className="size-4" />
+                    </Button>
+                  </div>
+                )}
+              </TableCell>
+            )}
           </TableRow>
         ))}
       </TableBody>
