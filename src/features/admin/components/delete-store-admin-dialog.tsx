@@ -12,9 +12,11 @@ interface DeleteStoreAdminProps {
   onClose: () => void;
 }
 export function DeleteStoreAdmin({ user, onClose }: DeleteStoreAdminProps) {
-  const mutation = useDeleteAdmins(user?.id ?? "");
+  const mutation = useDeleteAdmins();
+  if(!user) return null;
+  const existingUser = user;
   function onConfirm() {
-    mutation.mutate(undefined, {
+    mutation.mutate(existingUser.id, {
       onSuccess: onClose,
     });
   }

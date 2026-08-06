@@ -21,7 +21,7 @@ interface EditStoreAdminProps {
   onClose: () => void;
 }
 export function EditStoreAdmin({ user, onClose }: EditStoreAdminProps) {
-  const mutation = useUpdateAdmins(user?.id ?? "");
+  const mutation = useUpdateAdmins();
   const form = useForm<updateStoreAdminSchema>({
     resolver: zodResolver(UPDATE_STORE_ADMIN),
     defaultValues: {
@@ -32,10 +32,15 @@ export function EditStoreAdmin({ user, onClose }: EditStoreAdminProps) {
   useEffect(() => {
     if (user) form.reset({ name: user.name, storeId: user.storeId ?? "" });
   }, [user, form]);
+  if (!user) return null;
+  const currentUser = user;
   function onSubmit(value: updateStoreAdminSchema) {
-    mutation.mutate(value, {
-      onSuccess: onClose,
-    });
+    mutation.mutate(
+      { id: currentUser.id, body: value },
+      {
+        onSuccess: onClose,
+      },
+    );
   }
   return (
     <Dialog open={!!user} onOpenChange={(isOpen) => !isOpen && onClose()}>
@@ -66,8 +71,12 @@ export function EditStoreAdmin({ user, onClose }: EditStoreAdminProps) {
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <Button type="submit" disabled={mutation.isPending}>
-              Save changes
+            <Button
+              type="submit"
+              disabled={mutation.isPending}
+              className="w-full h-12 rounded-2xl bg-green-700 hover:bg-green-800 text-white font-medium shadow-sm"
+            >
+              {mutation.isPending ? "Saving..." : "Save changes"}
             </Button>
           </div>
         </form>

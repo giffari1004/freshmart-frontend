@@ -25,29 +25,29 @@ export function useCreateAdmins() {
     },
   });
 }
-export function useUpdateAdmins(id: string) {
+export function useUpdateAdmins() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (body: updateStoreAdminSchema) => updateAdmins(id, body),
+    mutationFn: ({id,body}:{id: string,body: updateStoreAdminSchema}) => updateAdmins(id, body),
     onSuccess: () => {
-      toast.success("Update admin successfully");
+      toast.success("Updated admin successfully");
       queryClient.invalidateQueries({ queryKey: ["admins-users"] });
     },
     onError: (err: AxiosError<{ message: string }>) => {
-      toast.error(err?.response?.data.message || "Update admin unsuccessfully");
+      toast.error(err?.response?.data.message || "Updated admin unsuccessfully");
     },
   });
 }
-export function useDeleteAdmins(id: string) {
+export function useDeleteAdmins() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: () => deleteAdmins(id),
+    mutationFn: (id: string) => deleteAdmins(id),
     onSuccess: () => {
-      toast.success("Delete admin successfully");
+      toast.success("Deleted admin successfully");
       queryClient.invalidateQueries({ queryKey: ["admins-users"] });
     },
     onError: (err: AxiosError<{ message: string }>) => {
-      toast.error(err?.response?.data.message || "Delete admin unsuccessfully");
+      toast.error(err?.response?.data.message || "Deleted admin unsuccessfully");
     },
   });
 }
