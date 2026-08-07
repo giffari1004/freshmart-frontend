@@ -1,5 +1,5 @@
 import { api } from "@/lib/axios";
-import { getAllProductSchema, updateProductSchema } from "./schema";
+import { getAllProductSchema, updateProductInputSchema } from "./schema";
 
 export async function fetchProducts(query: getAllProductSchema) {
   const { data } = await api.get("/admin/products", { params: query });
@@ -13,7 +13,7 @@ export async function createProduct(formData: FormData) {
   });
   return data;
 }
-export async function updateProduct(id: string, body: updateProductSchema) {
+export async function updateProduct(id: string, body: updateProductInputSchema) {
   const { data } = await api.patch(`/admin/products/${id}`, body);
   return data;
 }
