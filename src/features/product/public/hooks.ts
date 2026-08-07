@@ -8,10 +8,11 @@ export function useGetProducts(query: getProductCatalogSchema) {
     queryFn: () => fetchProducts(query),
   });
 }
-export function useGetProduct(id: string) {
+
+export function useGetProduct(id: string, storeId: string) {
   return useQuery({
-    queryKey: ["product", id],
-    queryFn: () => fetchProductById(id),
-    enabled: !!id,
+    queryKey: ["product", id, storeId],
+    queryFn: () => fetchProductById(id, storeId),
+    enabled: !!id && !!storeId,
   });
 }
