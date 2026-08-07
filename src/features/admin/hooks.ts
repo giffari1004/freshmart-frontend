@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAllUserSchema, updateStoreAdminSchema } from "./schema";
-import { createAdmins, deleteAdmins, fetchUsers, updateAdmins } from "./api";
+import { createAdmins, deleteAdmins, fetchUsers, updateAdmins } from "./admin-api";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 

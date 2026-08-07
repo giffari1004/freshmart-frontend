@@ -4,7 +4,7 @@ import {
   createCategory,
   updateCategory,
   deleteCategory,
-} from "./api";
+} from "./category-api";
 import {
   createCategorySchema,
   getAllCategorySchema,

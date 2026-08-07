@@ -40,7 +40,7 @@ export default function AdminCategoriesPage() {
             Categories
           </h1>
           <p className="mt-1 text-sm text-stone-500">
-            Organize your product catalog into categories.
+            Organize Product Category
           </p>
         </div>
         {canManage && <CreateCategoryDialog />}

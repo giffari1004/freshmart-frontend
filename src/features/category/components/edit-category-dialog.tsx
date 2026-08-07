@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
-import { useCreateCategory, useUpdateCategory } from "../hooks";
+import { useEffect } from "react";
+import { useUpdateCategory } from "../hooks";
 import { useForm } from "react-hook-form";
 import {
   Category,
-  CREATE_CATEGORY,
   UPDATE_CATEGORY,
   updateCategorySchema,
 } from "../schema";
@@ -13,7 +12,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
