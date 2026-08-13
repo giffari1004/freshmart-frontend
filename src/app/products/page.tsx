@@ -38,7 +38,7 @@ export default function ProductsPage() {
           </h1>
           <p className="mt-3 max-w-2xl text-sm leading-6 text-stone-500 sm:text-base">
             Browse fruits, vegetables, dairy, snacks, and other fresh products
-            carefully selected for your daily needs.
+            carefully selected for your daily needs
           </p>
         </div>
 

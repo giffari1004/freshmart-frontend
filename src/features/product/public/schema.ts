@@ -1,4 +1,4 @@
-import z from "zod"
+import z from "zod";
 import { PRODUCT_SORT_BY, PRODUCT_SORT_ORDER } from "../constans";
 import { ProductImage } from "../schema";
 export const GET_CATALOG = z.object({
@@ -27,4 +27,17 @@ export interface Product {
   createdAt: string;
   images: ProductImage[];
 }
-export type getProductCatalogSchema = z.infer<typeof GET_CATALOG>
+export interface ProductDetail {
+  id: string;
+  name: string;
+  description: string | null;
+  category: {
+    id: string;
+    name: string;
+  };
+  price: number;
+  stock: number;
+  isOutOfStock: boolean;
+  images: ProductImage[];
+}
+export type getProductCatalogSchema = z.infer<typeof GET_CATALOG>;

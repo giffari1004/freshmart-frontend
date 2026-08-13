@@ -1,5 +1,5 @@
 import { api } from "@/lib/axios";
-import { getProductCatalogSchema, Product } from "./schema";
+import { getProductCatalogSchema } from "./schema";
 
 export async function fetchProducts(query: getProductCatalogSchema) {
   const { data } = await api.get("/products", {
@@ -8,7 +8,7 @@ export async function fetchProducts(query: getProductCatalogSchema) {
   return data;
 }
 
-export async function fetchProductById(id: string): Promise<Product> {
-  const { data } = await api.get(`/products/${id}`);
+export async function fetchProductById(id: string, storeId: string) {
+  const { data } = await api.get(`/products/${id}`, { params: { storeId } });
   return data.data;
 }

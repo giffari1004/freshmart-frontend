@@ -1,47 +1,90 @@
 import { api } from "@/lib/axios";
+
 import {
   AddToCartPayload,
   CartResponse,
   UpdateCartPayload,
 } from "./cartType";
 
+interface ApiResponse<T> {
+  success: boolean;
+  message?: string;
+  data: T;
+}
+
+function unwrapCartResponse(
+  response: ApiResponse<CartResponse> | CartResponse,
+): CartResponse {
+  if (
+    "data" in response &&
+    response.data &&
+    typeof response.data === "object" &&
+    "items" in response.data
+  ) {
+    return response.data;
+  }
+
+  if (
+    "items" in response &&
+    Array.isArray(response.items)
+  ) {
+    return response;
+  }
+
+  throw new Error(
+    "Invalid cart response from server",
+  );
+}
+
 export const cartService = {
-  async getCart() {
-    const { data } = await api.get<CartResponse>("/cart");
-    return data;
+  async getCart(): Promise<CartResponse> {
+    const { data } =
+      await api.get<
+        ApiResponse<CartResponse> | CartResponse
+      >("/cart");
+
+    return unwrapCartResponse(data);
   },
 
-  async addToCart(payload: AddToCartPayload) {
-    const { data } = await api.post<CartResponse>(
-      "/cart",
-      payload,
-    );
+  async addToCart(
+    payload: AddToCartPayload,
+  ): Promise<CartResponse> {
+    const { data } =
+      await api.post<
+        ApiResponse<CartResponse> | CartResponse
+      >("/cart", payload);
 
-    return data;
+    return unwrapCartResponse(data);
   },
 
   async updateCartItem(
     itemId: string,
     payload: UpdateCartPayload,
-  ) {
-    const { data } = await api.patch<CartResponse>(
-      `/cart/items/${itemId}`,
-      payload,
-    );
+  ): Promise<CartResponse> {
+    const { data } =
+      await api.patch<
+        ApiResponse<CartResponse> | CartResponse
+      >(`/cart/items/${itemId}`, payload);
 
-    return data;
+    return unwrapCartResponse(data);
   },
 
-  async removeCartItem(itemId: string) {
-    const { data } = await api.delete<CartResponse>(
-      `/cart/items/${itemId}`,
-    );
+  async removeCartItem(
+    itemId: string,
+  ): Promise<CartResponse> {
+    const { data } =
+      await api.delete<
+        ApiResponse<CartResponse> | CartResponse
+      >(`/cart/items/${itemId}`);
 
-    return data;
+    return unwrapCartResponse(data);
   },
 
   async clearCart() {
-    const { data } = await api.delete("/cart");
+    const { data } =
+      await api.delete<
+        ApiResponse<CartResponse> | CartResponse
+      >("/cart");
 
     return data;
   },
