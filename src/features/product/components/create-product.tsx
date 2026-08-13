@@ -1,5 +1,6 @@
-import { zodResolver } from "@hookform/resolvers/zod";
+"use client";
 import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
   CREATE_PRODUCT,
@@ -17,19 +18,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useGetAllCategory } from "@/features/category/hooks";
 import { Textarea } from "@/components/ui/textarea";
-import { Category } from "@/features/category/schema";
+import { NumberStepper } from "../../../lib/number-stepper";
+import { PriceInput } from "../../../lib/price-input";
+import { CategorySelect } from "./category-select";
 
-export function CreateProduct() {
-  const [open, setOpen] = useState(false);
+function useCreateProductForm(onDone: () => void) {
   const form = useForm<
     createProductInputSchema,
     any,
@@ -39,19 +33,13 @@ export function CreateProduct() {
     defaultValues: {
       name: "",
       description: "",
-      basePrice: undefined,
+      basePrice: 0,
       weight: undefined,
       categoryId: "",
       images: undefined,
     },
   });
   const mutation = useCreateProduct();
-  const { data: categoryData } = useGetAllCategory({
-    page: 1,
-    limit: 100,
-    sortBy: "name",
-    sortOrder: "asc",
-  });
   function onSubmit(value: createProductOutputSchema) {
     const fd = new FormData();
     fd.append("name", value.name);
@@ -65,10 +53,17 @@ export function CreateProduct() {
     mutation.mutate(fd, {
       onSuccess: () => {
         form.reset();
-        setOpen(false);
+        onDone();
       },
     });
   }
+  return { form, onSubmit, isPending: mutation.isPending };
+}
+export function CreateProduct() {
+  const [open, setOpen] = useState(false);
+  const { form, onSubmit, isPending } = useCreateProductForm(() =>
+    setOpen(false),
+  );
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -76,7 +71,7 @@ export function CreateProduct() {
           Create product
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[520px] rounded-3xl p-6 border-green-200">
+      <DialogContent className="max-h-[90vh] overflow-y-auto rounded-3xl p-6 border-green-200">
         <DialogHeader className="space-y-2">
           <DialogTitle className="text-3xl font-bold tracking-tight">
             Create product
@@ -101,6 +96,7 @@ export function CreateProduct() {
                 {form.formState.errors.name.message}
               </p>
             )}
+
             <Label htmlFor="description" className="text-sm font-medium">
               Description
             </Label>
@@ -115,56 +111,34 @@ export function CreateProduct() {
                 {form.formState.errors.description.message}
               </p>
             )}
+
             <Label htmlFor="basePrice" className="text-sm font-medium">
               Base Price
             </Label>
-            <Input
-              id="basePrice"
-              type="number"
-              placeholder="Enter product base price"
-              className="h-12 rounded-2xl"
-              {...form.register("basePrice")}
-            />
+            <PriceInput form={form} name="basePrice" />
             {form.formState.errors.basePrice && (
               <p className="text-xs text-destructive">
                 {form.formState.errors.basePrice.message}
               </p>
             )}
+
             <Label htmlFor="weight" className="text-sm font-medium">
               Weight
             </Label>
-            <Input
-              id="weight"
-              type="number"
-              placeholder="Enter product weight"
-              className="h-12 rounded-2xl"
-              {...form.register("weight")}
-            />
+            <NumberStepper form={form} name="weight" min={0} />
             {form.formState.errors.weight && (
               <p className="text-xs text-destructive">
                 {form.formState.errors.weight.message}
               </p>
             )}
-            <Select
-              value={form.watch("categoryId") || undefined}
-              onValueChange={(value) => form.setValue("categoryId", value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select category" />
-              </SelectTrigger>
-              <SelectContent>
-                {categoryData?.data.map((category: Category) => (
-                  <SelectItem key={category.id} value={category.id}>
-                    {category.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-              {form.formState.errors.categoryId && (
-                  <p className="text-xs text-destructive">
-                  {form.formState.errors.categoryId.message}
-                </p>
-              )}
+
+            <Label className="text-sm font-medium">Category</Label>
+            <CategorySelect form={form} name="categoryId" />
+            {form.formState.errors.categoryId && (
+              <p className="text-xs text-destructive">
+                {form.formState.errors.categoryId.message}
+              </p>
+            )}
             <Label htmlFor="images">Images</Label>
             <Input
               id="images"
@@ -181,10 +155,10 @@ export function CreateProduct() {
           </div>
           <Button
             type="submit"
-            disabled={mutation.isPending}
+            disabled={isPending}
             className="w-full h-12 rounded-2xl bg-green-700 hover:bg-green-800 text-white font-medium shadow-sm"
           >
-            {mutation.isPending ? "Creating..." : "Create product"}
+            {isPending ? "Creating..." : "Create product"}
           </Button>
         </form>
       </DialogContent>
