@@ -1,0 +1,7 @@
+import { ShoppingBag } from "lucide-react";
+import { CheckoutPreviewResponse } from "../checkout.type";
+interface CheckoutItemsProps { preview?: CheckoutPreviewResponse; }
+export function CheckoutItems({ preview }: CheckoutItemsProps) { return <section className="rounded-3xl border border-stone-200 bg-white p-6 shadow-sm"><SectionHeader />{preview?.items?.length ? <div className="mt-5 space-y-3">{preview.items.map((item) => <ItemRow key={item.id} item={item} />)}</div> : <EmptyItems />}</section>; }
+function SectionHeader() { return <div className="flex items-center gap-3"><div className="rounded-xl bg-emerald-50 p-2"><ShoppingBag className="size-5 text-emerald-700" /></div><div><h2 className="font-semibold text-stone-900">Your Items</h2><p className="text-sm text-stone-500">Review the products in your order</p></div></div>; }
+function ItemRow({ item }: { item: CheckoutPreviewResponse["items"][number] }) { return <div className="flex items-center justify-between rounded-2xl bg-stone-50 p-4"><div><p className="font-medium text-stone-900">{item.productName}</p><p className="mt-1 text-sm text-stone-500">{item.quantity} × Rp {item.unitPrice.toLocaleString("id-ID")}</p></div><p className="font-semibold text-stone-900">Rp {item.subtotal.toLocaleString("id-ID")}</p></div>; }
+function EmptyItems() { return <div className="mt-5 rounded-2xl border border-dashed border-stone-300 bg-stone-50 p-5"><p className="text-sm text-stone-500">Cart data will appear after checkout preview.</p></div>; }
