@@ -1,10 +1,10 @@
 import { AdminOrderStatusSelect } from "./AdminOrderStatusSelect";
-import { AdminOrder, AdminOrderStatus } from "./order-admin.type";
+import { AdminOrder, AdminOrderActionStatus } from "./order-admin.type";
 
 interface Props {
   orders: AdminOrder[];
   isPending: boolean;
-  onStatusChange: (id: string, status: AdminOrderStatus) => void;
+  onStatusChange: (id: string, status: AdminOrderActionStatus) => void;
 }
 
 export function AdminOrdersTable({ orders, isPending, onStatusChange }: Props) {

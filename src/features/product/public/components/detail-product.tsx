@@ -1,21 +1,12 @@
 import { Package } from "lucide-react";
 import { ProductDetail } from "../schema";
 import { ButtonCard } from "./button-card";
-function formatPrice(price: number) {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    minimumFractionDigits: 0,
-  }).format(price);
-}
+import { formatPrice } from "@/lib/helper-idr";
 interface DetailProductProps {
   product: ProductDetail;
 }
-export function DetailProduct({
-  product,
-}: DetailProductProps) {
+export function DetailProduct({ product }: DetailProductProps) {
   const stock = product.stock ?? 0;
-
   return (
     <div className="rounded-3xl border border-stone-200 bg-white p-6 shadow-sm">
       <div className="space-y-5">
@@ -23,9 +14,7 @@ export function DetailProduct({
           <p className="text-xs font-medium uppercase tracking-wide text-emerald-700">
             {product.category.name}
           </p>
-          <h1 className="text-3xl font-bold text-stone-900">
-            {product.name}
-          </h1>
+          <h1 className="text-3xl font-bold text-stone-900">{product.name}</h1>
           <p className="text-2xl font-bold text-stone-900">
             {formatPrice(product.price)}
           </p>
@@ -38,17 +27,13 @@ export function DetailProduct({
             <div>
               <p className="font-medium text-stone-900">Stock available</p>
               <p className="text-sm text-stone-500">
-                {stock > 0
-                  ? `${stock} items ready`
-                  : "Out of stock"}
+                {stock > 0 ? `${stock} items ready` : "Out of stock"}
               </p>
             </div>
           </div>
         </div>
         <div className="space-y-2">
-          <h2 className="text-lg font-semibold text-stone-900">
-            Description
-          </h2>
+          <h2 className="text-lg font-semibold text-stone-900">Description</h2>
           <p className="whitespace-pre-line text-sm leading-7 text-stone-600">
             {product.description || "No description available"}
           </p>

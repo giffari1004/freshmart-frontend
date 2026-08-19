@@ -1,17 +1,38 @@
+export type AdminOrderStatus =
+  | "WAITING_PAYMENT"
+  | "PAID"
+  | "WAITING_CONFIRMATION"
+  | "PROCESSED"
+  | "SHIPPED"
+  | "CONFIRMED"
+  | "CANCELLED";
+
+export type AdminOrderActionStatus =
+  | "PROCESSED"
+  | "SHIPPED"
+  | "CANCELLED";
+
 export type AdminOrder = {
   id: string;
   orderNumber: string;
-  status: string;
+  status: AdminOrderStatus;
   totalAmount: number;
   createdAt: string;
-  store: { id: string; name: string; code: string };
+  store: {
+    id: string;
+    name: string;
+    code: string;
+  };
 };
-
-export type AdminOrderStatus = "PROCESSING" | "SHIPPED" | "CANCELLED";
 
 export type AdminOrderResponse = {
   success: boolean;
   message: string;
   data: AdminOrder[];
-  meta: { page: number; limit: number; totalData: number; totalPages: number };
+  meta: {
+    page: number;
+    limit: number;
+    totalData: number;
+    totalPages: number;
+  };
 };

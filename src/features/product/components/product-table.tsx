@@ -12,18 +12,12 @@ import {
 } from "@/components/ui/table";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
+import { formatPrice } from "@/lib/helper-idr";
 interface ProductTableProps {
   products: Product[];
   canManage: boolean;
   onEdit: (product: Product) => void;
   onDelete: (product: Product) => void;
-}
-function formatPrice(price: number) {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    minimumFractionDigits: 0,
-  }).format(price);
 }
 export function ProductTable({
   products,

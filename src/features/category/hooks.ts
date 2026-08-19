@@ -6,7 +6,6 @@ import {
   deleteCategory,
 } from "./category-api";
 import {
-  createCategorySchema,
   getAllCategorySchema,
   updateCategorySchema,
 } from "./schema";
@@ -64,3 +63,6 @@ export function useDeleteCategory() {
     },
   });
 }
+export function useStockIn(){}
+export function useStockOut(){}
+export function useGetJournalHistory(){}

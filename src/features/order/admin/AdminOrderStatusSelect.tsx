@@ -1,19 +1,26 @@
-import { AdminOrderStatus } from "./order-admin.type";
+import { AdminOrderActionStatus, AdminOrderStatus } from "./order-admin.type";
 
 interface Props {
-  status: string;
+  status: AdminOrderStatus;
   isPending: boolean;
-  onChange: (status: AdminOrderStatus) => void;
+  onChange: (status: AdminOrderActionStatus) => void;
 }
 
-const nextStatus: Record<string, AdminOrderStatus | undefined> = {
-  PAID: "PROCESSING",
-  PROCESSING: "SHIPPED",
+const nextStatus: Partial<Record<AdminOrderStatus, AdminOrderActionStatus>> = {
+  PAID: "PROCESSED",
+  PROCESSED: "SHIPPED",
 };
 
-export function AdminOrderStatusSelect({ status, isPending, onChange }: Props) {
+export function AdminOrderStatusSelect({
+  status,
+  isPending,
+  onChange,
+}: Props) {
   const next = nextStatus[status];
-  if (!next) return <span className="text-xs text-stone-400">No action</span>;
+
+  if (!next) {
+    return <span className="text-xs text-stone-400">No action</span>;
+  }
 
   return (
     <button

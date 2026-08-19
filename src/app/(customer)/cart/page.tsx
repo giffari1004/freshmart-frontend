@@ -1,7 +1,7 @@
 "use client";
 import { Loader2 } from "lucide-react";
 import { CartList, CartSummary, EmptyCart } from "@/features/cart/component";
-import { useCart, useUpdateCart, useRemoveCart } from "@/features/cart/hooks";
+import { useCart, useUpdateCart, useRemoveCart, useAddToCart } from "@/features/cart/hooks";
 import { CartResponse, CartItem } from "@/features/cart/cartType";
 
 type UpdateMutation = ReturnType<typeof useUpdateCart>;
