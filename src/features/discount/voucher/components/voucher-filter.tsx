@@ -52,14 +52,16 @@ export function VoucherFilter({
 
       <Select
         value={usageType ?? "all"}
-        onValueChange={(val) => onUsageTypeChange(val === "all" ? undefined : val)}
+        onValueChange={(val) =>
+          onUsageTypeChange(val === "all" ? undefined : val)
+        }
       >
         <SelectTrigger className="w-48">
           <SelectValue placeholder="Usage type" />
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">All usage types</SelectItem>
-          {VOUCHER_USAGE_TYPE.map((type:VoucherUsageType) => (
+          {VOUCHER_USAGE_TYPE.map((type: VoucherUsageType) => (
             <SelectItem key={type} value={type}>
               {type.replace("_", " ")}
             </SelectItem>
@@ -68,14 +70,16 @@ export function VoucherFilter({
       </Select>
       <Select
         value={valueType ?? "all"}
-        onValueChange={(val) => onValueTypeChange(val === "all" ? undefined : val)}
+        onValueChange={(val) =>
+          onValueTypeChange(val === "all" ? undefined : val)
+        }
       >
         <SelectTrigger className="w-44">
           <SelectValue placeholder="Value type" />
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">All value types</SelectItem>
-          {VOUCHER_VALUE_TYPE.map((type:VoucherValueType) => (
+          {VOUCHER_VALUE_TYPE.map((type: VoucherValueType) => (
             <SelectItem key={type} value={type}>
               {type}
             </SelectItem>

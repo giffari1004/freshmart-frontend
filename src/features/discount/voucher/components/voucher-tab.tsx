@@ -7,8 +7,8 @@ import { UpdateVoucher } from "./edit-voucher.";
 import { VoucherFilter } from "./voucher-filter";
 import { VoucherPagination } from "./voucher-pagination";
 import { VoucherTable } from "./vourcher-table";
-import { useGetAllVouchers } from "@/features/discount/voucher/hooks";
-import { getAllVoucherSchema, Voucher } from "@/features/discount/voucher/schema";
+import { useGetAllVouchers } from "../hooks";
+import { getAllVoucherSchema, Voucher } from "../schema";
 import { useAuthStore } from "@/stores/auth-store";
 import { useState } from "react";
 

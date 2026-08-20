@@ -1,0 +1,1 @@
+export const MIN_PURCHASE_VALUE_TYPE = ["PERCENTAGE", "NOMINAL"] as const;
