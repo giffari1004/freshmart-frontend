@@ -1,9 +1,154 @@
 import { Loader2 } from "lucide-react";
 import { CheckoutPreviewResponse } from "../checkout.type";
-interface CheckoutSummaryProps { preview?: CheckoutPreviewResponse; onPreview: () => void; onCreateOrder: () => void; isPreviewLoading?: boolean; isOrderLoading?: boolean; orderCreated?: boolean; }
-export function CheckoutSummary(props: CheckoutSummaryProps) { return <aside className="h-fit rounded-3xl border border-stone-200 bg-white p-6 shadow-sm lg:sticky lg:top-24"><h2 className="text-lg font-semibold text-stone-900">Order Summary</h2>{props.preview ? <PreviewSummary {...props} /> : <EmptySummary onPreview={props.onPreview} loading={props.isPreviewLoading} />}</aside>; }
-function PreviewSummary({ preview, onCreateOrder, isOrderLoading, orderCreated }: CheckoutSummaryProps) { return <div className="mt-6 space-y-4 text-sm"><SummaryRow label="Items" value={String(preview!.totalItems)} /><SummaryRow label="Subtotal" value={`Rp ${preview!.subtotal.toLocaleString("id-ID")}`} /><SummaryRow label="Discount" value={`- Rp ${preview!.discount.amount.toLocaleString("id-ID")}`} green /><SummaryRow label="Shipping" value={`Rp ${preview!.shipping.cost.toLocaleString("id-ID")}`} /><SummaryRow label="Distance" value={`${preview!.store.distanceKm.toFixed(2)} km`} /><TotalRow value={`Rp ${preview!.totalAmount.toLocaleString("id-ID")}`} /><OrderButton loading={isOrderLoading} created={orderCreated} onClick={onCreateOrder} /></div>; }
-function SummaryRow({ label, value, green = false }: { label: string; value: string; green?: boolean }) { return <div className="flex justify-between"><span className="text-stone-500">{label}</span><span className={green ? "font-medium text-emerald-700" : "font-medium text-stone-900"}>{value}</span></div>; }
-function TotalRow({ value }: { value: string }) { return <div className="border-t border-stone-200 pt-4"><div className="flex items-end justify-between"><span className="font-semibold text-stone-900">Total</span><span className="text-xl font-bold text-stone-900">{value}</span></div></div>; }
-function OrderButton({ loading, created, onClick }: { loading?: boolean; created?: boolean; onClick: () => void }) { return <button type="button" onClick={onClick} disabled={loading || created} className="mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-emerald-700 font-semibold text-white transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-50">{loading ? <><Loader2 className="size-4 animate-spin" />Processing...</> : created ? "Order Created" : "Continue to Payment"}</button>; }
-function EmptySummary({ onPreview, loading }: { onPreview: () => void; loading?: boolean }) { return <div className="mt-6"><div className="space-y-4 text-sm"><SummaryRow label="Subtotal" value="—" /><SummaryRow label="Discount" value="—" /><SummaryRow label="Shipping" value="—" /><TotalRow value="—" /></div><button type="button" onClick={onPreview} disabled={loading} className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-emerald-700 font-semibold text-white transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-50">{loading ? <><Loader2 className="size-4 animate-spin" />Calculating...</> : "Review Order"}</button></div>; }
+interface CheckoutSummaryProps {
+  preview?: CheckoutPreviewResponse;
+  onPreview: () => void;
+  onCreateOrder: () => void;
+  isPreviewLoading?: boolean;
+  isOrderLoading?: boolean;
+  orderCreated?: boolean;
+}
+export function CheckoutSummary(props: CheckoutSummaryProps) {
+  return (
+    <aside className="h-fit rounded-3xl border border-stone-200 bg-white p-6 shadow-sm lg:sticky lg:top-24">
+      <h2 className="text-lg font-semibold text-stone-900">Order Summary</h2>
+      {props.preview ? (
+        <PreviewSummary {...props} />
+      ) : (
+        <EmptySummary
+          onPreview={props.onPreview}
+          loading={props.isPreviewLoading}
+        />
+      )}
+    </aside>
+  );
+}
+function PreviewSummary({
+  preview,
+  onCreateOrder,
+  isOrderLoading,
+  orderCreated,
+}: CheckoutSummaryProps) {
+  return (
+    <div className="mt-6 space-y-4 text-sm">
+      <SummaryRow label="Items" value={String(preview!.totalItems)} />
+      <SummaryRow
+        label="Subtotal"
+        value={`Rp ${preview!.subtotal.toLocaleString("id-ID")}`}
+      />
+      <SummaryRow
+        label="Discount"
+        value={`- Rp ${preview!.discount.amount.toLocaleString("id-ID")}`}
+        green
+      />
+      <SummaryRow
+        label="Shipping"
+        value={`Rp ${preview!.shipping.cost.toLocaleString("id-ID")}`}
+      />
+      <SummaryRow
+        label="Distance"
+        value={`${preview!.store.distanceKm.toFixed(2)} km`}
+      />
+      <TotalRow value={`Rp ${preview!.totalAmount.toLocaleString("id-ID")}`} />
+      <OrderButton
+        loading={isOrderLoading}
+        created={orderCreated}
+        onClick={onCreateOrder}
+      />
+    </div>
+  );
+}
+function SummaryRow({
+  label,
+  value,
+  green = false,
+}: {
+  label: string;
+  value: string;
+  green?: boolean;
+}) {
+  return (
+    <div className="flex justify-between">
+      <span className="text-stone-500">{label}</span>
+      <span
+        className={
+          green ? "font-medium text-emerald-700" : "font-medium text-stone-900"
+        }
+      >
+        {value}
+      </span>
+    </div>
+  );
+}
+function TotalRow({ value }: { value: string }) {
+  return (
+    <div className="border-t border-stone-200 pt-4">
+      <div className="flex items-end justify-between">
+        <span className="font-semibold text-stone-900">Total</span>
+        <span className="text-xl font-bold text-stone-900">{value}</span>
+      </div>
+    </div>
+  );
+}
+function OrderButton({
+  loading,
+  created,
+  onClick,
+}: {
+  loading?: boolean;
+  created?: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={loading || created}
+      className="mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-emerald-700 font-semibold text-white transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-50"
+    >
+      {loading ? (
+        <>
+          <Loader2 className="size-4 animate-spin" />
+          Processing...
+        </>
+      ) : created ? (
+        "Order Created"
+      ) : (
+        "Continue to Payment"
+      )}
+    </button>
+  );
+}
+function EmptySummary({
+  onPreview,
+  loading,
+}: {
+  onPreview: () => void;
+  loading?: boolean;
+}) {
+  return (
+    <div className="mt-6">
+      <div className="space-y-4 text-sm">
+        <SummaryRow label="Subtotal" value="—" />
+        <SummaryRow label="Discount" value="—" />
+        <SummaryRow label="Shipping" value="—" />
+        <TotalRow value="—" />
+      </div>
+      <button
+        type="button"
+        onClick={onPreview}
+        disabled={loading}
+        className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-emerald-700 font-semibold text-white transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        {loading ? (
+          <>
+            <Loader2 className="size-4 animate-spin" />
+            Calculating...
+          </>
+        ) : (
+          "Review Order"
+        )}
+      </button>
+    </div>
+  );
+}

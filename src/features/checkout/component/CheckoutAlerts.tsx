@@ -1,5 +1,78 @@
 import { AlertCircle, CheckCircle2 } from "lucide-react";
-interface CheckoutAlertsProps { checkoutError?: boolean; orderError?: boolean; paymentError?: boolean; orderNumber?: string; orderStatus?: string; }
-export function CheckoutAlerts(props: CheckoutAlertsProps) { return <div className="space-y-3"><ErrorAlert show={props.checkoutError} title="Unable to calculate checkout" text="Please check your address and shipping method." /><ErrorAlert show={props.orderError} title="Failed to create order" text="Please try again." /><ErrorAlert show={props.paymentError} title="Failed to initialize payment" text="Your order was created, but payment initialization failed." /><SuccessAlert orderNumber={props.orderNumber} status={props.orderStatus} /></div>; }
-function ErrorAlert({ show, title, text }: { show?: boolean; title: string; text: string }) { if (!show) return null; return <div className="mt-6 flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 p-4"><AlertCircle className="mt-0.5 size-5 shrink-0 text-red-600" /><div><p className="font-medium text-red-800">{title}</p><p className="mt-1 text-sm text-red-700">{text}</p></div></div>; }
-function SuccessAlert({ orderNumber, status }: { orderNumber?: string; status?: string }) { if (!orderNumber) return null; return <div className="mt-6 flex items-start gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-4"><CheckCircle2 className="mt-0.5 size-5 shrink-0 text-emerald-600" /><div><p className="font-medium text-emerald-800">Order created successfully</p><p className="mt-1 text-sm text-emerald-700">Order number: <span className="font-semibold">{orderNumber}</span></p>{status && <p className="mt-1 text-sm text-emerald-700">Status: {status}</p>}</div></div>; }
+interface CheckoutAlertsProps {
+  checkoutError?: boolean;
+  orderError?: boolean;
+  paymentError?: boolean;
+  orderNumber?: string;
+  orderStatus?: string;
+}
+export function CheckoutAlerts(props: CheckoutAlertsProps) {
+  return (
+    <div className="space-y-3">
+      <ErrorAlert
+        show={props.checkoutError}
+        title="Unable to calculate checkout"
+        text="Please check your address and shipping method."
+      />
+      <ErrorAlert
+        show={props.orderError}
+        title="Failed to create order"
+        text="Please try again."
+      />
+      <ErrorAlert
+        show={props.paymentError}
+        title="Failed to initialize payment"
+        text="Your order was created, but payment initialization failed."
+      />
+      <SuccessAlert
+        orderNumber={props.orderNumber}
+        status={props.orderStatus}
+      />
+    </div>
+  );
+}
+function ErrorAlert({
+  show,
+  title,
+  text,
+}: {
+  show?: boolean;
+  title: string;
+  text: string;
+}) {
+  if (!show) return null;
+  return (
+    <div className="mt-6 flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 p-4">
+      <AlertCircle className="mt-0.5 size-5 shrink-0 text-red-600" />
+      <div>
+        <p className="font-medium text-red-800">{title}</p>
+        <p className="mt-1 text-sm text-red-700">{text}</p>
+      </div>
+    </div>
+  );
+}
+function SuccessAlert({
+  orderNumber,
+  status,
+}: {
+  orderNumber?: string;
+  status?: string;
+}) {
+  if (!orderNumber) return null;
+  return (
+    <div className="mt-6 flex items-start gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
+      <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-emerald-600" />
+      <div>
+        <p className="font-medium text-emerald-800">
+          Order created successfully
+        </p>
+        <p className="mt-1 text-sm text-emerald-700">
+          Order number: <span className="font-semibold">{orderNumber}</span>
+        </p>
+        {status && (
+          <p className="mt-1 text-sm text-emerald-700">Status: {status}</p>
+        )}
+      </div>
+    </div>
+  );
+}
