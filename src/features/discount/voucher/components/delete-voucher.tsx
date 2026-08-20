@@ -1,5 +1,5 @@
-import { useDeleteVoucher } from "@/features/discount/voucher/hooks";
-import { Voucher } from "@/features/discount/voucher/schema";
+import { useDeleteVoucher } from "../hooks";
+import { Voucher } from "../schema";
 import {
   Dialog,
   DialogContent,

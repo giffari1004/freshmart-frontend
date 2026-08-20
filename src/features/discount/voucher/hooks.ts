@@ -32,7 +32,9 @@ export function useCreateVoucher() {
       mutate.invalidateQueries({ queryKey: ["vouchers"] });
     },
     onError: (err: AxiosError<{ message: string }>) => {
-      toast.error(err.response?.data.message || "Created voucher unsuccessfully");
+      toast.error(
+        err.response?.data.message || "Created voucher unsuccessfully",
+      );
     },
   });
 }
@@ -46,7 +48,9 @@ export function useUpdateVoucher() {
       mutate.invalidateQueries({ queryKey: ["vouchers"] });
     },
     onError: (err: AxiosError<{ message: string }>) => {
-      toast.error(err.response?.data.message || "Update voucher unsuccessfully");
+      toast.error(
+        err.response?.data.message || "Update voucher unsuccessfully",
+      );
     },
   });
 }
@@ -59,7 +63,9 @@ export function useDeleteVoucher() {
       mutate.invalidateQueries({ queryKey: ["vouchers"] });
     },
     onError: (err: AxiosError<{ message: string }>) => {
-      toast.error(err.response?.data.message || "Unsuccessfully delete voucher");
+      toast.error(
+        err.response?.data.message || "Unsuccessfully delete voucher",
+      );
     },
   });
 }

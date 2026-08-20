@@ -1,0 +1,1 @@
+export const DISCOUNT_VALUE_TYPE = ["PERCENTAGE", "NOMINAL"] as const;

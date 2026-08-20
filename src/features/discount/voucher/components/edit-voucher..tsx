@@ -1,7 +1,5 @@
 import { useForm } from "react-hook-form";
 import { useUpdateVoucher } from "../hooks";
-import { Voucher, UPDATE_VOUCHER } from "../schema";
-import { updateVoucherInput , updateVoucherOutput } from "../schema";
 import { VOUCHER_USAGE_TYPE, VOUCHER_VALUE_TYPE } from "../constant";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
@@ -21,6 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { UPDATE_VOUCHER, updateVoucherInput, updateVoucherOutput, Voucher } from "../schema";
 
 interface UpdateVoucherProps {
   voucher: Voucher | null;
@@ -28,7 +27,7 @@ interface UpdateVoucherProps {
 }
 
 export function UpdateVoucher({ voucher, onClose }: UpdateVoucherProps) {
-  const form = useForm<updateVoucherInput,any,updateVoucherOutput>({
+  const form = useForm<updateVoucherInput, any, updateVoucherOutput>({
     resolver: zodResolver(UPDATE_VOUCHER),
     defaultValues: {
       code: undefined,
@@ -96,7 +95,10 @@ export function UpdateVoucher({ voucher, onClose }: UpdateVoucherProps) {
             <Select
               value={form.watch("usageType")}
               onValueChange={(val) =>
-                form.setValue("usageType", val as (typeof VOUCHER_USAGE_TYPE)[number])
+                form.setValue(
+                  "usageType",
+                  val as (typeof VOUCHER_USAGE_TYPE)[number],
+                )
               }
             >
               <SelectTrigger>
@@ -121,7 +123,10 @@ export function UpdateVoucher({ voucher, onClose }: UpdateVoucherProps) {
             <Select
               value={form.watch("valueType")}
               onValueChange={(val) =>
-                form.setValue("valueType", val as (typeof VOUCHER_VALUE_TYPE)[number])
+                form.setValue(
+                  "valueType",
+                  val as (typeof VOUCHER_VALUE_TYPE)[number],
+                )
               }
             >
               <SelectTrigger>
