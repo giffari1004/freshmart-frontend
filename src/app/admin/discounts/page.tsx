@@ -2,6 +2,7 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DirectDiscountTab } from "@/features/discount/direct/components/discount-tab";
+import { MinPurchaseTab } from "@/features/discount/minimum-purchase/components/min-purchase-tab";
 import { VoucherTab } from "@/features/discount/voucher/components/voucher-tab";
 
 export default function DiscountsPage() {
@@ -20,12 +21,15 @@ export default function DiscountsPage() {
       <Tabs defaultValue="direct">
         <TabsList>
           <TabsTrigger value="direct">Direct Discount</TabsTrigger>
-          <TabsTrigger value="min-purchase" disabled>Min. Purchase</TabsTrigger>
+          <TabsTrigger value="min-purchase">Min. Purchase</TabsTrigger>
           <TabsTrigger value="bogo" disabled>Buy 1 Get 1</TabsTrigger>
           <TabsTrigger value="voucher">Vouchers</TabsTrigger>
         </TabsList>
         <TabsContent value="direct" className="pt-6">
           <DirectDiscountTab />
+        </TabsContent>
+        <TabsContent value="min-purchase" className="pt-6">
+          <MinPurchaseTab />
         </TabsContent>
         <TabsContent value="voucher" className="pt-6">
           <VoucherTab />
