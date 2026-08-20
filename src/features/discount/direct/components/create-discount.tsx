@@ -1,10 +1,15 @@
 import { useState } from "react";
-import { useCreateVoucher } from "../hooks";
-import { CREATE_VOUCHER } from "../schema";
 import {
-  VOUCHER_USAGE_TYPE,
-  VOUCHER_VALUE_TYPE,
-} from "@/features/discount/voucher/constant";
+  useCreateDiscount,
+  useGetAllDiscounts,
+} from "@/features/discount/direct/hooks";
+import {
+  CREATE_DISCOUNT,
+  createDiscountInput,
+  createDiscountOutput,
+  Discount,
+} from "@/features/discount/direct/schema";
+import { DISCOUNT_VALUE_TYPE } from "@/features/discount/direct/constant";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -27,22 +32,22 @@ import {
 import { PriceInput } from "@/lib/price-input";
 import { useGetAllProduct } from "@/features/product/hooks";
 import { Product } from "@/features/product/schema";
-import {
-  createVoucherInput,
-  createVoucherOutput,
-} from "../schema";
 
-export function CreateVoucher() {
+const DUMMY_STORES = [
+  { id: "1", name: "Toko Jakarta" },
+  { id: "2", name: "Toko Bandung" },
+];
+
+export function CreateDiscount() {
   const [open, setOpen] = useState(false);
-  const mutation = useCreateVoucher();
-  const form = useForm<createVoucherInput, any, createVoucherOutput>({
-    resolver: zodResolver(CREATE_VOUCHER),
+  const mutation = useCreateDiscount();
+  const form = useForm<createDiscountInput, any, createDiscountOutput>({
+    resolver: zodResolver(CREATE_DISCOUNT),
     defaultValues: {
-      code: "",
-      usageType: "CART_TOTAL",
+      storeId: "",
+      productId: "",
       valueType: "PERCENTAGE",
       value: 0,
-      isActive: true,
     },
   });
   const { data: productsData } = useGetAllProduct({
@@ -51,7 +56,16 @@ export function CreateVoucher() {
     sortBy: "createdAt",
     sortOrder: "desc",
   });
-  function onSubmitButton(value: createVoucherOutput) {
+  const { data: activeDiscountsData } = useGetAllDiscounts({
+    activeOnly: true,
+  });
+  const discountedProductIds = new Set(
+    activeDiscountsData?.data.map((d: Discount) => d.productId) ?? [],
+  );
+  const availableProducts = productsData?.data.filter(
+    (product: Product) => !discountedProductIds.has(product.id),
+  );
+  function onSubmitButton(value: createDiscountOutput) {
     mutation.mutate(value, {
       onSuccess: () => {
         form.reset();
@@ -63,82 +77,58 @@ export function CreateVoucher() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="bg-green-700 hover:bg-green-800">
-          Create voucher
+          Create discount
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[520px] rounded-3xl p-6 border-green-200">
         <DialogHeader className="space-y-2">
           <DialogTitle className="text-3xl font-bold tracking-tight">
-            Create voucher
+            Create discount
           </DialogTitle>
-          <p className="text-muted-foreground text-sm">Add a new voucher</p>
+          <p className="text-muted-foreground text-sm">
+            Add a direct discount to a product
+          </p>
         </DialogHeader>
         <form
           onSubmit={form.handleSubmit(onSubmitButton)}
           className="space-y-5 pt-2"
         >
           <div className="space-y-2">
-            <Label htmlFor="code">Voucher code</Label>
-            <Input
-              id="code"
-              className="h-12 rounded-2xl"
-              placeholder="e.g. FRESH10"
-              {...form.register("code")}
-            />
-            {form.formState.errors.code && (
-              <p className="text-destructive text-xs">
-                {form.formState.errors.code.message}
-              </p>
-            )}
-          </div>
-          <div className="space-y-2">
-            <Label>Usage type</Label>
+            <Label>Store name</Label>
             <Select
-              value={form.watch("usageType")}
-              onValueChange={(value) =>
-                form.setValue(
-                  "usageType",
-                  value as createVoucherOutput["usageType"],
-                )
-              }
+              value={form.watch("storeId")}
+              onValueChange={(value) => form.setValue("storeId", value)}
             >
               <SelectTrigger className="w-full h-12 rounded-2xl">
-                <SelectValue placeholder="Choose usage type" />
+                <SelectValue placeholder="Choose store name" />
               </SelectTrigger>
               <SelectContent>
-                {VOUCHER_USAGE_TYPE.map((type) => (
-                  <SelectItem key={type} value={type}>
-                    {type.replace("_", " ")}
+                {DUMMY_STORES.map((store) => (
+                  <SelectItem key={store.id} value={store.id}>
+                    {store.name}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
-          {form.watch("usageType") === "PRODUCT_SPECIFIC" && (
-            <div className="space-y-2">
-              <Label>Product</Label>
-              <Select
-                value={form.watch("productId")}
-                onValueChange={(value) => form.setValue("productId", value)}
-              >
-                <SelectTrigger className="w-full h-12 rounded-2xl">
-                  <SelectValue placeholder="Select product" />
-                </SelectTrigger>
-                <SelectContent>
-                  {productsData?.data.map((product: Product) => (
-                    <SelectItem key={product.id} value={product.id}>
-                      {product.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {form.formState.errors.productId && (
-                <p className="text-destructive text-xs">
-                  {form.formState.errors.productId.message}
-                </p>
-              )}
-            </div>
-          )}
+          <div className="space-y-2">
+            <Label>Product name</Label>
+            <Select
+              value={form.watch("productId")}
+              onValueChange={(value) => form.setValue("productId", value)}
+            >
+              <SelectTrigger className="w-full h-12 rounded-2xl">
+                <SelectValue placeholder="Select product name" />
+              </SelectTrigger>
+              <SelectContent>
+                {availableProducts?.map((product: Product) => (
+                  <SelectItem key={product.id} value={product.id}>
+                    {product.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
           <div className="space-y-2">
             <Label>Value type</Label>
             <Select
@@ -146,7 +136,7 @@ export function CreateVoucher() {
               onValueChange={(value) =>
                 form.setValue(
                   "valueType",
-                  value as createVoucherOutput["valueType"],
+                  value as createDiscountOutput["valueType"],
                 )
               }
             >
@@ -154,7 +144,7 @@ export function CreateVoucher() {
                 <SelectValue placeholder="Choose value type" />
               </SelectTrigger>
               <SelectContent>
-                {VOUCHER_VALUE_TYPE.map((type) => (
+                {DISCOUNT_VALUE_TYPE.map((type) => (
                   <SelectItem key={type} value={type}>
                     {type}
                   </SelectItem>
@@ -172,39 +162,42 @@ export function CreateVoucher() {
             )}
           </div>
           <div className="space-y-2">
-            <Label htmlFor="maxDiscountAmount">
-              Max discount amount (Optional)
-            </Label>
-            <PriceInput form={form} name="maxDiscountAmount" />
-            {form.formState.errors.maxDiscountAmount && (
-              <p className="text-destructive text-xs">
-                {form.formState.errors.maxDiscountAmount.message}
-              </p>
-            )}
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="minPurchaseAmount">
-              Min purchase amount (Optional)
-            </Label>
-            <PriceInput form={form} name="minPurchaseAmount" />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="expiredAt">Expired at</Label>
+            <Label htmlFor="startDate">Start date</Label>
             <Controller
               control={form.control}
-              name="expiredAt"
+              name="startDate"
               render={({ field }) => (
                 <Input
-                  id="expiredAt"
+                  id="startDate"
                   type="date"
                   className="h-12 rounded-2xl"
                   onChange={(e) => field.onChange(new Date(e.target.value))}
                 />
               )}
             />
-            {form.formState.errors.expiredAt && (
+            {form.formState.errors.startDate && (
               <p className="text-destructive text-xs">
-                {form.formState.errors.expiredAt.message}
+                {form.formState.errors.startDate.message}
+              </p>
+            )}
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="endDate">End date</Label>
+            <Controller
+              control={form.control}
+              name="endDate"
+              render={({ field }) => (
+                <Input
+                  id="endDate"
+                  type="date"
+                  className="h-12 rounded-2xl"
+                  onChange={(e) => field.onChange(new Date(e.target.value))}
+                />
+              )}
+            />
+            {form.formState.errors.endDate && (
+              <p className="text-destructive text-xs">
+                {form.formState.errors.endDate.message}
               </p>
             )}
           </div>
@@ -213,7 +206,7 @@ export function CreateVoucher() {
             disabled={mutation.isPending}
             className="w-full h-12 rounded-2xl bg-green-700 hover:bg-green-800 text-white font-medium shadow-sm"
           >
-            {mutation.isPending ? "Creating..." : "Create voucher"}
+            {mutation.isPending ? "Creating..." : "Create discount"}
           </Button>
         </form>
       </DialogContent>

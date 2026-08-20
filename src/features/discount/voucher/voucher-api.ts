@@ -1,6 +1,9 @@
 import { api } from "@/lib/axios";
-import { createVoucherOutput, getAllVoucherSchema, updateVoucherOutput } from "./schema";
-
+import {
+  createVoucherOutput,
+  getAllVoucherSchema,
+  updateVoucherOutput,
+} from "./schema";
 export async function fetchVoucher(query: getAllVoucherSchema) {
   const { data } = await api.get("/admin/vouchers", { params: query });
   return data;
