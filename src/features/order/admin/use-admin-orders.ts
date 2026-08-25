@@ -17,7 +17,7 @@ export function useAdminOrders(
   status?: AdminOrderStatus,
 ) {
   return useQuery({
-    queryKey: ["admin-orders", page, status],
+    queryKey: ["admin-orders", page, status ?? "all"],
     queryFn: () =>
       fetchAdminOrders({
         page,

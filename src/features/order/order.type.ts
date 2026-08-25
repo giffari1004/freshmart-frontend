@@ -3,6 +3,7 @@ export interface CreateOrderRequest {
   shippingMethodId: string;
   userVoucherId?: string;
 }
+
 export interface CreateOrderItem {
   productId: string;
   productName: string;
@@ -10,6 +11,9 @@ export interface CreateOrderItem {
   quantity: number;
   subtotal: number;
 }
+
+export type OrderDetailItem = CreateOrderItem;
+
 export interface CreateOrderResponse {
   id: string;
   orderNumber: string;
@@ -20,6 +24,7 @@ export interface CreateOrderResponse {
   totalAmount: number;
   items: CreateOrderItem[];
 }
+
 export interface OrderListItem {
   id: string;
   orderNumber: string;
@@ -30,7 +35,43 @@ export interface OrderListItem {
   totalAmount: number;
   createdAt: string;
 }
-export type OrderDetailItem = CreateOrderItem;
+
+export type OrderListStatus =
+  | "WAITING_PAYMENT"
+  | "PAID"
+  | "WAITING_CONFIRMATION"
+  | "PROCESSED"
+  | "SHIPPED"
+  | "CONFIRMED"
+  | "CANCELLED";
+
+export type OrderListSortBy =
+  | "createdAt"
+  | "totalAmount"
+  | "orderNumber"
+  | "status";
+
+export type OrderListSortOrder = "asc" | "desc";
+
+export interface OrderListQuery {
+  page: number;
+  limit: number;
+  status?: OrderListStatus;
+  sortBy: OrderListSortBy;
+  sortOrder: OrderListSortOrder;
+}
+
+export interface OrderListPagination {
+  page: number;
+  limit: number;
+  totalItems: number;
+  totalPages: number;
+}
+
+export interface OrderListResponse {
+  items: OrderListItem[];
+  pagination: OrderListPagination;
+}
 
 export interface OrderDetail extends OrderListItem {
   store: { id: string; name: string; code: string };
@@ -51,7 +92,14 @@ export interface OrderDetail extends OrderListItem {
     etd: string | null;
   };
   items: CreateOrderItem[];
+  subtotal: number;
+  discountAmount: number;
+  shippingCost: number;
+  totalAmount: number;
   payment: { method: string; status: string; amount: number } | null;
 }
 
-export interface CancelOrderResponse { id: string; status: string; }
+export interface CancelOrderResponse {
+  id: string;
+  status: string;
+}
