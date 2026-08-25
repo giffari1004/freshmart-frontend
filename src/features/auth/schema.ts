@@ -1,9 +1,17 @@
-// src/features/auth/schema.ts
 import { z } from "zod";
 
-export const registerSchema = z.object({
-  name: z.string().min(2, "Nama minimal 2 karakter"),
-  email: z.string().email("Email tidak valid"),
+export const registerFormSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(2, { message: "Name must be at least 2 characters" }),
+  email: z.string().trim().email({ message: "Enter a valid email address" }),
 });
 
-export type RegisterInput = z.infer<typeof registerSchema>;
+export const loginFormSchema = z.object({
+  email: z.string().trim().email({ message: "Enter a valid email address" }),
+  password: z.string().min(1, { message: "Password is required" }),
+});
+
+export type RegisterFormInput = z.infer<typeof registerFormSchema>;
+export type LoginFormInput = z.infer<typeof loginFormSchema>;
