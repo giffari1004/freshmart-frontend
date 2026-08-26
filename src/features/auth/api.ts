@@ -68,6 +68,21 @@ export interface ResendVerificationApiResponse {
   message: string;
 }
 
+export interface RequestResetPasswordPayload {
+  email: string;
+}
+
+export interface ConfirmResetPasswordPayload {
+  token: string;
+  password: string;
+}
+
+export interface ResetPasswordApiResponse {
+  success: boolean;
+  message: string;
+  data: null;
+}
+
 export const registerUser = async (
   payload: RegisterPayload,
 ): Promise<UserData> => {
@@ -98,6 +113,26 @@ export const resendVerificationEmail = async (
 ): Promise<ResendVerificationApiResponse> => {
   const response = await api.post<ResendVerificationApiResponse>(
     "/auth/resend-verification",
+    payload,
+  );
+  return response.data;
+};
+
+export const requestResetPassword = async (
+  payload: RequestResetPasswordPayload,
+): Promise<ResetPasswordApiResponse> => {
+  const response = await api.post<ResetPasswordApiResponse>(
+    "/auth/reset-password",
+    payload,
+  );
+  return response.data;
+};
+
+export const confirmResetPassword = async (
+  payload: ConfirmResetPasswordPayload,
+): Promise<ResetPasswordApiResponse> => {
+  const response = await api.post<ResetPasswordApiResponse>(
+    "/auth/reset-password/confirm",
     payload,
   );
   return response.data;
