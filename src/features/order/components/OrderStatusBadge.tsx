@@ -1,9 +1,33 @@
-interface OrderStatusBadgeProps { status: string; }
+import { cn } from "@/lib/utils";
+import type { OrderStatus } from "../order.type";
 
-export function OrderStatusBadge({ status }: OrderStatusBadgeProps) {
+const labels: Record<OrderStatus, string> = {
+  WAITING_PAYMENT: "Waiting Payment",
+  PAID: "Paid",
+  PROCESSED: "Processed",
+  SHIPPED: "Shipped",
+  CONFIRMED: "Confirmed",
+  CANCELLED: "Cancelled",
+};
+
+const styles: Record<OrderStatus, string> = {
+  WAITING_PAYMENT: "bg-amber-50 text-amber-700 ring-amber-200",
+  PAID: "bg-sky-50 text-sky-700 ring-sky-200",
+  PROCESSED: "bg-violet-50 text-violet-700 ring-violet-200",
+  SHIPPED: "bg-indigo-50 text-indigo-700 ring-indigo-200",
+  CONFIRMED: "bg-emerald-50 text-emerald-700 ring-emerald-200",
+  CANCELLED: "bg-red-50 text-red-700 ring-red-200",
+};
+
+export function OrderStatusBadge({ status }: { status: OrderStatus }) {
   return (
-    <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-emerald-700">
-      {status.replaceAll("_", " ")}
+    <span
+      className={cn(
+        "inline-flex rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide ring-1 ring-inset",
+        styles[status],
+      )}
+    >
+      {labels[status]}
     </span>
   );
 }

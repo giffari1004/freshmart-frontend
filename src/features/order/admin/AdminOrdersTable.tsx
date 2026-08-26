@@ -5,15 +5,21 @@ interface Props {
   orders: AdminOrder[];
   isPending: boolean;
   onStatusChange: (id: string, status: AdminOrderActionStatus) => void;
-  onCancel: (id: string) => void;
 }
 
 export function AdminOrdersTable({
   orders,
   isPending,
   onStatusChange,
-  onCancel,
 }: Props) {
+  if (isPending && !orders.length) {
+    return (
+      <div className="rounded-2xl border border-stone-200 bg-white p-8 text-sm text-stone-500">
+        Loading orders...
+      </div>
+    );
+  }
+
   if (!orders.length) {
     return (
       <div className="rounded-2xl border border-dashed border-stone-300 bg-white p-8 text-sm text-stone-500">
@@ -43,8 +49,8 @@ export function AdminOrdersTable({
             >
               <td className="px-5 py-4 font-medium">{order.orderNumber}</td>
               <td className="px-5 py-4">
-                <p>{order.store.name}</p>
-                <p className="text-xs text-stone-400">{order.store.code}</p>
+                <p>{order.store?.name ?? "Store"}</p>
+                <p className="text-xs text-stone-400">{order.store?.code ?? "-"}</p>
               </td>
               <td className="px-5 py-4">
                 {order.status.replaceAll("_", " ")}
@@ -62,16 +68,6 @@ export function AdminOrdersTable({
                     isPending={isPending}
                     onChange={(status) => onStatusChange(order.id, status)}
                   />
-                  {(order.status === "PAID" || order.status === "PROCESSED") && (
-                    <button
-                      type="button"
-                      disabled={isPending}
-                      onClick={() => onCancel(order.id)}
-                      className="rounded-lg border border-red-200 px-3 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 disabled:opacity-50"
-                    >
-                      Cancel
-                    </button>
-                  )}
                 </div>
               </td>
             </tr>

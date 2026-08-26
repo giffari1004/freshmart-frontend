@@ -14,10 +14,18 @@ export interface CreateOrderItem {
 
 export type OrderDetailItem = CreateOrderItem;
 
+export type OrderStatus =
+  | "WAITING_PAYMENT"
+  | "PAID"
+  | "PROCESSED"
+  | "SHIPPED"
+  | "CONFIRMED"
+  | "CANCELLED";
+
 export interface CreateOrderResponse {
   id: string;
   orderNumber: string;
-  status: string;
+  status: OrderStatus;
   subtotal: number;
   discountAmount: number;
   shippingCost: number;
@@ -28,7 +36,7 @@ export interface CreateOrderResponse {
 export interface OrderListItem {
   id: string;
   orderNumber: string;
-  status: string;
+  status: OrderStatus;
   subtotal: number;
   discountAmount: number;
   shippingCost: number;
@@ -36,14 +44,7 @@ export interface OrderListItem {
   createdAt: string;
 }
 
-export type OrderListStatus =
-  | "WAITING_PAYMENT"
-  | "PAID"
-  | "WAITING_CONFIRMATION"
-  | "PROCESSED"
-  | "SHIPPED"
-  | "CONFIRMED"
-  | "CANCELLED";
+export type OrderListStatus = OrderStatus;
 
 export type OrderListSortBy =
   | "createdAt"
@@ -74,7 +75,15 @@ export interface OrderListResponse {
 }
 
 export interface OrderDetail extends OrderListItem {
-  store: { id: string; name: string; code: string };
+  store: {
+    id: string;
+    name: string;
+    code: string;
+    latitude?: number;
+    longitude?: number;
+    city?: string;
+    address?: string;
+  };
   deliveryAddress: {
     recipientName: string;
     recipientPhone: string;
@@ -82,6 +91,7 @@ export interface OrderDetail extends OrderListItem {
     city: string;
     district: string;
     fullAddress: string;
+    postalCode?: string | null;
   };
   shipping: {
     id: string;
@@ -91,15 +101,19 @@ export interface OrderDetail extends OrderListItem {
     cost: number;
     etd: string | null;
   };
-  items: CreateOrderItem[];
+  items: OrderDetailItem[];
   subtotal: number;
   discountAmount: number;
   shippingCost: number;
   totalAmount: number;
-  payment: { method: string; status: string; amount: number } | null;
+  payment: {
+    method: string;
+    status: string;
+    amount: number;
+  } | null;
 }
 
 export interface CancelOrderResponse {
   id: string;
-  status: string;
+  status: OrderStatus;
 }

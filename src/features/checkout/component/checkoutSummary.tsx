@@ -7,6 +7,7 @@ interface CheckoutSummaryProps {
   isPreviewLoading?: boolean;
   isOrderLoading?: boolean;
   orderCreated?: boolean;
+  canPreview?: boolean;
 }
 export function CheckoutSummary(props: CheckoutSummaryProps) {
   return (
@@ -18,6 +19,7 @@ export function CheckoutSummary(props: CheckoutSummaryProps) {
         <EmptySummary
           onPreview={props.onPreview}
           loading={props.isPreviewLoading}
+          canPreview={props.canPreview}
         />
       )}
     </aside>
@@ -122,9 +124,11 @@ function OrderButton({
 function EmptySummary({
   onPreview,
   loading,
+  canPreview = false,
 }: {
   onPreview: () => void;
   loading?: boolean;
+  canPreview?: boolean;
 }) {
   return (
     <div className="mt-6">
@@ -134,10 +138,15 @@ function EmptySummary({
         <SummaryRow label="Shipping" value="—" />
         <TotalRow value="—" />
       </div>
+      {!canPreview ? (
+        <p className="mt-4 text-xs leading-5 text-stone-500">
+          Select a delivery address and shipping method first.
+        </p>
+      ) : null}
       <button
         type="button"
         onClick={onPreview}
-        disabled={loading}
+        disabled={loading || !canPreview}
         className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-emerald-700 font-semibold text-white transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-50"
       >
         {loading ? (

@@ -1,38 +1,40 @@
-export type AdminOrderStatus =
-  | "WAITING_PAYMENT"
-  | "PAID"
-  | "WAITING_CONFIRMATION"
-  | "PROCESSED"
-  | "SHIPPED"
-  | "CONFIRMED"
-  | "CANCELLED";
+import type { OrderStatus, OrderListSortBy, OrderListSortOrder } from "../order.type";
 
-export type AdminOrderActionStatus =
-  | "PROCESSED"
-  | "SHIPPED"
-  | "CANCELLED";
+export type AdminOrderStatus = OrderStatus;
+
+export type AdminOrderActionStatus = "PROCESSED" | "SHIPPED";
+
+export type AdminOrderSortBy = OrderListSortBy;
+export type AdminOrderSortOrder = OrderListSortOrder;
 
 export type AdminOrder = {
   id: string;
   orderNumber: string;
   status: AdminOrderStatus;
+  subtotal?: number;
+  discountAmount?: number;
+  shippingCost?: number;
   totalAmount: number;
   createdAt: string;
-  store: {
+  store?: {
     id: string;
     name: string;
     code: string;
   };
 };
 
+export type AdminOrderPagination = {
+  page: number;
+  limit: number;
+  totalItems: number;
+  totalPages: number;
+};
+
 export type AdminOrderResponse = {
   success: boolean;
   message: string;
-  data: AdminOrder[];
-  meta: {
-    page: number;
-    limit: number;
-    totalData: number;
-    totalPages: number;
+  data: {
+    items: AdminOrder[];
+    pagination: AdminOrderPagination;
   };
 };

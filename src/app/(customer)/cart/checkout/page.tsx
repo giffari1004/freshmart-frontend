@@ -1,4 +1,5 @@
 "use client";
+
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import {
@@ -15,6 +16,7 @@ import { MidtransPayment } from "@/features/payment/components";
 
 export default function CheckoutPage() {
   const flow = useCheckoutFlow();
+
   return <CheckoutLayout flow={flow} />;
 }
 
@@ -27,7 +29,9 @@ function CheckoutLayout({
     <main className="min-h-screen bg-stone-50">
       <div className="mx-auto max-w-7xl px-4 py-8">
         <BackLink />
+
         <CheckoutHeader />
+
         <CheckoutAlerts
           checkoutError={flow.preview.isError}
           orderError={flow.order.isError}
@@ -35,9 +39,17 @@ function CheckoutLayout({
           orderNumber={flow.order.data?.orderNumber}
           orderStatus={flow.order.data?.status}
         />
+
         <CheckoutContent flow={flow} />
       </div>
-      {flow.snapToken && <MidtransPayment snapToken={flow.snapToken} />}
+
+      {flow.snapToken &&
+      flow.createdOrderId ? (
+        <MidtransPayment
+          snapToken={flow.snapToken}
+          orderId={flow.createdOrderId}
+        />
+      ) : null}
     </main>
   );
 }
@@ -64,29 +76,67 @@ function CheckoutContent({
       <div className="space-y-6 lg:col-span-2">
         <CheckoutAddress
           addressId={flow.addressId}
+          addresses={
+            flow.addresses.data ?? []
+          }
           onChange={flow.changeAddress}
           disabled={flow.disabled}
+          isLoading={
+            flow.addresses.isLoading
+          }
+          isError={
+            flow.addresses.isError
+          }
         />
-        <CheckoutItems preview={flow.preview.data} />
+
+        <CheckoutItems
+          preview={flow.preview.data}
+        />
+
         <CheckoutShipping
-          shippingMethodId={flow.shippingMethodId}
+          shippingMethodId={
+            flow.shippingMethodId
+          }
+          shippingMethods={
+            flow.shippingOptions.data ?? []
+          }
           preview={flow.preview.data}
           onChange={flow.changeShipping}
-          disabled={flow.disabled}
+          disabled={
+            flow.disabled ||
+            !flow.addressId
+          }
+          isLoading={
+            flow.shippingOptions.isLoading
+          }
+          isError={
+            flow.shippingOptions.isError
+          }
         />
+
         <CheckoutVoucher
           value={flow.userVoucherId}
           onChange={flow.changeVoucher}
           disabled={flow.disabled}
         />
       </div>
+
       <CheckoutSummary
         preview={flow.preview.data}
         onPreview={flow.handlePreview}
         onCreateOrder={flow.handleCreateOrder}
-        isPreviewLoading={flow.preview.isPending}
-        isOrderLoading={flow.order.isPending || flow.payment.isPending}
-        orderCreated={flow.order.isSuccess && !!flow.snapToken}
+        isPreviewLoading={
+          flow.preview.isPending
+        }
+        isOrderLoading={
+          flow.order.isPending ||
+          flow.payment.isPending
+        }
+        orderCreated={
+          flow.order.isSuccess &&
+          !!flow.snapToken
+        }
+        canPreview={flow.canPreview}
       />
     </div>
   );

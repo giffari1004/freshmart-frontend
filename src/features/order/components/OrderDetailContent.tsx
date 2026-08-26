@@ -10,8 +10,8 @@ import { OrderDetailHeader } from "./OrderDetailHeader";
 export function OrderDetailContent({ order }: { order: OrderDetail }) {
   const confirmOrder = useConfirmOrder();
 
-  const handleConfirm = () => {
-    confirmOrder.mutate(order.id);
+  const handleConfirm = (onDone: () => void) => {
+    confirmOrder.mutate(order.id, { onSuccess: onDone });
   };
 
   return (

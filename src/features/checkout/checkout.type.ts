@@ -62,3 +62,23 @@ export interface CheckoutPreviewResponse {
   address: CheckoutAddress;
   store: CheckoutStore;
 }
+export interface CheckoutOptionAddress {
+  id: string;
+  label: string;
+  recipientName: string;
+  phone: string;
+  province: string;
+  city: string;
+  district: string;
+  fullAddress: string;
+  isPrimary: boolean;
+}
+
+export interface CheckoutOptionShipping {
+  id: string;
+  courierCode: string;
+  serviceCode: string;
+  serviceName: string;
+  cost: number;
+  etd: string;
+}

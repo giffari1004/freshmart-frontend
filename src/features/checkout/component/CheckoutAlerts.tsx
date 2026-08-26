@@ -1,29 +1,46 @@
 import { AlertCircle, CheckCircle2 } from "lucide-react";
+
 interface CheckoutAlertsProps {
   checkoutError?: boolean;
   orderError?: boolean;
   paymentError?: boolean;
+  checkoutErrorMessage?: string;
+  orderErrorMessage?: string;
+  paymentErrorMessage?: string;
   orderNumber?: string;
   orderStatus?: string;
 }
+
 export function CheckoutAlerts(props: CheckoutAlertsProps) {
   return (
     <div className="space-y-3">
       <ErrorAlert
         show={props.checkoutError}
         title="Unable to calculate checkout"
-        text="Please check your address and shipping method."
+        text={
+          props.checkoutErrorMessage ??
+          "Please check your selected address and shipping method."
+        }
       />
+
       <ErrorAlert
         show={props.orderError}
         title="Failed to create order"
-        text="Please try again."
+        text={
+          props.orderErrorMessage ??
+          "Please review the checkout details and try again."
+        }
       />
+
       <ErrorAlert
         show={props.paymentError}
         title="Failed to initialize payment"
-        text="Your order was created, but payment initialization failed."
+        text={
+          props.paymentErrorMessage ??
+          "Your order was created, but payment initialization failed."
+        }
       />
+
       <SuccessAlert
         orderNumber={props.orderNumber}
         status={props.orderStatus}
@@ -31,6 +48,7 @@ export function CheckoutAlerts(props: CheckoutAlertsProps) {
     </div>
   );
 }
+
 function ErrorAlert({
   show,
   title,
@@ -41,6 +59,7 @@ function ErrorAlert({
   text: string;
 }) {
   if (!show) return null;
+
   return (
     <div className="mt-6 flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 p-4">
       <AlertCircle className="mt-0.5 size-5 shrink-0 text-red-600" />
@@ -51,6 +70,7 @@ function ErrorAlert({
     </div>
   );
 }
+
 function SuccessAlert({
   orderNumber,
   status,
@@ -59,6 +79,7 @@ function SuccessAlert({
   status?: string;
 }) {
   if (!orderNumber) return null;
+
   return (
     <div className="mt-6 flex items-start gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
       <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-emerald-600" />
@@ -67,11 +88,14 @@ function SuccessAlert({
           Order created successfully
         </p>
         <p className="mt-1 text-sm text-emerald-700">
-          Order number: <span className="font-semibold">{orderNumber}</span>
+          Order number:{" "}
+          <span className="font-semibold">{orderNumber}</span>
         </p>
-        {status && (
-          <p className="mt-1 text-sm text-emerald-700">Status: {status}</p>
-        )}
+        {status ? (
+          <p className="mt-1 text-sm text-emerald-700">
+            Status: {status}
+          </p>
+        ) : null}
       </div>
     </div>
   );

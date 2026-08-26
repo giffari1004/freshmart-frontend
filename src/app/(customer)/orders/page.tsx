@@ -15,7 +15,6 @@ import {
 const ORDER_STATUS_OPTIONS: Array<{ label: string; value: OrderListStatus }> = [
   { label: "Waiting Payment", value: "WAITING_PAYMENT" },
   { label: "Paid", value: "PAID" },
-  { label: "Waiting Confirmation", value: "WAITING_CONFIRMATION" },
   { label: "Processed", value: "PROCESSED" },
   { label: "Shipped", value: "SHIPPED" },
   { label: "Confirmed", value: "CONFIRMED" },

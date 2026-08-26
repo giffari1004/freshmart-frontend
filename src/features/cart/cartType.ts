@@ -14,6 +14,8 @@ export interface CartItem {
 
   subtotal: number;
 
+  weight: number;
+
   product: CartProduct;
 }
 
@@ -21,6 +23,8 @@ export interface CartResponse {
   id: string;
 
   userId: string;
+
+  storeId: string | null;
 
   items: CartItem[];
 
