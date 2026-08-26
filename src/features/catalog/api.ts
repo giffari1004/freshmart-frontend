@@ -8,6 +8,7 @@ export interface Product {
   category: { id: string; name: string } | null;
   images: { imageUrl: string; isPrimary: boolean }[];
   price: number;
+  originalPrice: number;
   stockAvailable: number;
   inStock: boolean;
 }
@@ -64,6 +65,7 @@ function mapToProduct(raw: RawStoreProduct): Product {
     price: raw.product.basePrice,
     stockAvailable: raw.stock,
     inStock: raw.stock > 0,
+    originalPrice: raw.product.basePrice
   };
 }
 
