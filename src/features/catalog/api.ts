@@ -1,16 +1,13 @@
 import { api } from "@/lib/axios";
 
 export interface Product {
-  id: string;
-  // Dipakai spesifik untuk add-to-cart — cart items merujuk ke
-  // StoreProduct (stok per toko), bukan Product secara langsung.
-  storeProductId: string;
+  id: string; // productId asli
+  storeProductId: string; // id dari row StoreProduct (yang dipakai add-to-cart)
   name: string;
   description: string | null;
   category: { id: string; name: string } | null;
   images: { imageUrl: string; isPrimary: boolean }[];
   price: number;
-  originalPrice?: number; // ada isinya kalau produk sedang didiskon
   stockAvailable: number;
   inStock: boolean;
 }
@@ -32,6 +29,19 @@ export interface GetProductsParams {
   sortOrder?: "asc" | "desc";
 }
 
+interface RawStoreProduct {
+  id: string; // storeProduct id
+  stock: number;
+  product: {
+    id: string;
+    name: string;
+    description: string | null;
+    basePrice: number;
+    category: { id: string; name: string } | null;
+    images: { imageUrl: string; isPrimary: boolean }[];
+  };
+}
+
 /**
  * NOTE: endpoint & bentuk response ini konsumsi punya Feature 2
  * (`GET /products`, product-public-route.ts) — bukan dibuat di sini.
@@ -42,9 +52,24 @@ export interface GetProductsParams {
  * cukup sesuaikan interface `Product` di atas, komponen lain tidak perlu
  * ikut berubah.
  */
+
+function mapToProduct(raw: RawStoreProduct): Product {
+  return {
+    id: raw.product.id,
+    storeProductId: raw.id,
+    name: raw.product.name,
+    description: raw.product.description,
+    category: raw.product.category,
+    images: raw.product.images,
+    price: raw.product.basePrice,
+    stockAvailable: raw.stock,
+    inStock: raw.stock > 0,
+  };
+}
+
 export async function getProducts(params: GetProductsParams) {
-  const { data } = await api.get<ApiEnvelope<Product[]>>("/products", {
+  const { data } = await api.get<ApiEnvelope<RawStoreProduct[]>>("/products", {
     params,
   });
-  return { products: data.data, meta: data.meta };
+  return { products: data.data.map(mapToProduct), meta: data.meta };
 }
