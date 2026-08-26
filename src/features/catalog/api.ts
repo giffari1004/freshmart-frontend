@@ -31,8 +31,9 @@ export interface GetProductsParams {
 }
 
 interface RawStoreProduct {
-  id: string; // storeProduct id
-  stock: number;
+  id: string;
+  stockQuantity: number;
+  reservedStock: number;
   product: {
     id: string;
     name: string;
@@ -55,6 +56,7 @@ interface RawStoreProduct {
  */
 
 function mapToProduct(raw: RawStoreProduct): Product {
+  const available = raw.stockQuantity - raw.reservedStock;
   return {
     id: raw.product.id,
     storeProductId: raw.id,
@@ -63,9 +65,9 @@ function mapToProduct(raw: RawStoreProduct): Product {
     category: raw.product.category,
     images: raw.product.images,
     price: raw.product.basePrice,
-    stockAvailable: raw.stock,
-    inStock: raw.stock > 0,
-    originalPrice: raw.product.basePrice
+    originalPrice: raw.product.basePrice,
+    stockAvailable: available,
+    inStock: available > 0,
   };
 }
 
