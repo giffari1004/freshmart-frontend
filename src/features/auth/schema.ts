@@ -13,5 +13,37 @@ export const loginFormSchema = z.object({
   password: z.string().min(1, { message: "Password is required" }),
 });
 
+export const verifyEmailFormSchema = z
+  .object({
+    password: z.string().min(8, "Must be at least 8 characters"),
+    confirmPassword: z.string().min(8, "Must be at least 8 characters"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
+
+export const resendVerificationSchema = z.object({
+  email: z.string().trim().email("Enter a valid email address"),
+});
+
+export const requestResetPasswordSchema = z.object({
+  email: z.string().trim().email("Enter a valid email address"),
+});
+
+export const confirmResetPasswordSchema = z
+  .object({
+    password: z.string().min(8, "Must be at least 8 characters"),
+    confirmPassword: z.string().min(8, "Must be at least 8 characters"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
+
 export type RegisterFormInput = z.infer<typeof registerFormSchema>;
 export type LoginFormInput = z.infer<typeof loginFormSchema>;
+export type VerifyEmailFormInput = z.infer<typeof verifyEmailFormSchema>;
+export type ResendVerificationInput = z.infer<typeof resendVerificationSchema>;
+export type RequestResetPasswordInput = z.infer<typeof requestResetPasswordSchema>;
+export type ConfirmResetPasswordInput = z.infer<typeof confirmResetPasswordSchema>;
