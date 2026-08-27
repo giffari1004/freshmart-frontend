@@ -8,9 +8,19 @@ import { AvatarSection } from "@/components/profile/avatar-section";
 import { PersonalInfoForm } from "@/components/profile/personal-info-form";
 import { ChangePasswordForm } from "@/components/profile/change-password-form";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { LogOut } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/stores/auth-store";
 
 export default function ProfilePage() {
+  const router = useRouter();
   const { data: profile, isLoading } = useProfile();
+
+  const handleLogout = () => {
+    useAuthStore.getState().logout();
+    router.push('/');
+  }
 
   if (isLoading || !profile) {
     return (
@@ -27,9 +37,20 @@ export default function ProfilePage() {
     <div className="max-w-5xl mx-auto py-8 px-4 space-y-6">
       <VerificationBanner profile={profile} />
 
-      <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
-        Account Settings
-      </h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
+          Account Settings
+        </h1>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={handleLogout}
+          className="gap-2 text-destructive hover:text-destructive"
+        >
+          <LogOut className="h-4 w-4" />
+          Log Out
+        </Button>
+      </div>
 
       <AvatarSection profile={profile} />
 

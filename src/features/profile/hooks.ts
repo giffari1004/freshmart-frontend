@@ -9,10 +9,11 @@ import {
   updatePassword,
 } from "./api";
 
-export const useProfile = () => {
+export const useProfile = (options?: { enabled?: boolean }) => {
   return useQuery({
     queryKey: ["profile"],
     queryFn: getProfile,
+    enabled: options?.enabled ?? true,
   });
 };
 

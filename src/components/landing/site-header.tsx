@@ -4,12 +4,24 @@ import Link from "next/link";
 import Image from "next/image";
 import { Search, User, ShoppingBasket } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useCartStore } from "@/stores/cart-store";
 import { useAuthStore } from "@/stores/auth-store";
+import { useProfile } from "@/features/profile/hooks";
 
 export function SiteHeader() {
   const itemCount = useCartStore((state) => state.itemCount);
   const isLoggedIn = useAuthStore((state) => !!state.accessToken);
+  const { data: profile } = useProfile({ enabled: isLoggedIn });
+
+  const initials = profile?.name
+    ? profile.name
+        .split(" ")
+        .map((p) => p[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2)
+    : "";
 
   return (
     <header className="sticky top-0 z-50 flex h-16 w-full items-center justify-between border-b border-border bg-background px-4 shadow-sm md:px-8">
@@ -42,10 +54,20 @@ export function SiteHeader() {
           href={isLoggedIn ? "/profile" : "/login"}
           className="flex flex-col items-center justify-center rounded-lg p-2 text-muted-foreground transition-colors hover:bg-muted active:scale-95"
         >
-          <User className="h-5 w-5" />
-          <span className="hidden text-xs font-medium sm:inline">
-            Account
-          </span>
+          {isLoggedIn ? (
+            <Avatar className="h-5 w-5">
+              <AvatarImage
+                src={profile?.avatarUrl || undefined}
+                alt={profile?.name ?? "Account"}
+              />
+              <AvatarFallback className="text-[9px] font-bold">
+                {initials}
+              </AvatarFallback>
+            </Avatar>
+          ) : (
+            <User className="h-5 w-5" />
+          )}
+          <span className="hidden text-xs font-medium sm:inline">Account</span>
         </Link>
         <Link
           href="/cart"
