@@ -6,7 +6,8 @@ interface DetailProductProps {
   product: ProductDetail;
 }
 export function DetailProduct({ product }: DetailProductProps) {
-  const stock = product.stock ?? 0;
+  const isOutOfStock = product.isOutOfStock;
+  const item = product.stock ?? 0
   return (
     <div className="rounded-3xl border border-stone-200 bg-white p-6 shadow-sm">
       <div className="space-y-5">
@@ -27,7 +28,7 @@ export function DetailProduct({ product }: DetailProductProps) {
             <div>
               <p className="font-medium text-stone-900">Stock available</p>
               <p className="text-sm text-stone-500">
-                {stock > 0 ? `${stock} items ready` : "Out of stock"}
+                {item ? `${item} items ready` : "Out of stock"}
               </p>
             </div>
           </div>
@@ -39,7 +40,7 @@ export function DetailProduct({ product }: DetailProductProps) {
           </p>
         </div>
         <div className="pt-2">
-          <ButtonCard disabled={stock <= 0} />
+          <ButtonCard disabled={isOutOfStock} />
         </div>
       </div>
     </div>

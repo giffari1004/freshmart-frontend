@@ -62,7 +62,7 @@ export function CreateVoucher() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-green-700 hover:bg-green-800">
+        <Button className="h-11 rounded-full bg-green-800 px-6 text-sm font-semibold text-white shadow-sm hover:bg-green-700">
           Create voucher
         </Button>
       </DialogTrigger>

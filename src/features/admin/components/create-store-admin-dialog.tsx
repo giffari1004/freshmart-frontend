@@ -13,6 +13,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 export function CreateStoreAdmin() {
   const [open, setOpen] = useState(false);
   const mutation = useCreateAdmins();
@@ -38,16 +39,16 @@ export function CreateStoreAdmin() {
       <DialogContent className="rounded-3xl border border-green-100 bg-white p-6 shadow-2xl sm:max-w-md">
         <DialogHeader className="space-y-1">
           <DialogTitle className="text-2xl font-bold text-stone-900">
-            Add store admin
+            Create store admin
           </DialogTitle>
           <p className="text-sm text-stone-500">
-            Create a new admin account for your store
+            Create a new admin account 
           </p>
         </DialogHeader>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 pt-2">
           <div className="space-y-1.5">
             <Label htmlFor="name">Name</Label>
-            <input
+            <Input
               id="name"
               placeholder="Your Name"
               {...form.register("name")}

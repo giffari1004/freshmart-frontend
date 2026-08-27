@@ -11,8 +11,9 @@ function formatPrice(price: number) {
   }).format(price);
 }
 export function ProductCard({ product }: { product: Product }) {
+  const images = product.images ?? [];
   const primaryImage =
-    product.images.find((img) => img.isPrimary) ?? product.images[0];
+    images.find((img) => img.isPrimary) ?? images[0];
   return (
     <Link href={`/products/${product.id}`} className="group block">
       <div className="overflow-hidden rounded-3xl border border-stone-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
