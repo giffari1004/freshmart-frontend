@@ -8,17 +8,37 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Button } from "@/components/ui/button";
 import { AdminOrdersTable } from "@/features/order/admin/AdminOrdersTable";
 import { useAdminOrders, useUpdateAdminOrderStatus } from "@/features/order/admin/use-admin-orders";
-import { AdminOrderActionStatus, AdminOrderSortBy, AdminOrderSortOrder, AdminOrderStatus } from "@/features/order/admin/order-admin.type";
+import { AdminOrderActionStatus, AdminOrderSortBy, AdminOrderSortOrder, AdminOrderStatus,} from "@/features/order/admin/order-admin.type";
 
-const STATUS_OPTIONS: Array<{ label: string; value: AdminOrderStatus }> = [
-  { label: "Waiting Payment", value: "WAITING_PAYMENT" },
-  { label: "Paid", value: "PAID" },
-  { label: "Processed", value: "PROCESSED" },
-  { label: "Shipped", value: "SHIPPED" },
-  { label: "Confirmed", value: "CONFIRMED" },
-  { label: "Cancelled", value: "CANCELLED" },
+const STATUS_OPTIONS: Array<{
+  label: string;
+  value: AdminOrderStatus;
+}> = [
+  {
+    label: "Waiting Payment",
+    value: "WAITING_PAYMENT",
+  },
+  {
+    label: "Waiting Payment Confirmation",
+    value: "WAITING_CONFIRMATION",
+  },
+  {
+    label: "Processed",
+    value: "PROCESSED",
+  },
+  {
+    label: "Shipped",
+    value: "SHIPPED",
+  },
+  {
+    label: "Confirmed",
+    value: "CONFIRMED",
+  },
+  {
+    label: "Cancelled",
+    value: "CANCELLED",
+  },
 ];
-
 const SORT_OPTIONS: Array<{ label: string; value: AdminOrderSortBy }> = [
   { label: "Created At", value: "createdAt" },
   { label: "Total Amount", value: "totalAmount" },

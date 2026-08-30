@@ -1,9 +1,11 @@
-import type { OrderStatus, OrderListSortBy, OrderListSortOrder } from "../order.type";
+import type {
+  OrderListSortBy,
+  OrderListSortOrder,
+  OrderStatus,
+} from "../order.type";
 
 export type AdminOrderStatus = OrderStatus;
-
 export type AdminOrderActionStatus = "PROCESSED" | "SHIPPED";
-
 export type AdminOrderSortBy = OrderListSortBy;
 export type AdminOrderSortOrder = OrderListSortOrder;
 
@@ -16,11 +18,7 @@ export type AdminOrder = {
   shippingCost?: number;
   totalAmount: number;
   createdAt: string;
-  store?: {
-    id: string;
-    name: string;
-    code: string;
-  };
+  store?: { id: string; name: string; code: string };
 };
 
 export type AdminOrderPagination = {

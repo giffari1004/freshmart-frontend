@@ -17,6 +17,7 @@ export type OrderDetailItem = CreateOrderItem;
 export type OrderStatus =
   | "WAITING_PAYMENT"
   | "PAID"
+  | "WAITING_CONFIRMATION"
   | "PROCESSED"
   | "SHIPPED"
   | "CONFIRMED"
@@ -45,7 +46,6 @@ export interface OrderListItem {
 }
 
 export type OrderListStatus = OrderStatus;
-
 export type OrderListSortBy =
   | "createdAt"
   | "totalAmount"
@@ -58,6 +58,9 @@ export interface OrderListQuery {
   page: number;
   limit: number;
   status?: OrderListStatus;
+  orderNumber?: string;
+  fromDate?: string;
+  toDate?: string;
   sortBy: OrderListSortBy;
   sortOrder: OrderListSortOrder;
 }
@@ -106,11 +109,7 @@ export interface OrderDetail extends OrderListItem {
   discountAmount: number;
   shippingCost: number;
   totalAmount: number;
-  payment: {
-    method: string;
-    status: string;
-    amount: number;
-  } | null;
+  payment: { method: string; status: string; amount: number } | null;
 }
 
 export interface CancelOrderResponse {

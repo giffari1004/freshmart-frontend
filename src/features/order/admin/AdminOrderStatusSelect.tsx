@@ -1,4 +1,7 @@
-import { AdminOrderActionStatus, AdminOrderStatus } from "./order-admin.type";
+import type {
+  AdminOrderActionStatus,
+  AdminOrderStatus,
+} from "./order-admin.type";
 
 interface Props {
   status: AdminOrderStatus;
@@ -6,8 +9,10 @@ interface Props {
   onChange: (status: AdminOrderActionStatus) => void;
 }
 
-const nextStatus: Partial<Record<AdminOrderStatus, AdminOrderActionStatus>> = {
-  PAID: "PROCESSED",
+const nextStatus: Partial<
+  Record<AdminOrderStatus, AdminOrderActionStatus>
+> = {
+  WAITING_CONFIRMATION: "PROCESSED",
   PROCESSED: "SHIPPED",
 };
 
