@@ -1,5 +1,6 @@
-import { Loader2 } from "lucide-react";
+import { ArrowRight, Loader2, ReceiptText } from "lucide-react";
 import { CheckoutPreviewResponse } from "../checkout.type";
+
 interface CheckoutSummaryProps {
   preview?: CheckoutPreviewResponse;
   onPreview: () => void;
@@ -9,10 +10,20 @@ interface CheckoutSummaryProps {
   orderCreated?: boolean;
   canPreview?: boolean;
 }
+
 export function CheckoutSummary(props: CheckoutSummaryProps) {
   return (
-    <aside className="h-fit rounded-3xl border border-stone-200 bg-white p-6 shadow-sm lg:sticky lg:top-24">
-      <h2 className="text-lg font-semibold text-stone-900">Order Summary</h2>
+    <aside className="relative h-fit overflow-hidden rounded-[1.75rem] border border-emerald-200/70 bg-white/95 p-5 shadow-[0_20px_45px_-28px_rgba(16,185,129,0.45)] sm:p-6 lg:sticky lg:top-24">
+      <div className="flex items-center gap-3">
+        <div className="flex size-11 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-100 to-lime-100 text-emerald-700 shadow-sm">
+          <ReceiptText className="size-5" />
+        </div>
+        <div>
+          <h2 className="text-lg font-bold text-stone-900">Order Summary</h2>
+          <p className="text-xs text-stone-500">Review before payment</p>
+        </div>
+      </div>
+
       {props.preview ? (
         <PreviewSummary {...props} />
       ) : (
@@ -25,6 +36,7 @@ export function CheckoutSummary(props: CheckoutSummaryProps) {
     </aside>
   );
 }
+
 function PreviewSummary({
   preview,
   onCreateOrder,
@@ -60,6 +72,7 @@ function PreviewSummary({
     </div>
   );
 }
+
 function SummaryRow({
   label,
   value,
@@ -70,11 +83,13 @@ function SummaryRow({
   green?: boolean;
 }) {
   return (
-    <div className="flex justify-between">
+    <div className="flex items-center justify-between gap-4">
       <span className="text-stone-500">{label}</span>
       <span
         className={
-          green ? "font-medium text-emerald-700" : "font-medium text-stone-900"
+          green
+            ? "font-semibold text-emerald-700"
+            : "font-semibold text-stone-900"
         }
       >
         {value}
@@ -82,16 +97,20 @@ function SummaryRow({
     </div>
   );
 }
+
 function TotalRow({ value }: { value: string }) {
   return (
-    <div className="border-t border-stone-200 pt-4">
-      <div className="flex items-end justify-between">
-        <span className="font-semibold text-stone-900">Total</span>
-        <span className="text-xl font-bold text-stone-900">{value}</span>
+    <div className="rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-50 to-lime-50 p-4">
+      <div className="flex items-end justify-between gap-4">
+        <span className="font-bold text-stone-900">Total</span>
+        <span className="text-2xl font-bold tracking-tight text-stone-900">
+          {value}
+        </span>
       </div>
     </div>
   );
 }
+
 function OrderButton({
   loading,
   created,
@@ -106,7 +125,7 @@ function OrderButton({
       type="button"
       onClick={onClick}
       disabled={loading || created}
-      className="mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-emerald-700 font-semibold text-white transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-50"
+      className="mt-2 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-700 to-emerald-600 px-4 font-extrabold text-white shadow-[0_12px_25px_-14px_rgba(5,150,105,0.9)] transition hover:-translate-y-0.5 hover:from-emerald-800 hover:to-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
     >
       {loading ? (
         <>
@@ -116,11 +135,15 @@ function OrderButton({
       ) : created ? (
         "Order Created"
       ) : (
-        "Continue to Payment"
+        <>
+          Continue to Payment
+          <ArrowRight className="size-4" />
+        </>
       )}
     </button>
   );
 }
+
 function EmptySummary({
   onPreview,
   loading,
@@ -139,7 +162,7 @@ function EmptySummary({
         <TotalRow value="—" />
       </div>
       {!canPreview ? (
-        <p className="mt-4 text-xs leading-5 text-stone-500">
+        <p className="mt-4 rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-50 to-lime-50 p-4 text-xs leading-5 text-stone-500">
           Select a delivery address and shipping method first.
         </p>
       ) : null}
@@ -147,7 +170,7 @@ function EmptySummary({
         type="button"
         onClick={onPreview}
         disabled={loading || !canPreview}
-        className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-emerald-700 font-semibold text-white transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-50"
+        className="mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-gradient-to-r from-emerald-50 to-lime-50 font-extrabold text-emerald-800 shadow-sm transition hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50"
       >
         {loading ? (
           <>

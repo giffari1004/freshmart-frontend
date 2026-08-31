@@ -5,7 +5,7 @@ import type {
 } from "../order.type";
 
 export type AdminOrderStatus = OrderStatus;
-export type AdminOrderActionStatus = "PROCESSED" | "SHIPPED";
+export type AdminOrderActionStatus = "PROCESSED" | "SHIPPED" | "CANCELLED";
 export type AdminOrderSortBy = OrderListSortBy;
 export type AdminOrderSortOrder = OrderListSortOrder;
 

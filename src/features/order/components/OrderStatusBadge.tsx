@@ -21,11 +21,15 @@ const styles: Record<OrderStatus, string> = {
   CANCELLED: "bg-red-50 text-red-700 ring-red-200",
 };
 
-export function OrderStatusBadge({ status }: { status: OrderStatus }) {
+export function OrderStatusBadge({
+  status,
+}: {
+  status: OrderStatus;
+}) {
   return (
     <span
       className={cn(
-        "inline-flex rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide ring-1 ring-inset",
+        "inline-flex shrink-0 rounded-full px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.08em] ring-1 ring-inset",
         styles[status],
       )}
     >

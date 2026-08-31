@@ -40,87 +40,98 @@ export function OrderSearchControls({
   onQueryChange,
 }: Props) {
   return (
-    <div className="grid gap-3 rounded-2xl border border-stone-200 bg-white p-4 sm:grid-cols-2 lg:grid-cols-4">
-      <input
-        value={query.orderNumber ?? ""}
-        onChange={(event) =>
-          onQueryChange({
-            orderNumber: event.target.value || undefined,
-          })
-        }
-        placeholder="Search order number"
-        className="h-10 rounded-xl border border-stone-200 bg-white px-3 text-sm text-stone-800 outline-none focus:border-emerald-600"
-      />
+    <section className="relative overflow-hidden rounded-[1.75rem] border border-stone-200/80 bg-white/95 p-4 shadow-[0_18px_40px_-26px_rgba(15,23,42,0.28)] sm:p-5">
+      <div className="mb-5">
+        <p className="text-xs font-black uppercase tracking-[0.16em] text-emerald-700">
+          Find an order
+        </p>
+        <p className="mt-1 text-sm text-stone-600">
+          Search, filter, and sort your order history.
+        </p>
+      </div>
 
-      <select
-        value={query.status ?? ""}
-        onChange={(event) =>
-          onQueryChange({
-            status: event.target.value
-              ? (event.target.value as OrderListStatus)
-              : undefined,
-          })
-        }
-        className="h-10 rounded-xl border border-stone-200 bg-white px-3 text-sm text-stone-800 outline-none focus:border-emerald-600"
-      >
-        <option value="">All statuses</option>
-        {STATUS_OPTIONS.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <input
+          value={query.orderNumber ?? ""}
+          onChange={(event) =>
+            onQueryChange({
+              orderNumber: event.target.value || undefined,
+            })
+          }
+          placeholder="Search order number"
+          className="h-11 rounded-xl border border-stone-200 bg-stone-50/60 px-3 text-sm text-stone-800 outline-none transition placeholder:text-stone-400 hover:bg-white focus:border-emerald-600 focus:bg-white focus:ring-4 focus:ring-emerald-100"
+        />
 
-      <input
-        type="date"
-        value={query.fromDate ?? ""}
-        onChange={(event) =>
-          onQueryChange({
-            fromDate: event.target.value || undefined,
-          })
-        }
-        className="h-10 rounded-xl border border-stone-200 bg-white px-3 text-sm text-stone-800 outline-none focus:border-emerald-600"
-      />
+        <select
+          value={query.status ?? ""}
+          onChange={(event) =>
+            onQueryChange({
+              status: event.target.value
+                ? (event.target.value as OrderListStatus)
+                : undefined,
+            })
+          }
+          className="h-11 rounded-xl border border-stone-200 bg-white px-3 text-sm font-medium text-stone-800 outline-none transition focus:border-emerald-600 focus:ring-4 focus:ring-emerald-100"
+        >
+          <option value="">All statuses</option>
+          {STATUS_OPTIONS.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
 
-      <input
-        type="date"
-        value={query.toDate ?? ""}
-        onChange={(event) =>
-          onQueryChange({
-            toDate: event.target.value || undefined,
-          })
-        }
-        className="h-10 rounded-xl border border-stone-200 bg-white px-3 text-sm text-stone-800 outline-none focus:border-emerald-600"
-      />
+        <input
+          type="date"
+          value={query.fromDate ?? ""}
+          onChange={(event) =>
+            onQueryChange({
+              fromDate: event.target.value || undefined,
+            })
+          }
+          className="h-11 rounded-xl border border-stone-200 bg-white px-3 text-sm text-stone-800 outline-none transition focus:border-emerald-600 focus:ring-4 focus:ring-emerald-100"
+        />
 
-      <select
-        value={query.sortBy}
-        onChange={(event) =>
-          onQueryChange({
-            sortBy: event.target.value as OrderListSortBy,
-          })
-        }
-        className="h-10 rounded-xl border border-stone-200 bg-white px-3 text-sm text-stone-800 outline-none focus:border-emerald-600"
-      >
-        {SORT_OPTIONS.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
+        <input
+          type="date"
+          value={query.toDate ?? ""}
+          onChange={(event) =>
+            onQueryChange({
+              toDate: event.target.value || undefined,
+            })
+          }
+          className="h-11 rounded-xl border border-stone-200 bg-white px-3 text-sm text-stone-800 outline-none transition focus:border-emerald-600 focus:ring-4 focus:ring-emerald-100"
+        />
 
-      <select
-        value={query.sortOrder}
-        onChange={(event) =>
-          onQueryChange({
-            sortOrder: event.target.value as OrderListSortOrder,
-          })
-        }
-        className="h-10 rounded-xl border border-stone-200 bg-white px-3 text-sm text-stone-800 outline-none focus:border-emerald-600"
-      >
-        <option value="desc">Descending</option>
-        <option value="asc">Ascending</option>
-      </select>
-    </div>
+        <select
+          value={query.sortBy}
+          onChange={(event) =>
+            onQueryChange({
+              sortBy: event.target.value as OrderListSortBy,
+            })
+          }
+          className="h-11 rounded-xl border border-stone-200 bg-white px-3 text-sm font-medium text-stone-800 outline-none transition focus:border-emerald-600 focus:ring-4 focus:ring-emerald-100"
+        >
+          {SORT_OPTIONS.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={query.sortOrder}
+          onChange={(event) =>
+            onQueryChange({
+              sortOrder: event.target.value as OrderListSortOrder,
+            })
+          }
+          className="h-11 rounded-xl border border-stone-200 bg-white px-3 text-sm font-medium text-stone-800 outline-none transition focus:border-emerald-600 focus:ring-4 focus:ring-emerald-100"
+        >
+          <option value="desc">Descending</option>
+          <option value="asc">Ascending</option>
+        </select>
+      </div>
+    </section>
   );
 }

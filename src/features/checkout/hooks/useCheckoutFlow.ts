@@ -63,19 +63,19 @@ export function useCheckoutFlow() {
     preview.reset();
   }, [addressId]);
 
-  useEffect(() => {
-    if (
-      !shippingMethodId &&
-      shippingOptions.data?.length
-    ) {
-      setShippingMethodId(
-        shippingOptions.data[0].id,
-      );
-    }
-  }, [
-    shippingMethodId,
-    shippingOptions.data,
-  ]);
+  // useEffect(() => {
+  //   if (
+  //     !shippingMethodId &&
+  //     shippingOptions.data?.length
+  //   ) {
+  //     setShippingMethodId(
+  //       shippingOptions.data[0].id,
+  //     );
+  //   }
+  // }, [
+  //   shippingMethodId,
+  //   shippingOptions.data,
+  // ]);
 
   const changeAddress = (value: string) => {
     setAddressId(value);

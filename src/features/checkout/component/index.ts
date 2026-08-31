@@ -20,7 +20,7 @@ export {
 
 export {
   CheckoutVoucher,
-} from "./CheckoutVoucher";
+} from "./checkoutVoucher";
 
 export {
   CheckoutSummary,
