@@ -27,10 +27,7 @@ import {
 import { PriceInput } from "@/lib/price-input";
 import { useGetAllProduct } from "@/features/product/hooks";
 import { Product } from "@/features/product/schema";
-import {
-  createVoucherInput,
-  createVoucherOutput,
-} from "../schema";
+import { createVoucherInput, createVoucherOutput } from "../schema";
 
 export function CreateVoucher() {
   const [open, setOpen] = useState(false);
@@ -66,7 +63,7 @@ export function CreateVoucher() {
           Create voucher
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[520px] rounded-3xl p-6 border-green-200">
+      <DialogContent className="max-h-[90vh] overflow-y-auto rounded-3xl p-6 border-green-200">
         <DialogHeader className="space-y-2">
           <DialogTitle className="text-3xl font-bold tracking-tight">
             Create voucher

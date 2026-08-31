@@ -2,18 +2,26 @@ import { Package } from "lucide-react";
 import { ProductDetail } from "../schema";
 import { ButtonCard } from "./button-card";
 import { formatPrice } from "@/lib/helper-idr";
+import { useAddToCart } from "@/features/cart/hooks";
 interface DetailProductProps {
   product: ProductDetail;
 }
 export function DetailProduct({ product }: DetailProductProps) {
   const isOutOfStock = product.isOutOfStock;
-  const item = product.stock ?? 0
+  const item = product.stock ?? 0;
+  const { mutate: addToCart , isPending } = useAddToCart();
+    const handleAddToCart = () => {
+      addToCart({
+        storeProductId: product.storeProductId,
+        quantity: 1,
+      });
+  };
   return (
     <div className="rounded-3xl border border-stone-200 bg-white p-6 shadow-sm">
       <div className="space-y-5">
         <div className="space-y-2">
           <p className="text-xs font-medium uppercase tracking-wide text-emerald-700">
-            {product.category.name}
+            {product.category}
           </p>
           <h1 className="text-3xl font-bold text-stone-900">{product.name}</h1>
           <p className="text-2xl font-bold text-stone-900">
@@ -40,7 +48,7 @@ export function DetailProduct({ product }: DetailProductProps) {
           </p>
         </div>
         <div className="pt-2">
-          <ButtonCard disabled={isOutOfStock} />
+          <ButtonCard disabled={isOutOfStock} onAddToCart={handleAddToCart} isPending={isPending}/>
         </div>
       </div>
     </div>

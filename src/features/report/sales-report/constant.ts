@@ -12,3 +12,36 @@ export const MONTHS = [
   { value: 11, label: "November" },
   { value: 12, label: "December" },
 ] as const;
+export const YEARS = [{ value: 2026, label: "2026" }];
+export const MONTH_LABEL = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "Mei",
+  "Jun",
+  "Jul",
+  "Ags",
+  "Sep",
+  "Okt",
+  "Nov",
+  "Des",
+];
+export interface dataTypeGetMonthlyReport {
+  month: string;
+  totalSales: number;
+  totalOrders: number;
+}
+export interface dataTypeGetProductReport {
+  month: string;
+  productId: string;
+  productName: string;
+  totalSales: number;
+  quantitySold: number;
+}
+export interface dataTypeGetCategoryReport {
+  month: string;
+  categoryId: string;
+  categoryName: string;
+  totalSales: number;
+}

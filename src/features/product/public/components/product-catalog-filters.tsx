@@ -58,7 +58,6 @@ export function ProductCatalogFilters({
           ))}
         </SelectContent>
       </Select>
-
       <Select value={sort} onValueChange={onSortChange}>
         <SelectTrigger className="h-11 w-[180px] rounded-2xl border-stone-200">
           <SelectValue placeholder="Sort by" />

@@ -14,27 +14,27 @@ export const GET_CATALOG = z.object({
   sortOrder: z.enum(PRODUCT_SORT_ORDER).default("desc"),
 });
 export interface Product {
-  id: string;
-  name: string;
-  description: string | null;
-  basePrice: number;
-  weight: number;
-  categoryId: string;
-  category: {
+  product: {
     id: string;
     name: string;
+    description: string | null;
+    basePrice: number;
+    weight: number;
+    categoryId: string;
+    category: {
+      id: string;
+      name: string;
+    };
+    createdAt: string;
+    images: ProductImage[];
   };
-  createdAt: string;
-  images: ProductImage[];
 }
 export interface ProductDetail {
   id: string;
+  storeProductId:string
   name: string;
   description: string | null;
-  category: {
-    id: string;
-    name: string;
-  };
+  category: string;
   price: number;
   stock: number;
   isOutOfStock: boolean;
