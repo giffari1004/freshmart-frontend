@@ -13,14 +13,12 @@ export function ProductCard({ product }: { product: Product }) {
   const router = useRouter();
   const isLoggedIn = useAuthStore((state) => !!state.accessToken);
   const addToCart = useAddToCart();
-
   const image =
     product.images.find((img) => img.isPrimary)?.imageUrl ??
     product.images[0]?.imageUrl;
   const isDiscounted =
     product.originalPrice !== undefined &&
     product.originalPrice > product.price;
-
   function handleAddToCart() {
     if (!isLoggedIn) {
       toast.info("Please log in to add items to your cart");
@@ -106,7 +104,7 @@ export function ProductCard({ product }: { product: Product }) {
           disabled={!product.inStock || addToCart.isPending}
           onClick={handleAddToCart}
         >
-          {addToCart.isPending ? "Adding..." : "Add to Cart"}
+          {addToCart.isPending ? "Adding..." : "Add To Cart"}
         </Button>
       </div>
     </div>

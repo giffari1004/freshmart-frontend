@@ -14,6 +14,6 @@ export async function updateAdmins(id: string , body:updateStoreAdminSchema) {
   return data;
 }
 export async function deleteAdmins(id: string) {
-  const { data } = await api.post(`/admin/store-admins/${id}`);
+  const { data } = await api.delete(`/admin/store-admins/${id}`);
   return data;
 }
