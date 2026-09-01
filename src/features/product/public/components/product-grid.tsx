@@ -1,4 +1,4 @@
-import { Product } from "../schema";
+import { Product } from "../constant";
 import { ProductCard } from "./product-card";
 import { Inbox } from "lucide-react";
 

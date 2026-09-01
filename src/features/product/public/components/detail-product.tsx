@@ -1,5 +1,5 @@
 import { Package } from "lucide-react";
-import { ProductDetail } from "../schema";
+import { ProductDetail } from "../constant";
 import { ButtonCard } from "./button-card";
 import { formatPrice } from "@/lib/helper-idr";
 import { useAddToCart } from "@/features/cart/hooks";
