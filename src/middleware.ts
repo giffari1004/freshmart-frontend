@@ -6,9 +6,10 @@ export function middleware(req: NextRequest) {
   const isLoggedIn = Boolean(role);
   const { pathname } = req.nextUrl;
 
-  // Halaman personal customer: wajib login (role apa saja)
   if (
-    (pathname.startsWith("/profile") || pathname.startsWith("/addresses")) &&
+    (pathname.startsWith("/profile") ||
+      pathname.startsWith("/addresses") ||
+      pathname.startsWith("/cart")) &&
     !isLoggedIn
   ) {
     const loginUrl = new URL("/login", req.url);
@@ -16,7 +17,6 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // Dashboard admin: SUPER_ADMIN & STORE_ADMIN boleh masuk
   if (
     pathname.startsWith("/admin") &&
     role !== "SUPER_ADMIN" &&
@@ -25,7 +25,6 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
-  // Store Management (CRUD toko, assign admin): SUPER_ADMIN only
   if (pathname.startsWith("/admin/stores") && role !== "SUPER_ADMIN") {
     return NextResponse.redirect(new URL("/", req.url));
   }
@@ -34,5 +33,10 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/profile/:path*", "/addresses/:path*", "/admin/:path*"],
+  matcher: [
+    "/profile/:path*",
+    "/addresses/:path*",
+    "/cart/:path*",
+    "/admin/:path*",
+  ],
 };
