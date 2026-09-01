@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getBogoOutput, createBogoOutput, updateBogoOutput } from "./schema";
+import { getBogoOutput, updateBogoOutput } from "./schema";
 import { createBogo, deleteBogo, fetchBogos, updateBogo } from "./bogo-api";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
