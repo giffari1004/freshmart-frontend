@@ -5,7 +5,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useDeleteProduct } from "../hooks";
-import { Product } from "../schema";
+import { Product } from "../constans";
 import { Button } from "@/components/ui/button";
 
 interface DeleteProductProps {

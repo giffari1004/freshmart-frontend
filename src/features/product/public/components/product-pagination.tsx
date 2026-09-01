@@ -7,7 +7,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { cn } from "@/lib/utils";
-import { ProductMeta } from "../../schema";
+import { ProductMeta } from "../../constans";
 interface Props {
   meta: ProductMeta;
   onPageChange: (page: number) => void;

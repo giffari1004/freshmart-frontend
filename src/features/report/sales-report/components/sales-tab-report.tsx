@@ -21,7 +21,7 @@ export function SalesTabReport() {
         </p>
         <h1 className="mt-1 font-serif text-3xl text-stone-900">Sales Report</h1>
         <p className="mt-1 text-sm text-stone-500">
-          Monthly sales performance across products and categories
+          Monthly sales performance accross products and categories
         </p>
       </div>
       <SalesReportFilter

@@ -1,6 +1,6 @@
 import z from "zod";
 import { PRODUCT_SORT_BY, PRODUCT_SORT_ORDER } from "../constans";
-import { ProductImage } from "../schema";
+import { ProductImage } from "../constans";
 export const GET_CATALOG = z.object({
   storeId: z.string().uuid("Invalid store id"),
   page: z.coerce.number().int().positive().default(1),
@@ -13,31 +13,4 @@ export const GET_CATALOG = z.object({
   sortBy: z.enum(PRODUCT_SORT_BY).default("createdAt"),
   sortOrder: z.enum(PRODUCT_SORT_ORDER).default("desc"),
 });
-export interface Product {
-  product: {
-    id: string;
-    name: string;
-    description: string | null;
-    basePrice: number;
-    weight: number;
-    categoryId: string;
-    category: {
-      id: string;
-      name: string;
-    };
-    createdAt: string;
-    images: ProductImage[];
-  };
-}
-export interface ProductDetail {
-  id: string;
-  storeProductId:string
-  name: string;
-  description: string | null;
-  category: string;
-  price: number;
-  stock: number;
-  isOutOfStock: boolean;
-  images: ProductImage[];
-}
 export type getProductCatalogSchema = z.infer<typeof GET_CATALOG>;

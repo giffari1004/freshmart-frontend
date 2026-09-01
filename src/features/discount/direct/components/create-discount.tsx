@@ -31,8 +31,7 @@ import {
 } from "@/components/ui/select";
 import { PriceInput } from "@/lib/price-input";
 import { useGetAllProduct } from "@/features/product/hooks";
-import { Product } from "@/features/product/schema";
-
+import { Product } from "@/features/product/constans";
 const DUMMY_STORES = [
   { id: "1", name: "Toko Jakarta" },
   { id: "2", name: "Toko Bandung" },
