@@ -1,11 +1,7 @@
 import { useEffect } from "react";
 import { useUpdateCategory } from "../hooks";
 import { useForm } from "react-hook-form";
-import {
-  Category,
-  UPDATE_CATEGORY,
-  updateCategorySchema,
-} from "../schema";
+import { Category, UPDATE_CATEGORY, updateCategorySchema } from "../schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Dialog,
@@ -77,13 +73,7 @@ export function UpdateCategoryDialog({
               </p>
             )}
           </div>
-          <Button type="button" variant="outline" onClick={onClose}>
-            Cancel
-          </Button>
           <div className="flex justify-end gap-2 pt-2">
-            <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
-            </Button>
             <Button
               type="submit"
               disabled={mutation.isPending}

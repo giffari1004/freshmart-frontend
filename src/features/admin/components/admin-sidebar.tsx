@@ -4,20 +4,23 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Sprout } from "lucide-react";
-import { ADMIN_NAV_ITEMS } from "../admin-nav-items";
+import { ADMIN_NAV_ITEMS } from "../constans";
+import { useAuthStore } from "@/stores/auth-store";
 
 export function AdminSidebar() {
   const pathname = usePathname();
-
+  const role = useAuthStore((s) => s.user?.role)
+  const filterUiSideBar = ADMIN_NAV_ITEMS.filter(
+    (item) => !item.roles || item.roles.includes(role || "")
+  )
   return (
     <aside className="w-60 shrink-0 border-r border-stone-200 bg-white">
       <div className="flex items-center gap-2 border-b border-stone-100 px-5 py-5">
         <Sprout className="size-5 text-emerald-700" />
         <span className="font-semibold text-stone-900">FreshMart Admin</span>
       </div>
-
       <nav className="flex flex-col gap-1 p-3">
-        {ADMIN_NAV_ITEMS.map((item) => {
+        {filterUiSideBar.map((item) => {
           const isActive = pathname.startsWith(item.href);
           return (
             <Link

@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { ROLE, UserRole } from "../constans";
+import { UserRole } from "../constans";
 
 const LABEL: Record<UserRole, string> = {
   SUPER_ADMIN: "Super Admin",
