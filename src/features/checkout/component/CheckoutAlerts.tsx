@@ -78,17 +78,17 @@ function SuccessAlert({
   if (!orderNumber) return null;
 
   return (
-    <div className="flex items-start gap-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
-      <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-emerald-600" />
+    <div className="flex items-start gap-3 rounded-2xl border border-border bg-accent p-4">
+      <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-primary" />
       <div>
-        <p className="font-semibold text-emerald-800">
+        <p className="font-semibold text-primary">
           Order created successfully
         </p>
-        <p className="mt-1 text-sm text-emerald-700">
+        <p className="mt-1 text-sm text-primary">
           Order number: <span className="font-bold">{orderNumber}</span>
         </p>
         {status ? (
-          <p className="mt-1 text-sm text-emerald-700">
+          <p className="mt-1 text-sm text-primary">
             Status: <span className="font-semibold">{status}</span>
           </p>
         ) : null}

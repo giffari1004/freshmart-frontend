@@ -42,10 +42,6 @@ const STATUS_OPTIONS: Array<{
   value: AdminOrderStatus;
 }> = [
   { label: "Waiting Payment", value: "WAITING_PAYMENT" },
-  {
-    label: "Waiting Payment Confirmation",
-    value: "WAITING_CONFIRMATION",
-  },
   { label: "Processed", value: "PROCESSED" },
   { label: "Shipped", value: "SHIPPED" },
   { label: "Confirmed", value: "CONFIRMED" },

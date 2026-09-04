@@ -23,8 +23,8 @@ export function OrdersContent({
 }: OrdersContentProps) {
   if (isPending) {
     return (
-      <div className="flex items-center gap-3 rounded-[1.6rem] border border-emerald-100 bg-white/95 p-6 text-sm font-semibold text-stone-600 shadow-sm">
-        <Loader2 className="size-4 animate-spin text-emerald-600" />
+      <div className="flex items-center gap-3 rounded-[1.6rem] border border-border bg-white/95 p-6 text-sm font-semibold text-muted-foreground shadow-sm">
+        <Loader2 className="size-4 animate-spin text-primary" />
         Loading orders...
       </div>
     );
@@ -71,10 +71,10 @@ function OrderPagination({
   const pages = buildPageNumbers(page, totalPages);
 
   return (
-    <div className="flex flex-col gap-3 rounded-3xl border border-stone-200/80 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
-      <p className="text-sm text-stone-500">
-        Page <span className="font-semibold text-stone-800">{page}</span> of{" "}
-        <span className="font-semibold text-stone-800">{totalPages}</span>
+    <div className="flex flex-col gap-3 rounded-3xl border border-border bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+      <p className="text-sm text-muted-foreground">
+        Page <span className="font-semibold text-foreground">{page}</span> of{" "}
+        <span className="font-semibold text-foreground">{totalPages}</span>
         {isFetching ? " · Updating..." : ""}
       </p>
 
@@ -83,14 +83,14 @@ function OrderPagination({
           type="button"
           disabled={page <= 1 || isFetching}
           onClick={() => onPageChange(page - 1)}
-          className="rounded-xl border border-stone-200 px-3 py-2 text-sm font-semibold text-stone-700 transition hover:border-emerald-200 hover:bg-emerald-50 disabled:cursor-not-allowed disabled:opacity-40"
+          className="rounded-xl border border-border px-3 py-2 text-sm font-semibold text-foreground transition hover:border-border hover:bg-accent disabled:cursor-not-allowed disabled:opacity-40"
         >
           Previous
         </button>
 
         {pages.map((value, index) =>
           value === "..." ? (
-            <span key={`ellipsis-${index}`} className="px-1 text-stone-400">
+            <span key={`ellipsis-${index}`} className="px-1 text-muted-foreground">
               …
             </span>
           ) : (
@@ -101,8 +101,8 @@ function OrderPagination({
               onClick={() => onPageChange(value)}
               className={
                 value === page
-                  ? "rounded-xl bg-emerald-700 px-3 py-2 text-sm font-bold text-white shadow-sm"
-                  : "rounded-xl border border-stone-200 px-3 py-2 text-sm font-semibold text-stone-700 transition hover:border-emerald-200 hover:bg-emerald-50 disabled:opacity-40"
+                  ? "rounded-xl bg-primary px-3 py-2 text-sm font-bold text-white shadow-sm"
+                  : "rounded-xl border border-border px-3 py-2 text-sm font-semibold text-foreground transition hover:border-border hover:bg-accent disabled:opacity-40"
               }
             >
               {value}
@@ -114,7 +114,7 @@ function OrderPagination({
           type="button"
           disabled={page >= totalPages || isFetching}
           onClick={() => onPageChange(page + 1)}
-          className="rounded-xl border border-stone-200 px-3 py-2 text-sm font-semibold text-stone-700 transition hover:border-emerald-200 hover:bg-emerald-50 disabled:cursor-not-allowed disabled:opacity-40"
+          className="rounded-xl border border-border px-3 py-2 text-sm font-semibold text-foreground transition hover:border-border hover:bg-accent disabled:cursor-not-allowed disabled:opacity-40"
         >
           Next
         </button>
@@ -149,12 +149,12 @@ function buildPageNumbers(
 
 function EmptyOrders() {
   return (
-    <div className="rounded-[1.75rem] border border-dashed border-emerald-300 bg-white/95 p-12 text-center shadow-[0_18px_40px_-30px_rgba(16,185,129,0.35)]">
-      <div className="mx-auto flex size-16 items-center justify-center rounded-[1.35rem] bg-gradient-to-br from-emerald-100 to-lime-100 text-emerald-700 shadow-sm">
+    <div className="rounded-[1.75rem] border border-dashed border-border bg-white/95 p-12 text-center shadow-sm">
+      <div className="mx-auto flex size-16 items-center justify-center rounded-[1.35rem] bg-gradient-to-br from-accent to-accent text-primary shadow-sm">
         <PackageOpen className="size-7" />
       </div>
-      <p className="mt-4 font-bold text-stone-900">No orders found</p>
-      <p className="mt-1 text-sm leading-6 text-stone-500">
+      <p className="mt-4 font-bold text-foreground">No orders found</p>
+      <p className="mt-1 text-sm leading-6 text-muted-foreground">
         Try changing the filter or create your first grocery order.
       </p>
     </div>

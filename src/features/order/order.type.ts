@@ -17,7 +17,6 @@ export type OrderDetailItem = CreateOrderItem;
 export type OrderStatus =
   | "WAITING_PAYMENT"
   | "PAID"
-  | "WAITING_CONFIRMATION"
   | "PROCESSED"
   | "SHIPPED"
   | "CONFIRMED"

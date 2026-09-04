@@ -2,11 +2,7 @@
 
 import { Loader2, ShoppingCart } from "lucide-react";
 import { CartList, CartSummary, EmptyCart } from "@/features/cart/component";
-import {
-  useCart,
-  useUpdateCart,
-  useRemoveCart,
-} from "@/features/cart/hooks";
+import { useCart, useUpdateCart, useRemoveCart } from "@/features/cart/hooks";
 import { CartResponse, CartItem } from "@/features/cart/cartType";
 
 type UpdateMutation = ReturnType<typeof useUpdateCart>;
@@ -60,21 +56,24 @@ function CartError() {
 function CartEmpty() {
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(16,185,129,0.14),_transparent_34%),radial-gradient(circle_at_top_right,_rgba(132,204,22,0.12),_transparent_28%),linear-gradient(to_bottom,_#f7fee7_0%,_#fafaf9_38%,_#fafaf9_100%)]">
-      <div className="mx-auto max-w-7xl px-4 py-10 sm:py-14">
-        <div className="mb-8">
-          <p className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white/75 px-3 py-1 text-xs font-extrabold uppercase tracking-[0.18em] text-emerald-700 shadow-sm backdrop-blur">
-            FreshMart
-          </p>
-          <h1 className="mt-2 text-3xl font-bold tracking-tight text-stone-900">
-            Shopping Cart
-          </h1>
-          <p className="mt-2 text-sm text-stone-500">
-            Review your items before checkout.
-          </p>
-        </div>
-        <EmptyCart />
-      </div>
-    </main>
+  <div className="mx-auto w-full max-w-5xl px-4 py-10 sm:py-14">
+    <div className="mb-8 text-center">
+      <p className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white/75 px-3 py-1 text-xs font-extrabold uppercase tracking-[0.18em] text-emerald-700 shadow-sm backdrop-blur">
+        FreshMart
+      </p>
+
+      <h1 className="mt-2 text-3xl font-bold tracking-tight text-stone-900">
+        Shopping Cart
+      </h1>
+
+      <p className="mt-2 text-sm text-stone-500">
+        Review your items before checkout.
+      </p>
+    </div>
+
+    <EmptyCart />
+  </div>
+</main>
   );
 }
 
@@ -123,17 +122,22 @@ function CartContent({ data, update, remove }: CartContentProps) {
               Shopping Cart
             </h1>
             <p className="mt-3 max-w-2xl text-sm leading-6 text-stone-600 sm:text-base">
-              Review quantities and make sure everything you need is ready for checkout.
+              Review quantities and make sure everything you need is ready for
+              checkout.
             </p>
           </div>
           <div className="rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-50 to-lime-50 px-4 py-3 text-sm shadow-sm">
-            <p className="font-black text-stone-900">Fresh picks, one checkout.</p>
-            <p className="mt-1 text-xs leading-5 text-stone-500">Adjust quantities, then continue when everything looks right.</p>
+            <p className="font-black text-stone-900">
+              Fresh picks, one checkout.
+            </p>
+            <p className="mt-1 text-xs leading-5 text-stone-500">
+              Adjust quantities, then continue when everything looks right.
+            </p>
           </div>
         </header>
 
-        <div className="grid gap-6 lg:grid-cols-3 lg:gap-8">
-          <div className="space-y-4 lg:col-span-2">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-8">
+          <div className="min-w-0 flex-1">
             <CartList
               items={data.items}
               onIncrease={increase}
@@ -141,10 +145,13 @@ function CartContent({ data, update, remove }: CartContentProps) {
               onRemove={clear}
             />
           </div>
-          <CartSummary
-            totalItems={data.totalItems}
-            subtotal={data.subtotal}
-          />
+
+          <div className="w-full lg:w-80">
+            <CartSummary
+              totalItems={data.totalItems}
+              subtotal={data.subtotal}
+            />
+          </div>
         </div>
       </div>
     </main>

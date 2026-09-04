@@ -4,7 +4,6 @@ import type { OrderStatus } from "../order.type";
 const labels: Record<OrderStatus, string> = {
   WAITING_PAYMENT: "Waiting Payment",
   PAID: "Paid",
-  WAITING_CONFIRMATION: "Waiting Payment Confirmation",
   PROCESSED: "Processed",
   SHIPPED: "Shipped",
   CONFIRMED: "Confirmed",
@@ -14,10 +13,9 @@ const labels: Record<OrderStatus, string> = {
 const styles: Record<OrderStatus, string> = {
   WAITING_PAYMENT: "bg-amber-50 text-amber-700 ring-amber-200",
   PAID: "bg-sky-50 text-sky-700 ring-sky-200",
-  WAITING_CONFIRMATION: "bg-orange-50 text-orange-700 ring-orange-200",
   PROCESSED: "bg-violet-50 text-violet-700 ring-violet-200",
-  SHIPPED: "bg-indigo-50 text-indigo-700 ring-indigo-200",
-  CONFIRMED: "bg-emerald-50 text-emerald-700 ring-emerald-200",
+  SHIPPED: "bg-primary/10 text-primary ring-border",
+  CONFIRMED: "bg-accent text-primary ring-border",
   CANCELLED: "bg-red-50 text-red-700 ring-red-200",
 };
 

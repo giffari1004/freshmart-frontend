@@ -1,6 +1,5 @@
 import {
   Check,
-  Circle,
   Clock3,
   PackageCheck,
   Truck,
@@ -21,12 +20,6 @@ const steps = [
     label: "Pembayaran Diterima",
     description: "Pembayaran berhasil diterima melalui gateway.",
     icon: Check,
-  },
-  {
-    status: "WAITING_CONFIRMATION",
-    label: "Menunggu Konfirmasi Pembayaran",
-    description: "Pembayaran sedang menunggu konfirmasi admin.",
-    icon: Circle,
   },
   {
     status: "PROCESSED",
@@ -68,14 +61,14 @@ export function OrderStatusTimeline({ status }: { status: OrderStatus }) {
               <p className="text-xs font-bold uppercase tracking-[0.12em] text-red-500">
                 Order Status
               </p>
-              <h2 className="text-base font-bold text-stone-900 sm:text-lg">
+              <h2 className="text-base font-bold text-foreground sm:text-lg">
                 Pesanan Dibatalkan
               </h2>
             </div>
           </div>
         </div>
         <div className="px-5 py-5 sm:px-6">
-          <p className="text-sm leading-6 text-stone-600">
+          <p className="text-sm leading-6 text-muted-foreground">
             Pesanan ini sudah dibatalkan dan tidak dapat dilanjutkan ke tahap
             berikutnya.
           </p>
@@ -85,18 +78,18 @@ export function OrderStatusTimeline({ status }: { status: OrderStatus }) {
   }
 
   return (
-    <section className="overflow-hidden rounded-3xl border border-stone-200 bg-white shadow-sm">
-      <div className="border-b border-stone-100 bg-gradient-to-r from-emerald-50 via-white to-white px-5 py-4 sm:px-6">
+    <section className="overflow-hidden rounded-3xl border border-border bg-white shadow-sm">
+      <div className="border-b border-border bg-gradient-to-r from-accent via-white to-white px-5 py-4 sm:px-6">
         <div className="flex items-center justify-between gap-4">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.12em] text-emerald-600">
+            <p className="text-xs font-bold uppercase tracking-[0.12em] text-primary">
               Order Status
             </p>
-            <h2 className="text-base font-bold text-stone-900 sm:text-lg">
+            <h2 className="text-base font-bold text-foreground sm:text-lg">
               Perjalanan Pesanan
             </h2>
           </div>
-          <span className="rounded-full bg-emerald-100 px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.1em] text-emerald-700">
+          <span className="rounded-full bg-accent px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.1em] text-primary">
             {steps[activeIndex]?.label ?? "Order"}
           </span>
         </div>
@@ -116,7 +109,7 @@ export function OrderStatusTimeline({ status }: { status: OrderStatus }) {
                   <span
                     className={cn(
                       "absolute left-[19px] top-10 h-[calc(100%-8px)] w-px",
-                      isComplete ? "bg-emerald-400" : "bg-stone-200",
+                      isComplete ? "bg-primary/70" : "bg-border",
                     )}
                     aria-hidden="true"
                   />
@@ -126,11 +119,11 @@ export function OrderStatusTimeline({ status }: { status: OrderStatus }) {
                   className={cn(
                     "relative z-10 flex size-10 shrink-0 items-center justify-center rounded-2xl border transition-all",
                     isCurrent &&
-                      "border-emerald-500 bg-emerald-600 text-white shadow-lg shadow-emerald-100",
+                      "border-primary bg-primary/90 text-white shadow-lg shadow-sm",
                     isComplete && !isCurrent &&
-                      "border-emerald-200 bg-emerald-50 text-emerald-600",
+                      "border-border bg-accent text-primary",
                     isUpcoming &&
-                      "border-stone-200 bg-stone-50 text-stone-400",
+                      "border-border bg-background text-muted-foreground",
                   )}
                 >
                   <Icon className="size-4" />
@@ -141,15 +134,15 @@ export function OrderStatusTimeline({ status }: { status: OrderStatus }) {
                     <h3
                       className={cn(
                         "text-sm font-bold",
-                        isCurrent && "text-stone-950",
-                        isComplete && !isCurrent && "text-stone-700",
-                        isUpcoming && "text-stone-400",
+                        isCurrent && "text-foreground",
+                        isComplete && !isCurrent && "text-foreground",
+                        isUpcoming && "text-muted-foreground",
                       )}
                     >
                       {step.label}
                     </h3>
                     {isCurrent ? (
-                      <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] text-emerald-700">
+                      <span className="rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] text-primary">
                         Saat ini
                       </span>
                     ) : null}
@@ -157,7 +150,7 @@ export function OrderStatusTimeline({ status }: { status: OrderStatus }) {
                   <p
                     className={cn(
                       "mt-1 text-xs leading-5",
-                      isUpcoming ? "text-stone-400" : "text-stone-500",
+                      isUpcoming ? "text-muted-foreground" : "text-muted-foreground",
                     )}
                   >
                     {step.description}

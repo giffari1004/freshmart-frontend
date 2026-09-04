@@ -37,7 +37,7 @@ export function OrderConfirmButton({
         type="button"
         onClick={() => setOpen(true)}
         disabled={isPending}
-        className="h-12 w-full rounded-xl bg-emerald-700 px-4 text-sm font-bold text-white shadow-sm transition hover:bg-emerald-800 disabled:opacity-50"
+        className="h-12 w-full rounded-xl bg-primary px-4 text-sm font-bold text-white shadow-sm transition hover:bg-primary/90 disabled:opacity-50"
       >
         <CheckCircle2 className="size-4" />
         Confirm Order Received
@@ -46,7 +46,7 @@ export function OrderConfirmButton({
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="rounded-2xl">
           <DialogHeader>
-            <div className="mb-1 flex size-10 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700">
+            <div className="mb-1 flex size-10 items-center justify-center rounded-2xl bg-accent text-primary">
               <ShieldCheck className="size-5" />
             </div>
             <DialogTitle>Confirm order received?</DialogTitle>
@@ -67,7 +67,7 @@ export function OrderConfirmButton({
               type="button"
               onClick={handleConfirm}
               disabled={isPending}
-              className="bg-emerald-700 hover:bg-emerald-800"
+              className="bg-primary hover:bg-primary/90"
             >
               {isPending ? "Confirming..." : "Confirm Received"}
             </Button>

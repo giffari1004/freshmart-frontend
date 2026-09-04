@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { addToCart } from "@/features/cart/api";
 import { ShoppingCart } from "lucide-react";
 interface ButtonCardProps {
   disabled?: boolean;

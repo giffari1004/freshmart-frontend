@@ -25,7 +25,7 @@ export function OrderCancelButton({ orderId }: { orderId: string }) {
 
   if (mutation.isSuccess) {
     return (
-      <div className="flex items-center gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm font-semibold text-emerald-800">
+      <div className="flex items-center gap-2 rounded-2xl border border-border bg-accent p-4 text-sm font-semibold text-primary">
         <XCircle className="size-4" />
         Order cancelled successfully.
       </div>

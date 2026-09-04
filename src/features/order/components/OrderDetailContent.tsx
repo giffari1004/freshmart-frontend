@@ -21,7 +21,7 @@ export function OrderDetailContent({
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-emerald-50/40 via-stone-50 to-stone-50">
+    <main className="min-h-screen bg-gradient-to-b from-accent via-background to-background">
       <div className="mx-auto max-w-5xl space-y-5 px-4 py-6 sm:space-y-6 sm:py-8">
         <OrderDetailHeader order={order} />
         <OrderStatusTimeline status={order.status} />
@@ -40,7 +40,7 @@ export function OrderDetailContent({
         />
 
         {order.status === "CONFIRMED" ? (
-          <div className="flex items-center gap-2 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm font-semibold text-emerald-800">
+          <div className="flex items-center gap-2 rounded-2xl border border-border bg-accent p-4 text-sm font-semibold text-primary">
             <CheckCircle2 className="size-4" />
             This order has been confirmed as received.
           </div>

@@ -13,14 +13,14 @@ interface CheckoutSummaryProps {
 
 export function CheckoutSummary(props: CheckoutSummaryProps) {
   return (
-    <aside className="relative h-fit overflow-hidden rounded-[1.75rem] border border-emerald-200/70 bg-white/95 p-5 shadow-[0_20px_45px_-28px_rgba(16,185,129,0.45)] sm:p-6 lg:sticky lg:top-24">
+    <aside className="relative h-fit overflow-hidden rounded-[1.75rem] border border-border bg-white/95 p-5 shadow-sm sm:p-6 lg:sticky lg:top-24">
       <div className="flex items-center gap-3">
-        <div className="flex size-11 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-100 to-lime-100 text-emerald-700 shadow-sm">
+        <div className="flex size-11 items-center justify-center rounded-2xl bg-gradient-to-br from-accent to-accent text-primary shadow-sm">
           <ReceiptText className="size-5" />
         </div>
         <div>
-          <h2 className="text-lg font-bold text-stone-900">Order Summary</h2>
-          <p className="text-xs text-stone-500">Review before payment</p>
+          <h2 className="text-lg font-bold text-foreground">Order Summary</h2>
+          <p className="text-xs text-muted-foreground">Review before payment</p>
         </div>
       </div>
 
@@ -84,12 +84,12 @@ function SummaryRow({
 }) {
   return (
     <div className="flex items-center justify-between gap-4">
-      <span className="text-stone-500">{label}</span>
+      <span className="text-muted-foreground">{label}</span>
       <span
         className={
           green
-            ? "font-semibold text-emerald-700"
-            : "font-semibold text-stone-900"
+            ? "font-semibold text-primary"
+            : "font-semibold text-foreground"
         }
       >
         {value}
@@ -100,10 +100,10 @@ function SummaryRow({
 
 function TotalRow({ value }: { value: string }) {
   return (
-    <div className="rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-50 to-lime-50 p-4">
+    <div className="rounded-2xl border border-border bg-gradient-to-br from-accent to-accent p-4">
       <div className="flex items-end justify-between gap-4">
-        <span className="font-bold text-stone-900">Total</span>
-        <span className="text-2xl font-bold tracking-tight text-stone-900">
+        <span className="font-bold text-foreground">Total</span>
+        <span className="text-2xl font-bold tracking-tight text-foreground">
           {value}
         </span>
       </div>
@@ -125,7 +125,7 @@ function OrderButton({
       type="button"
       onClick={onClick}
       disabled={loading || created}
-      className="mt-2 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-700 to-emerald-600 px-4 font-extrabold text-white shadow-[0_12px_25px_-14px_rgba(5,150,105,0.9)] transition hover:-translate-y-0.5 hover:from-emerald-800 hover:to-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
+      className="mt-2 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary to-primary px-4 font-extrabold text-white shadow-[0_12px_25px_-14px_rgba(5,150,105,0.9)] transition hover:-translate-y-0.5 hover:from-primary hover:to-primary disabled:cursor-not-allowed disabled:opacity-50"
     >
       {loading ? (
         <>
@@ -162,7 +162,7 @@ function EmptySummary({
         <TotalRow value="—" />
       </div>
       {!canPreview ? (
-        <p className="mt-4 rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-50 to-lime-50 p-4 text-xs leading-5 text-stone-500">
+        <p className="mt-4 rounded-2xl border border-border bg-gradient-to-br from-accent to-accent p-4 text-xs leading-5 text-muted-foreground">
           Select a delivery address and shipping method first.
         </p>
       ) : null}
@@ -170,7 +170,7 @@ function EmptySummary({
         type="button"
         onClick={onPreview}
         disabled={loading || !canPreview}
-        className="mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-gradient-to-r from-emerald-50 to-lime-50 font-extrabold text-emerald-800 shadow-sm transition hover:-translate-y-0.5 hover:border-emerald-300 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50"
+        className="mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-border bg-gradient-to-r from-accent to-accent font-extrabold text-primary shadow-sm transition hover:-translate-y-0.5 hover:border-border hover:shadow-md disabled:cursor-not-allowed disabled:opacity-50"
       >
         {loading ? (
           <>
