@@ -56,24 +56,24 @@ function CartError() {
 function CartEmpty() {
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(16,185,129,0.14),_transparent_34%),radial-gradient(circle_at_top_right,_rgba(132,204,22,0.12),_transparent_28%),linear-gradient(to_bottom,_#f7fee7_0%,_#fafaf9_38%,_#fafaf9_100%)]">
-  <div className="mx-auto w-full max-w-5xl px-4 py-10 sm:py-14">
-    <div className="mb-8 text-center">
-      <p className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white/75 px-3 py-1 text-xs font-extrabold uppercase tracking-[0.18em] text-emerald-700 shadow-sm backdrop-blur">
-        FreshMart
-      </p>
+      <div className="mx-auto w-full max-w-5xl px-4 py-10 sm:py-14">
+        <div className="mb-8 text-center">
+          <p className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-white/75 px-3 py-1 text-xs font-extrabold uppercase tracking-[0.18em] text-emerald-700 shadow-sm backdrop-blur">
+            FreshMart
+          </p>
 
-      <h1 className="mt-2 text-3xl font-bold tracking-tight text-stone-900">
-        Shopping Cart
-      </h1>
+          <h1 className="mt-2 text-3xl font-bold tracking-tight text-stone-900">
+            Shopping Cart
+          </h1>
 
-      <p className="mt-2 text-sm text-stone-500">
-        Review your items before checkout.
-      </p>
-    </div>
+          <p className="mt-2 text-sm text-stone-500">
+            Review your items before checkout.
+          </p>
+        </div>
 
-    <EmptyCart />
-  </div>
-</main>
+        <EmptyCart />
+      </div>
+    </main>
   );
 }
 
@@ -140,6 +140,7 @@ function CartContent({ data, update, remove }: CartContentProps) {
           <div className="min-w-0 flex-1">
             <CartList
               items={data.items}
+              storeId={data.storeId}
               onIncrease={increase}
               onDecrease={decrease}
               onRemove={clear}

@@ -1,11 +1,18 @@
 import { api } from "@/lib/axios";
 import {
   AddToCartPayload,
+  BogoCalculation,
   CartResponse,
   UpdateCartPayload,
 } from "./cartType";
 import { normalizeCartResponse } from "./mappers/cart.mapper";
 import { CartApiResponse } from "./types/cart.backend.type";
+
+interface BogoPayload {
+  storeId: string;
+  productId: string;
+  quantity: number;
+}
 
 export const cartService = {
   async getCart(): Promise<CartResponse> {
@@ -39,5 +46,13 @@ export const cartService = {
   async clearCart(): Promise<unknown> {
     const response = await api.delete<CartApiResponse>("/cart");
     return response.data;
+  },
+
+  async calculateBogo(payload: BogoPayload): Promise<BogoCalculation> {
+    const response = await api.post<{ data: BogoCalculation }>(
+      "/bogo/calculate",
+      payload,
+    );
+    return response.data.data;
   },
 };

@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/select";
 import { PriceInput } from "@/lib/price-input";
 import { useGetAllProduct } from "@/features/product/hooks";
-import { Product } from "@/features/product/schema";
+import { Product } from "@/features/product/constans";
 import { createVoucherInput, createVoucherOutput } from "../schema";
 
 export function CreateVoucher() {

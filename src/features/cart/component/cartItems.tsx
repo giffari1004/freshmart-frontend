@@ -5,21 +5,41 @@ import { ShoppingBag, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CartItem as CartItemType } from "../cartType";
 import { QuantitySelector } from "./quantity-selector/quantitySelector";
+import { useBogo } from "../hooks";
 
 interface CartItemProps {
+  item: CartItemType;
+  storeId: string | null;
+  onIncrease: () => void;
+  onDecrease: () => void;
+  onRemove: () => void;
+}
+
+interface CartItemActionsProps {
   item: CartItemType;
   onIncrease: () => void;
   onDecrease: () => void;
   onRemove: () => void;
 }
 
-export function CartItem(props: CartItemProps) {
+export function CartItem({
+  item,
+  storeId,
+  onIncrease,
+  onDecrease,
+  onRemove,
+}: CartItemProps) {
   return (
-    <article className="group rounded-[1.75rem] border border-stone-200/80 bg-white/95 p-4 shadow-[0_14px_35px_-20px_rgba(15,23,42,0.28)] transition-all duration-300 hover:-translate-y-1 hover:border-emerald-300 hover:shadow-[0_22px_45px_-22px_rgba(16,185,129,0.35)] sm:p-5">
-      <div className="flex gap-4 sm:gap-5">
-        <ProductImage item={props.item} />
-        <ProductInfo {...props} />
-      </div>
+    <article>
+      <ProductImage item={item} />
+
+      <ProductInfo
+        item={item}
+        storeId={storeId}
+        onIncrease={onIncrease}
+        onDecrease={onDecrease}
+        onRemove={onRemove}
+      />
     </article>
   );
 }
@@ -34,6 +54,7 @@ function ProductImage({ item }: { item: CartItemType }) {
         sizes="(max-width: 640px) 96px, 112px"
         className="object-cover transition-transform duration-300 group-hover:scale-105"
       />
+
       <div className="absolute right-2 top-2 flex size-8 items-center justify-center rounded-full bg-white/95 shadow-md backdrop-blur">
         <ShoppingBag className="size-3.5 text-emerald-700" />
       </div>
@@ -43,10 +64,17 @@ function ProductImage({ item }: { item: CartItemType }) {
 
 function ProductInfo({
   item,
+  storeId,
   onIncrease,
   onDecrease,
   onRemove,
 }: CartItemProps) {
+  const { data: bogo } = useBogo({
+    storeId,
+    productId: item.product.id,
+    quantity: item.quantity,
+  });
+
   return (
     <div className="min-w-0 flex-1">
       <div className="flex items-start justify-between gap-3">
@@ -54,11 +82,19 @@ function ProductInfo({
           <h3 className="truncate text-lg font-black tracking-tight text-stone-950">
             {item.product.name}
           </h3>
+
           <p className="mt-1 text-sm text-stone-500">
             {formatPrice(item.unitPrice)} / item
           </p>
+
+          {bogo?.eligible && (
+            <p className="mt-2 text-sm font-semibold text-emerald-700">
+              🎁 Buy 1 Get 1 · {bogo.freeQuantity} free
+            </p>
+          )}
         </div>
       </div>
+
       <CartItemActions
         item={item}
         onIncrease={onIncrease}
@@ -74,7 +110,7 @@ function CartItemActions({
   onIncrease,
   onDecrease,
   onRemove,
-}: CartItemProps) {
+}: CartItemActionsProps) {
   return (
     <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <QuantitySelector
@@ -87,6 +123,7 @@ function CartItemActions({
         <p className="text-lg font-black tracking-tight text-stone-950">
           {formatPrice(item.subtotal)}
         </p>
+
         <Button
           type="button"
           variant="ghost"

@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { ProductImage } from "../../schema";
+import { ProductImage } from "../../constans";
 interface ImageProductProps {
   images: ProductImage[];
   productName: string;

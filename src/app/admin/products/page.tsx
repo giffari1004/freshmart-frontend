@@ -7,9 +7,10 @@ import { ProductFilters } from "@/features/product/components/product-filters";
 import { ProductPagination } from "@/features/product/components/product-pagination";
 import { ProductTable } from "@/features/product/components/product-table";
 import { useGetAllProduct } from "@/features/product/hooks";
-import { getAllProductSchema, Product } from "@/features/product/schema";
+import { getAllProductSchema } from "@/features/product/schema";
 import { useAuthStore } from "@/stores/auth-store";
 import { useState } from "react";
+import { Product } from "@/features/product/constans";
 export default function AdminProductsPage() {
   const role = useAuthStore((s) => s.user?.role);
   const canManage = role === "SUPER_ADMIN";

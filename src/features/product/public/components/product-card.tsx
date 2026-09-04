@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Product } from "../schema";
+import { Product } from "../constant";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
 
