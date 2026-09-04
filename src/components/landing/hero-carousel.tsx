@@ -12,6 +12,10 @@ import { usePromotions } from "@/features/storefront/hooks";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Promotion } from "@/features/storefront/api";
 
+interface HeroCarouselProps {
+  storeId: string | null;
+}
+
 function promotionCopy(promo: Promotion) {
   const productName = promo.product?.name;
   const discountLabel =
@@ -42,8 +46,8 @@ function promotionCopy(promo: Promotion) {
   };
 }
 
-export function HeroCarousel() {
-  const { data: promotions, isLoading } = usePromotions();
+export function HeroCarousel({ storeId }: HeroCarouselProps) {
+  const { data: promotions, isLoading } = usePromotions(storeId ?? undefined);
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
 

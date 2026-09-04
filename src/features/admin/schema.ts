@@ -1,5 +1,6 @@
 import z from "zod";
 import { ROLE, USER_SORT_BY, USER_SORT_ORDER, UserRole } from "./constans";
+
 export const GET_ALL_USER = z.object({
   page: z.coerce.number().int().positive().optional().default(1),
   limit: z.coerce.number().int().positive().max(100).optional().default(10),
@@ -15,11 +16,9 @@ export const CREATE_STORE_ADMIN = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Invalid email format"),
   password: z.string().min(6, "Password must be at least 6 characters"),
-  storeId: z.string().uuid(" Invalid input store id"),
 });
 export const UPDATE_STORE_ADMIN = z.object({
   name: z.string().min(1).optional(),
-  storeId: z.string().uuid().optional(),
 });
 
 export interface AdminUser {

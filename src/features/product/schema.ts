@@ -38,27 +38,6 @@ export const UPDATE_PRODUCT = z.object({
     .optional(),
   categoryId: z.string().uuid("Invalid category id").optional(),
 });
-export interface ProductImage {
-  id: string;
-  imageUrl: string;
-  isPrimary: boolean;
-}
-export interface Product {
-  id: string;
-  name: string;
-  description: string | null;
-  basePrice: number;
-  weight: number;
-  categoryId: string;
-  createdAt: string;
-  images: ProductImage[];
-}
-export interface ProductMeta {
-  page: number;
-  limit: number;
-  totalData: number;
-  totalPages: number;
-}
 export type getAllProductSchema = z.infer<typeof GET_ALL_PRODUCT>;
 export type createProductOutputSchema = z.output<typeof CREATE_PRODUCT>;
 export type createProductInputSchema = z.input<typeof CREATE_PRODUCT>;

@@ -1,5 +1,5 @@
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
-import { ProductMeta } from "../schema";
+import { ProductMeta } from "../constans";
 import { cn } from "@/lib/utils";
 
 interface ProductPaginationProps {

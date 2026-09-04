@@ -26,11 +26,10 @@ export function EditStoreAdmin({ user, onClose }: EditStoreAdminProps) {
     resolver: zodResolver(UPDATE_STORE_ADMIN),
     defaultValues: {
       name: "",
-      storeId: "",
     },
   });
   useEffect(() => {
-    if (user) form.reset({ name: user.name, storeId: user.storeId ?? "" });
+    if (user) form.reset({ name: user.name });
   }, [user, form]);
   if (!user) return null;
   const currentUser = user;
@@ -55,15 +54,6 @@ export function EditStoreAdmin({ user, onClose }: EditStoreAdminProps) {
             {form.formState.errors.name && (
               <p className="text-xs text-destructive">
                 {form.formState.errors.name.message}
-              </p>
-            )}
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="storeId">Store ID</Label>
-            <Input id="storeId" {...form.register("storeId")} />
-            {form.formState.errors.storeId && (
-              <p className="text-xs text-destructive">
-                {form.formState.errors.storeId?.message}
               </p>
             )}
           </div>
