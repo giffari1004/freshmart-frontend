@@ -2,21 +2,29 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
 import { Search, User, ShoppingBasket } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useCartStore } from "@/stores/cart-store";
 import { useAuthStore } from "@/stores/auth-store";
 import { useProfile } from "@/features/profile/hooks";
+import { cn } from "@/lib/utils";
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
 
-export function SiteHeader() {
-  const router = useRouter()
+interface SiteHeaderProps {
+  showSearch?: boolean;
+}
+
+export function SiteHeader({ showSearch = true }: SiteHeaderProps) {
+  const router = useRouter();
+  const pathname = usePathname();
   const itemCount = useCartStore((state) => state.itemCount);
   const isLoggedIn = useAuthStore((state) => !!state.accessToken);
   const { data: profile } = useProfile({ enabled: isLoggedIn });
   const [searchValue, setSearchValue] = useState("");
+
+  const isProfileActive = pathname.startsWith("/profile")|| pathname.startsWith("/addresses");
 
   const initials = profile?.name
     ? profile.name
@@ -26,13 +34,13 @@ export function SiteHeader() {
         .toUpperCase()
         .slice(0, 2)
     : "";
-  
-  const handleSearch = (e: React.FormEvent)=> {
+
+  const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchValue.trim()) {
-      router.push(`/products?search=${encodeURIComponent(searchValue.trim())}`)
+      router.push(`/products?search=${encodeURIComponent(searchValue.trim())}`);
     }
-  }
+  };
 
   return (
     <header className="sticky top-0 z-50 flex h-16 w-full items-center justify-between border-b border-border bg-background px-4 shadow-sm md:px-8">
@@ -49,26 +57,35 @@ export function SiteHeader() {
         </span>
       </Link>
 
-      <form
-        onSubmit={handleSearch}
-        className="mx-4 max-w-2xl flex-1 px-2 md:px-8"
-      >
-        <div className="relative flex items-center">
-          <Search className="pointer-events-none absolute left-4 h-4 w-4 text-muted-foreground" />
-          <Input
-            type="search"
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
-            placeholder="Search fresh groceries, organic milk, fruits..."
-            className="rounded-full bg-muted pl-11"
-          />
-        </div>
-      </form>
+      {showSearch ? (
+        <form
+          onSubmit={handleSearch}
+          className="mx-4 max-w-2xl flex-1 px-2 md:px-8"
+        >
+          <div className="relative flex items-center">
+            <Search className="pointer-events-none absolute left-4 h-4 w-4 text-muted-foreground" />
+            <Input
+              type="search"
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              placeholder="Search fresh groceries, organic milk, fruits..."
+              className="rounded-full bg-muted pl-11"
+            />
+          </div>
+        </form>
+      ) : (
+        <div className="flex-1" />
+      )}
 
       <nav className="flex items-center gap-1">
         <Link
           href={isLoggedIn ? "/profile" : "/login"}
-          className="flex flex-col items-center justify-center rounded-lg p-2 text-muted-foreground transition-colors hover:bg-muted active:scale-95"
+          className={cn(
+            "flex flex-col items-center justify-center rounded-lg p-2 transition-colors active:scale-95",
+            isProfileActive
+              ? "bg-primary/10 text-primary"
+              : "text-muted-foreground hover:bg-muted",
+          )}
         >
           {isLoggedIn ? (
             <Avatar className="h-5 w-5">
@@ -85,6 +102,7 @@ export function SiteHeader() {
           )}
           <span className="hidden text-xs font-medium sm:inline">Account</span>
         </Link>
+
         <Link
           href="/cart"
           className="relative flex flex-col items-center justify-center rounded-lg p-2 text-muted-foreground transition-colors hover:bg-muted active:scale-95"
