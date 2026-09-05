@@ -1,11 +1,11 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { addressFormSchema, AddressFormInput } from "@/features/address/schema";
-import { Address } from "@/features/address/api";
+import { addressFormSchema, AddressFormInput, AddressFormOutput } from "@/features/address/schema";
+import { Address, geocodeCity } from "@/features/address/api";
 import { useCreateAddress, useUpdateAddress } from "@/features/address/hooks";
 import { CityCombobox } from "./city-combobox";
 import {
@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
+import dynamic from "next/dynamic";
 
 interface AddressFormDialogProps {
   open: boolean;
@@ -26,6 +27,9 @@ interface AddressFormDialogProps {
   mode: "create" | "edit";
   initialData?: Address;
 }
+const LocationPicker = dynamic(() => import("../shared/location-picker"), {
+  ssr: false,
+});
 
 export function AddressFormDialog({
   open,
@@ -38,14 +42,7 @@ export function AddressFormDialog({
 
   const isPending = createMutation.isPending || updateMutation.isPending;
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    watch,
-    reset,
-    formState: { errors },
-  } = useForm<AddressFormInput>({
+  const form = useForm<AddressFormInput, unknown, AddressFormOutput>({
     resolver: zodResolver(addressFormSchema),
     defaultValues: {
       label: "",
@@ -56,9 +53,20 @@ export function AddressFormDialog({
       province: "",
       district: "",
       fullAddress: "",
+      latitude: undefined,
+      longitude: undefined,
       isPrimary: false,
     },
   });
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    formState: { errors },
+  } = form;
+
 
   useEffect(() => {
     if (open) {
@@ -72,6 +80,8 @@ export function AddressFormDialog({
           province: initialData.province || "",
           district: initialData.district || "",
           fullAddress: initialData.fullAddress || "",
+          latitude: initialData.latitude,
+          longitude: initialData.longitude,
           isPrimary: initialData.isPrimary || false,
         });
       } else {
@@ -84,16 +94,24 @@ export function AddressFormDialog({
           province: "",
           district: "",
           fullAddress: "",
+          latitude: undefined,
+          longitude: undefined,
           isPrimary: false,
         });
       }
     }
   }, [open, mode, initialData, reset]);
 
-  const selectedCity = watch("city");
-  const selectedProvince = watch("province");
+  const selectedCity = useWatch({ control: form.control, name: "city" });
+  const selectedProvince = useWatch({
+    control: form.control,
+    name: "province",
+  });
+  const lat = useWatch({ control: form.control, name: "latitude" });
+  const lng = useWatch({ control: form.control, name: "longitude" });
+  const isPrimary = useWatch({ control: form.control, name: "isPrimary" });
 
-  const onSubmit = (data: AddressFormInput) => {
+  const onSubmit = (data: AddressFormOutput) => {
     if (mode === "create") {
       createMutation.mutate(data, {
         onSuccess: () => onOpenChange(false),
@@ -204,7 +222,7 @@ export function AddressFormDialog({
               <CityCombobox
                 value={selectedCity}
                 error={!!errors.city}
-                onSelect={(selected) => {
+                onSelect={async (selected) => {
                   setValue("city", selected.cityName, { shouldValidate: true });
                   setValue("rajaOngkirCityId", selected.rajaOngkirCityId, {
                     shouldValidate: true,
@@ -212,6 +230,18 @@ export function AddressFormDialog({
                   setValue("province", selected.province, {
                     shouldValidate: true,
                   });
+
+                  try {
+                    const coords = await geocodeCity(
+                      `${selected.cityName}, ${selected.province}`,
+                    );
+                    setValue("latitude", coords.latitude, {
+                      shouldValidate: true,
+                    });
+                    setValue("longitude", coords.longitude, {
+                      shouldValidate: true,
+                    });
+                  } catch {}
                 }}
               />
               {errors.city && (
@@ -295,12 +325,57 @@ export function AddressFormDialog({
             )}
           </div>
 
+          {/* Pin Exact Location */}
+          <div className="space-y-1">
+            <label className="text-xs font-semibold text-foreground">
+              Pin Exact Location
+            </label>
+            <LocationPicker
+              latitude={lat ?? null}
+              longitude={lng ?? null}
+              onChange={(newLat, newLng) => {
+                setValue("latitude", newLat, { shouldValidate: true });
+                setValue("longitude", newLng, { shouldValidate: true });
+              }}
+            />
+            {(errors.latitude || errors.longitude) && (
+              <p className="text-xs text-destructive">
+                Please click the map to pin your exact location
+              </p>
+            )}
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-foreground">
+                Latitude
+              </label>
+              <Input
+                readOnly
+                value={lat !== undefined ? lat.toFixed(6) : ""}
+                placeholder="Not set"
+                className="bg-muted text-muted-foreground cursor-not-allowed"
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-foreground">
+                Longitude
+              </label>
+              <Input
+                readOnly
+                value={lng !== undefined ? lng.toFixed(6) : ""}
+                placeholder="Not set"
+                className="bg-muted text-muted-foreground cursor-not-allowed"
+              />
+            </div>
+          </div>
+
           {/* Set as Primary Checkbox (Create Mode Only) */}
           {mode === "create" && (
             <div className="flex items-center space-x-2 pt-1">
               <Checkbox
                 id="isPrimary"
-                checked={watch("isPrimary")}
+                checked={isPrimary}
                 onCheckedChange={(checked) =>
                   setValue("isPrimary", Boolean(checked))
                 }
