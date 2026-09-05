@@ -1,7 +1,7 @@
 "use client";
 
-// import { useEffect } from "react";
-import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
+import { useEffect } from "react";
+import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from "react-leaflet";
 import L from "leaflet";
 import { MapPin } from "lucide-react";
 import "leaflet/dist/leaflet.css";
@@ -33,6 +33,14 @@ function MapClickHandler({
   return null;
 }
 
+function RecenterOnChange({ lat, lng }: { lat: number; lng: number }) {
+  const map = useMap();
+  useEffect(() => {
+    map.setView([lat, lng], map.getZoom());
+  }, [lat, lng, map]);
+  return null;
+}
+
 export default function LocationPicker({
   latitude,
   longitude,
@@ -57,7 +65,12 @@ export default function LocationPicker({
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <MapClickHandler onChange={onChange} />
-        {hasCoordinates && <Marker position={[latitude, longitude]} />}
+        {hasCoordinates && (
+          <>
+            <Marker position={[latitude, longitude]} />
+            <RecenterOnChange lat={latitude} lng={longitude}/>
+          </>
+        )}
       </MapContainer>
 
       {!hasCoordinates && (
