@@ -25,7 +25,7 @@ import {
 } from "@/features/store/schema";
 import { useCreateStore, useUpdateStore } from "@/features/store/hooks";
 
-const LocationPicker = dynamic(() => import("./location-picker"), {
+const LocationPicker = dynamic(() => import("../../shared/location-picker"), {
   ssr: false,
 });
 

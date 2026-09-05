@@ -12,6 +12,8 @@ export interface Address {
   district: string;
   fullAddress: string;
   postalCode?: string;
+  latitude: number;
+  longitude: number;
   isPrimary: boolean;
   createdAt?: string;
   updatedAt?: string;
@@ -76,5 +78,14 @@ export const searchCities = async (
       params: { search: query },
     },
   );
+  return response.data.data;
+};
+
+export const geocodeCity = async (
+  address: string,
+): Promise<{ latitude: number; longitude: number }> => {
+  const response = await api.get<
+    ApiResponse<{ latitude: number; longitude: number }>
+  >("/addresses/geocode", { params: { address } });
   return response.data.data;
 };
