@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { Search, User, ShoppingBasket } from "lucide-react";
+import { Search, User, ShoppingBasket, ClipboardList } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useCartStore } from "@/stores/cart-store";
@@ -103,6 +103,13 @@ export function SiteHeader({ showSearch = true }: SiteHeaderProps) {
           <span className="hidden text-xs font-medium sm:inline">Account</span>
         </Link>
 
+        <Link
+          href="/orders"
+          className="flex flex-col items-center justify-center rounded-lg p-2 text-muted-foreground transition-colors hover:bg-muted active:scale-95"
+        >
+          <ClipboardList className="h-5 w-5" />
+          <span className="hidden text-xs font-medium sm:inline">Orders</span>
+        </Link>
         <Link
           href="/cart"
           className="relative flex flex-col items-center justify-center rounded-lg p-2 text-muted-foreground transition-colors hover:bg-muted active:scale-95"
