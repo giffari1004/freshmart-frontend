@@ -24,7 +24,7 @@ export default function ProfilePage() {
 
   if (isLoading || !profile) {
     return (
-      <div className="max-w-5xl mx-auto py-8 px-4 animate-pulse space-y-6">
+      <div className="animate-pulse space-y-6">
         <div className="h-14 bg-muted rounded-lg w-full" />
         <div className="h-8 bg-muted rounded w-48" />
         <div className="h-32 bg-muted rounded-lg w-full" />
@@ -34,7 +34,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto py-8 px-4 space-y-6">
+    <div className="space-y-6">
       <VerificationBanner profile={profile} />
 
       <div className="flex items-center justify-between">
