@@ -7,21 +7,22 @@ import { ProductCatalogFilters } from "@/features/product/public/components/prod
 import { ProductPagination } from "@/features/product/public/components/product-pagination";
 import { useGetProducts } from "@/features/product/public/hooks";
 import { getProductCatalogSchema } from "@/features/product/public/schema";
+import { useNearestStore } from "@/features/storefront/hooks";
 
 export default function ProductsPage() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [sort, setSort] = useState("createdAt:desc");
-
   const [sortBy, sortOrder] = sort.split(":");
-
+  const { data: nearestStore , isLoading:fetchingNearestStore} = useNearestStore();
+  const storeId = nearestStore?.store.id;
   const query: getProductCatalogSchema = {
     page,
     limit: 12,
     search: search || undefined,
     categoryId: categoryId || undefined,
-    storeId: "isinantijanganlupa",
+    storeId: storeId ?? "",
     sortBy: sortBy as getProductCatalogSchema["sortBy"],
     sortOrder: sortOrder as getProductCatalogSchema["sortOrder"],
   };
@@ -60,7 +61,14 @@ export default function ProductsPage() {
           }}
         />
 
-        {isLoading ? (
+        {!nearestStore && !fetchingNearestStore ?  (
+          <div className="rounded-3xl border border-stone-200 bg-white p-12 text-center">
+            <p className="text-stone-500">
+              Unable to detect your nearest store. Please enable location
+              access.
+            </p>
+          </div>
+        ) : isLoading ? (
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {Array.from({ length: 8 }).map((_, i) => (
               <Skeleton key={i} className="aspect-[4/5] rounded-3xl" />
@@ -69,7 +77,6 @@ export default function ProductsPage() {
         ) : (
           <>
             <ProductGrid products={data?.data ?? []} />
-
             {data?.meta && (
               <ProductPagination meta={data.meta} onPageChange={setPage} />
             )}

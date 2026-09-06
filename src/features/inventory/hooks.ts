@@ -106,5 +106,6 @@ export function useGetStockHistory(id: string, query: getStockHistorySchema) {
   return useQuery({
     queryKey: ["stock-history", id, query],
     queryFn: () => getStockHistory(id, query),
+    enabled: !!id,
   });
 }

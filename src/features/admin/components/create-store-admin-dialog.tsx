@@ -13,12 +13,13 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 export function CreateStoreAdmin() {
   const [open, setOpen] = useState(false);
   const mutation = useCreateAdmins();
   const form = useForm<createStoreAdminSchema>({
     resolver: zodResolver(CREATE_STORE_ADMIN),
-    defaultValues: { name: "", email: "", password: "", storeId: "" },
+    defaultValues: { name: "", email: "", password: "" },
   });
   function onSubmit(value: createStoreAdminSchema) {
     mutation.mutate(value, {
@@ -32,22 +33,20 @@ export function CreateStoreAdmin() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="h-11 rounded-full bg-green-800 px-6 text-sm font-semibold text-white shadow-sm hover:bg-green-700">
-          <span className="mr-2 text-base">+</span> Add store admin
+          Add store admin
         </Button>
       </DialogTrigger>
-      <DialogContent className="rounded-3xl border border-green-100 bg-white p-6 shadow-2xl sm:max-w-md">
+      <DialogContent className="max-h-[90vh] overflow-y-auto rounded-3xl p-6 border-green-200">
         <DialogHeader className="space-y-1">
           <DialogTitle className="text-2xl font-bold text-stone-900">
-            Add store admin
+            Create store admin
           </DialogTitle>
-          <p className="text-sm text-stone-500">
-            Create a new admin account for your store
-          </p>
+          <p className="text-sm text-stone-500">Create a new admin account</p>
         </DialogHeader>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 pt-2">
           <div className="space-y-1.5">
             <Label htmlFor="name">Name</Label>
-            <input
+            <Input
               id="name"
               placeholder="Your Name"
               {...form.register("name")}
@@ -86,20 +85,6 @@ export function CreateStoreAdmin() {
             {form.formState.errors.password && (
               <p className="text-xs text-destructive">
                 {form.formState.errors.password?.message}
-              </p>
-            )}
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="storeId">Store ID</Label>
-            <input
-              id="storeId"
-              placeholder="Store ID"
-              {...form.register("storeId")}
-              className="h-11 w-full rounded-xl border border-stone-200 bg-green-50/40 px-3 text-sm outline-none transition focus:border-green-700 focus:bg-white focus:ring-4 focus:ring-green-100"
-            />
-            {form.formState.errors.storeId && (
-              <p className="text-xs text-destructive">
-                {form.formState.errors.storeId?.message}
               </p>
             )}
           </div>

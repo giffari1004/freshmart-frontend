@@ -1,11 +1,11 @@
 import { useGetAllCategory } from "@/features/category/hooks";
 import { useUpdateProduct } from "../hooks";
 import {
-  Product,
   UPDATE_PRODUCT,
   updateProductInputSchema,
   updateProductOutputSchema,
 } from "../schema";
+import { Product } from "../constans";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";

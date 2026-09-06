@@ -1,0 +1,20 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { orderService } from "../order.service";
+import { getOrderErrorMessage } from "../order-error";
+
+export function useConfirmOrder() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: orderService.confirmOrder,
+    onSuccess: (_, orderId) => {
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+      queryClient.invalidateQueries({ queryKey: ["order-detail", orderId] });
+      toast.success("Order confirmed successfully");
+    },
+    onError: (error) => {
+      toast.error(getOrderErrorMessage(error, "Unable to confirm the order"));
+    },
+  });
+}

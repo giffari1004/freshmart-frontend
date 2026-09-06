@@ -1,7 +1,6 @@
 import { NumericFormat } from "react-number-format";
 import { Input } from "@/components/ui/input";
 import { FieldValues, Path, PathValue, UseFormReturn } from "react-hook-form";
-import { createProductInputSchema } from "../features/product/schema";
 interface PriceInputProps<T extends FieldValues> {
   form: UseFormReturn<T>;
   name: Path<T>;

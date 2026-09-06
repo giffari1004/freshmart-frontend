@@ -23,7 +23,7 @@ export default function LandingPage() {
       <LocationBanner />
 
       <main className="mx-auto max-w-7xl space-y-10 px-4 py-6 md:px-8">
-        <HeroCarousel />
+        <HeroCarousel storeId={storeId} />
         <StoreInfoBar />
         <CategoryFilter
           selectedCategoryId={selectedCategoryId}

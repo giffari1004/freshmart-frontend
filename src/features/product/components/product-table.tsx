@@ -1,7 +1,7 @@
 "use client";
 
 import { Inbox, Pencil, Trash2 } from "lucide-react";
-import { Product } from "../schema";
+import { Product } from "../constans";
 import {
   Table,
   TableBody,

@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from "@tanstack/react-query";
 import {
   fetchCategories,
   createCategory,
@@ -15,6 +15,7 @@ export function useGetAllCategory(query: getAllCategorySchema) {
   return useQuery({
     queryKey: ["categories", query],
     queryFn: () => fetchCategories(query),
+    placeholderData: keepPreviousData
   });
 }
 export function useCreateCategory() {
@@ -63,6 +64,3 @@ export function useDeleteCategory() {
     },
   });
 }
-export function useStockIn(){}
-export function useStockOut(){}
-export function useGetJournalHistory(){}

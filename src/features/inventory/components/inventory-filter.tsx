@@ -7,7 +7,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search } from "lucide-react";
 import { useDebouncedCallback } from "use-debounce";
 
 // TODO: ganti ke useGetAllStores() kalau modul Store (Gifari) udah selesai
@@ -37,7 +36,6 @@ export function InventoryFilter({
   return (
     <div className="flex flex-wrap items-center gap-3 rounded-xl border border-stone-200 bg-white p-3">
       <div className="relative min-w-[220px] flex-1 ">
-        <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-stone-400" />
         <Input
           defaultValue={search}
           placeholder="Search product"

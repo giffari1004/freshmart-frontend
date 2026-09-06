@@ -14,8 +14,18 @@ export const useAuthStore = create<AuthStore>()(
     (set) => ({
       accessToken: null,
       user: null,
-      setAuth: (accessToken, user) => set({ accessToken, user }),
-      logout: () => set({ accessToken: null, user: null }),
+      setAuth: (accessToken, user) => {
+        set({ accessToken, user });
+        if (typeof document !== "undefined") {
+          document.cookie = `role=${user?.role ?? ""}; path=/; max-age=${7 * 24 * 60 * 60}`; // 7 hari, samakan dengan JWT_EXPIRES_IN
+        }
+      },
+      logout: () => {
+        set({ accessToken: null, user: null });
+        if (typeof document !== "undefined") {
+          document.cookie = "role=; path=/; max-age=0"; // hapus cookie
+        }
+      },
     }),
     { name: "freshmart-auth" },
   ),

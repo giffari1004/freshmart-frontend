@@ -1,6 +1,16 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { getAllUserSchema, updateStoreAdminSchema } from "./schema";
-import { createAdmins, deleteAdmins, fetchUsers, updateAdmins } from "./admin-api";
+import {
+  createAdmins,
+  deleteAdmins,
+  fetchUsers,
+  updateAdmins,
+} from "./admin-api";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 
@@ -8,6 +18,7 @@ export function useFetchUsers(query: getAllUserSchema) {
   return useQuery({
     queryKey: ["admins-users", query],
     queryFn: () => fetchUsers(query),
+    placeholderData: keepPreviousData,
   });
 }
 export function useCreateAdmins() {
@@ -28,13 +39,16 @@ export function useCreateAdmins() {
 export function useUpdateAdmins() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({id,body}:{id: string,body: updateStoreAdminSchema}) => updateAdmins(id, body),
+    mutationFn: ({ id, body }: { id: string; body: updateStoreAdminSchema }) =>
+      updateAdmins(id, body),
     onSuccess: () => {
       toast.success("Updated admin successfully");
       queryClient.invalidateQueries({ queryKey: ["admins-users"] });
     },
     onError: (err: AxiosError<{ message: string }>) => {
-      toast.error(err?.response?.data.message || "Updated admin unsuccessfully");
+      toast.error(
+        err?.response?.data.message || "Updated admin unsuccessfully",
+      );
     },
   });
 }
@@ -47,7 +61,9 @@ export function useDeleteAdmins() {
       queryClient.invalidateQueries({ queryKey: ["admins-users"] });
     },
     onError: (err: AxiosError<{ message: string }>) => {
-      toast.error(err?.response?.data.message || "Deleted admin unsuccessfully");
+      toast.error(
+        err?.response?.data.message || "Deleted admin unsuccessfully",
+      );
     },
   });
 }

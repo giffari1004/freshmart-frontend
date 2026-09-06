@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAllProductSchema, updateProductOutputSchema } from "./schema";
 import {
   createProduct,
@@ -13,6 +13,7 @@ export function useGetAllProduct(query: getAllProductSchema) {
   return useQuery({
     queryKey: ["admin-products", query],
     queryFn: () => fetchProducts(query),
+    placeholderData: keepPreviousData,
   });
 }
 export function useCreateProduct() {
