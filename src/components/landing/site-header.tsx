@@ -14,9 +14,13 @@ import React, { useState } from "react";
 
 interface SiteHeaderProps {
   showSearch?: boolean;
+  variant?: "customer" | "admin";
 }
 
-export function SiteHeader({ showSearch = true }: SiteHeaderProps) {
+export function SiteHeader({
+  showSearch = true,
+  variant = "customer",
+}: SiteHeaderProps) {
   const router = useRouter();
   const pathname = usePathname();
   const itemCount = useCartStore((state) => state.itemCount);
@@ -24,7 +28,8 @@ export function SiteHeader({ showSearch = true }: SiteHeaderProps) {
   const { data: profile } = useProfile({ enabled: isLoggedIn });
   const [searchValue, setSearchValue] = useState("");
 
-  const isProfileActive = pathname.startsWith("/profile")|| pathname.startsWith("/addresses");
+  const isProfileActive =
+    pathname.startsWith("/profile") || pathname.startsWith("/addresses") || pathname.startsWith("/admin/profile");
 
   const initials = profile?.name
     ? profile.name
@@ -44,7 +49,10 @@ export function SiteHeader({ showSearch = true }: SiteHeaderProps) {
 
   return (
     <header className="sticky top-0 z-50 flex h-16 w-full items-center justify-between border-b border-border bg-background px-4 shadow-sm md:px-8">
-      <Link href="/" className="flex shrink-0 items-center gap-3">
+      <Link
+        href={variant === "admin" ? "/admin/products" : "/"}
+        className="flex shrink-0 items-center gap-3"
+      >
         <Image
           src="/images/logo-freshmart.png"
           alt="FreshMart"
@@ -57,7 +65,7 @@ export function SiteHeader({ showSearch = true }: SiteHeaderProps) {
         </span>
       </Link>
 
-      {showSearch ? (
+      {showSearch && variant === "customer" && (
         <form
           onSubmit={handleSearch}
           className="mx-4 max-w-2xl flex-1 px-2 md:px-8"
@@ -73,13 +81,18 @@ export function SiteHeader({ showSearch = true }: SiteHeaderProps) {
             />
           </div>
         </form>
-      ) : (
-        <div className="flex-1" />
       )}
+      {variant === "admin" && <div className="flex-1" />}
 
       <nav className="flex items-center gap-1">
         <Link
-          href={isLoggedIn ? "/profile" : "/login"}
+          href={
+            variant === "admin"
+              ? "/admin/profile"
+              : isLoggedIn
+                ? "/profile"
+                : "/login"
+          }
           className={cn(
             "flex flex-col items-center justify-center rounded-lg p-2 transition-colors active:scale-95",
             isProfileActive
@@ -103,25 +116,29 @@ export function SiteHeader({ showSearch = true }: SiteHeaderProps) {
           <span className="hidden text-xs font-medium sm:inline">Account</span>
         </Link>
 
-        <Link
-          href="/orders"
-          className="flex flex-col items-center justify-center rounded-lg p-2 text-muted-foreground transition-colors hover:bg-muted active:scale-95"
-        >
-          <ClipboardList className="h-5 w-5" />
-          <span className="hidden text-xs font-medium sm:inline">Orders</span>
-        </Link>
-        <Link
-          href="/cart"
-          className="relative flex flex-col items-center justify-center rounded-lg p-2 text-muted-foreground transition-colors hover:bg-muted active:scale-95"
-        >
-          <ShoppingBasket className="h-5 w-5" />
-          <span className="hidden text-xs font-medium sm:inline">Cart</span>
-          {itemCount > 0 && (
-            <span className="absolute right-0.5 top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-secondary text-[10px] font-bold text-secondary-foreground">
-              {itemCount > 9 ? "9+" : itemCount}
-            </span>
-          )}
-        </Link>
+        {variant === "customer" && (
+          <Link
+            href="/orders"
+            className="flex flex-col items-center justify-center rounded-lg p-2 text-muted-foreground transition-colors hover:bg-muted active:scale-95"
+          >
+            <ClipboardList className="h-5 w-5" />
+            <span className="hidden text-xs font-medium sm:inline">Orders</span>
+          </Link>
+        )}
+        {variant === "customer" && (
+          <Link
+            href="/cart"
+            className="relative flex flex-col items-center justify-center rounded-lg p-2 text-muted-foreground transition-colors hover:bg-muted active:scale-95"
+          >
+            <ShoppingBasket className="h-5 w-5" />
+            <span className="hidden text-xs font-medium sm:inline">Cart</span>
+            {itemCount > 0 && (
+              <span className="absolute right-0.5 top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-secondary text-[10px] font-bold text-secondary-foreground">
+                {itemCount > 9 ? "9+" : itemCount}
+              </span>
+            )}
+          </Link>
+        )}
       </nav>
     </header>
   );
