@@ -22,11 +22,11 @@ export function middleware(req: NextRequest) {
     role !== "SUPER_ADMIN" &&
     role !== "STORE_ADMIN"
   ) {
-    return NextResponse.redirect(new URL("/", req.url));
+    return NextResponse.redirect(new URL("/admin-login", req.url));
   }
 
   if (pathname.startsWith("/admin/stores") && role !== "SUPER_ADMIN") {
-    return NextResponse.redirect(new URL("/", req.url));
+    return NextResponse.redirect(new URL("/admin/products", req.url));
   }
 
   return NextResponse.next();
