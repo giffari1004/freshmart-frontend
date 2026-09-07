@@ -27,7 +27,7 @@ export default function AdminLayout({
 }) {
   return (
     <div className="flex min-h-screen flex-col bg-stone-50">
-      <SiteHeader />
+      <SiteHeader variant="admin" showSearch={false} />
       <div className="flex flex-1 flex-col md:flex-row">
         <AdminSidebar />
         <div className="flex flex-1 flex-col">
