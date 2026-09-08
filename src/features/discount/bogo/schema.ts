@@ -5,18 +5,30 @@ export const CREATE_BOGO = z
     storeId: z.string().uuid("Invalid store id"),
     productId: z.string().uuid("Invalid product id"),
     startDate: z.coerce.date("Start date is required"),
-    endDate: z.coerce.date("End date is required"),    
+    endDate: z.coerce.date("End date is required"),
   })
+  .refine(
+    (data) => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const startDate = new Date(data.startDate);
+      startDate.setHours(0, 0, 0, 0);
+      return startDate >= today;
+    },
+    {
+      message: "Start date cannot be before today",
+      path: ["startDate"],
+    },
+  )
   .refine((data) => data.endDate > data.startDate, {
     message: "End date must be after start date",
     path: ["endDate"],
   });
-
 export const UPDATE_BOGO = z
   .object({
     productId: z.string().uuid("Invalid product id").optional(),
     startDate: z.coerce.date("Start date is required"),
-    endDate: z.coerce.date("End date is required"),    
+    endDate: z.coerce.date("End date is required"),
   })
   .refine(
     (data) =>
