@@ -6,7 +6,6 @@ import { getAllUserSchema } from "@/features/admin/schema";
 import { CreateStoreAdmin } from "@/features/admin/components/create-store-admin-dialog";
 import { UserFilter } from "@/features/admin/components/user-filters";
 import { UsersTable } from "@/features/admin/components/user-table";
-import { UserPagination } from "@/features/admin/components/user-pagination";
 import { EditStoreAdmin } from "@/features/admin/components/edit-store-admin-dialog";
 import { DeleteStoreAdmin } from "@/features/admin/components/delete-store-admin-dialog";
 import { StatCard } from "@/features/admin/components/star-card";
@@ -78,10 +77,9 @@ export default function AdminUsersPage() {
               users={data?.data ?? []}
               onEdit={setEditUser}
               onDelete={setDeleteUser}
+              meta={data?.meta}
+              onPageChange={setPage}
             />
-            {data?.meta && (
-              <UserPagination meta={data.meta} onPageChange={setPage} />
-            )}
           </>
         )}
         <EditStoreAdmin user={editUser} onClose={() => setEditUser(null)} />

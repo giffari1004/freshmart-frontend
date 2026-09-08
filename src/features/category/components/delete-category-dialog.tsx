@@ -24,7 +24,7 @@ export function DeleteCategoryDialog({
   }
   return (
     <Dialog open={!!category} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] overflow-y-auto rounded-3xl p-6 border-green-200">
         <DialogHeader>
           <DialogTitle>Delete category</DialogTitle>
         </DialogHeader>

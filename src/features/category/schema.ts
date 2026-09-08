@@ -14,7 +14,7 @@ export const CREATE_CATEGORY = z.object({
   name: z.string().trim().min(1, "Category name is required"),
 });
 export const UPDATE_CATEGORY = z.object({
-  name: z.string().trim().min(1).optional(),
+  name: z.string().trim().min(1, "Category name is required").optional(),
 });
 export interface Category {
   id: string;

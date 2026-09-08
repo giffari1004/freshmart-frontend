@@ -38,6 +38,12 @@ export function StockOut({ inventory, onClose }: StockOutProps) {
   if (!inventory) return null;
   const currentInventory = inventory;
   function onsubmitButton(value: stockOutSchema) {
+    if (value.quantity > currentInventory.stockQuantity) {
+      form.setError("quantity", {
+        message: `Quantity cannot exceed current stock (${currentInventory.stockQuantity})`,
+      });
+      return;
+    }
     mutation.mutate(
       { id: currentInventory.id, body: value },
       {
@@ -50,7 +56,10 @@ export function StockOut({ inventory, onClose }: StockOutProps) {
   }
   return (
     <Dialog open={!!inventory} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent className="sm:max-w-[520px] rounded-3xl p-6 border-green-200">
+      <DialogContent
+        className="sm:max-w-[520px] rounded-3xl p-6 border-green-200"
+        onOpenAutoFocus={(e) => e.preventDefault()}
+      >
         <DialogHeader className="space-y-2">
           <DialogTitle className="text-3xl font-bold tracking-tight">
             Stock out
@@ -59,12 +68,20 @@ export function StockOut({ inventory, onClose }: StockOutProps) {
             {`Remove stock from ${inventory.store.name} for ${inventory.product.name}`}
           </p>
         </DialogHeader>
-        <form onSubmit={form.handleSubmit(onsubmitButton)}>
+        <form
+          onSubmit={form.handleSubmit(onsubmitButton)}
+          className="space-y-5 pt-2"
+        >
           <div className="space-y-2">
             <Label htmlFor="quantity" className="text-sm font-medium">
-              Quantity
+              Quantity (Available stock: {currentInventory.stockQuantity})
             </Label>
             <NumberStepper form={form} name="quantity" min={1} />
+            {form.formState.errors.quantity && (
+              <p className="text-xs text-destructive">
+                {form.formState.errors.quantity.message}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="notes">Notes (Optional)</Label>

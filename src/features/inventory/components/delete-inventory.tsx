@@ -21,7 +21,7 @@ export function DeleteInventory({ inventory, onClose }: DeleteInventoryProps) {
   }
   return (
     <Dialog open={!!inventory} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent>
+      <DialogContent className="max-h-[90vh] overflow-y-auto rounded-3xl p-6 border-green-200">
         <DialogHeader>
           <DialogTitle>Delete inventory</DialogTitle>
         </DialogHeader>

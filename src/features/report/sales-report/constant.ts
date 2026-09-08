@@ -38,6 +38,7 @@ export interface dataTypeGetProductReport {
   productName: string;
   totalSales: number;
   quantitySold: number;
+  productImage: string | null;
 }
 export interface dataTypeGetCategoryReport {
   month: string;

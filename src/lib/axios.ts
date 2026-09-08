@@ -4,6 +4,9 @@ import { useAuthStore } from "@/stores/auth-store";
 
 export const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
+  headers: {
+    "Cache-Control": "no-cache",
+  },
   withCredentials: true, // kalau token disimpan via httpOnly cookie dari backend
 });
 

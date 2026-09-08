@@ -4,10 +4,10 @@ import { useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ProductGrid } from "@/features/product/public/components/product-grid";
 import { ProductCatalogFilters } from "@/features/product/public/components/product-catalog-filters";
-import { ProductPagination } from "@/features/product/public/components/product-pagination";
 import { useGetProducts } from "@/features/product/public/hooks";
 import { getProductCatalogSchema } from "@/features/product/public/schema";
 import { useNearestStore } from "@/features/storefront/hooks";
+import { PaginationMeta } from "@/lib/pagination";
 
 export default function ProductsPage() {
   const [page, setPage] = useState(1);
@@ -78,7 +78,7 @@ export default function ProductsPage() {
           <>
             <ProductGrid products={data?.data ?? []} />
             {data?.meta && (
-              <ProductPagination meta={data.meta} onPageChange={setPage} />
+              <PaginationMeta meta={data.meta} onPageChange={setPage} itemLabel="Products"/>
             )}
           </>
         )}

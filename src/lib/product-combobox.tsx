@@ -1,8 +1,8 @@
 "use client";
 
-import { useGetAllProduct } from "@/features/product/hooks";
 import { useState } from "react";
-import { Product } from "../constant";
+import { useGetAllInventories } from "@/features/inventory/hooks";
+import { Inventory } from "@/features/inventory/schema";
 import {
   Popover,
   PopoverContent,
@@ -21,24 +21,37 @@ import { Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface ProductComboBoxProps {
+  storeId?: string;
   productId: string | undefined;
   onProductIdChange: (value: string | undefined) => void;
 }
 export function ProductComboBox({
+  storeId,
   productId,
   onProductIdChange,
 }: ProductComboBoxProps) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
-  const { data } = useGetAllProduct({
+  const { data } = useGetAllInventories({
     page: 1,
     limit: 20,
+    storeId,
     search: search || undefined,
     sortBy: "createdAt",
     sortOrder: "desc",
   });
   const products = data?.data ?? [];
-  const selected = products.find((p: Product) => p.id === productId);
+  const uniqueProducts = products.reduce(
+    (acc: Inventory[], item: Inventory) => {
+      const exists = acc.some((p) => p.product.id === item.product.id);
+      if (!exists) {
+        acc.push(item);
+      }
+      return acc;
+    },
+    [],
+  );
+  const selected = uniqueProducts.find((item:Inventory) => item.product.id === productId);
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -47,18 +60,18 @@ export function ProductComboBox({
           role="combobox"
           className="w-full justify-between sm:w-52"
         >
-          {selected ? selected.name : "All products"}
+          {selected ? selected.product.name : "All products"}
         </Button>
       </PopoverTrigger>
-      <PopoverContent>
+      <PopoverContent className="w-64 p-0" align="start">
         <Command shouldFilter={false}>
           <CommandInput
             placeholder="Search product"
             value={search}
             onValueChange={setSearch}
           />
-          <CommandList>
-            <CommandEmpty>Product not found</CommandEmpty>
+          <CommandList className="max-h-64 overflow-y-auto">
+            <CommandEmpty>No product available</CommandEmpty>
             <CommandGroup>
               <CommandItem
                 onSelect={() => {
@@ -74,21 +87,23 @@ export function ProductComboBox({
                 />
                 All products
               </CommandItem>
-              {products.map((item: Product) => (
+              {uniqueProducts.map((item:Inventory) => (
                 <CommandItem
-                  key={item.id}
+                  key={item.product.id}
                   onSelect={() => {
-                    onProductIdChange(item.id);
+                    onProductIdChange(item.product.id);
                     setOpen(false);
                   }}
                 >
                   <Check
                     className={cn(
                       "mr-2 size-4",
-                      productId === item.id ? "opacity-100" : "opacity-0",
+                      productId === item.product.id
+                        ? "opacity-100"
+                        : "opacity-0",
                     )}
                   />
-                  {item.name}
+                  {item.product.name}
                 </CommandItem>
               ))}
             </CommandGroup>

@@ -7,13 +7,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useStores } from "@/features/store/hooks";
 import { useDebouncedCallback } from "use-debounce";
 
-// TODO: ganti ke useGetAllStores() kalau modul Store (Gifari) udah selesai
-const DUMMY_STORES = [
-  { id: "dummy-store-id-1", name: "Toko Jakarta (Dummy)" },
-  { id: "dummy-store-id-2", name: "Toko Bandung (Dummy)" },
-];
 interface InventoryFilterProps {
   search: string;
   onSearchChange: (value: string) => void;
@@ -33,6 +29,8 @@ export function InventoryFilter({
   showStoreFilter,
 }: InventoryFilterProps) {
   const debounceSearch = useDebouncedCallback(onSearchChange, 400);
+  const { data: storesData } = useStores({ page: 1, limit: 50 });
+  const stores = storesData?.data ?? [];
   return (
     <div className="flex flex-wrap items-center gap-3 rounded-xl border border-stone-200 bg-white p-3">
       <div className="relative min-w-[220px] flex-1 ">
@@ -54,7 +52,7 @@ export function InventoryFilter({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All stores</SelectItem>
-            {DUMMY_STORES.map((store) => (
+            {stores.map((store) => (
               <SelectItem key={store.id} value={store.id}>
                 {store.name}
               </SelectItem>

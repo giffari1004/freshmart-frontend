@@ -5,7 +5,6 @@ import { CreateInventory } from "@/features/inventory/components/create-inventor
 import { DeleteInventory } from "@/features/inventory/components/delete-inventory";
 import { UpdateInventory } from "@/features/inventory/components/edit-inventory";
 import { InventoryFilter } from "@/features/inventory/components/inventory-filter";
-import { InventoryPagination } from "@/features/inventory/components/inventory-pagination";
 import { InventoryTable } from "@/features/inventory/components/inventory-table";
 import { StockHistory } from "@/features/inventory/components/stock-history";
 import { StockIn } from "@/features/inventory/components/stock-in";
@@ -88,10 +87,9 @@ export default function InventoryPage() {
             onStockIn={setStockInInventory}
             onStockOut={setStockOutInventory}
             onHistory={setHistoryInventory}
+            meta={data?.meta}
+            onPageChange={setPage}
           />
-          {data?.meta && (
-            <InventoryPagination meta={data.meta} onPageChange={setPage} />
-          )}
         </>
       )}
       {canManageInventory && (

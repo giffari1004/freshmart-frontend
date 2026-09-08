@@ -30,22 +30,24 @@ export const MONTH_LABEL = [
   "Des",
 ];
 export interface dataTypeGetMonthlySummary {
-    month:string
-    productId: string
-    productName: string
-    afterStock: number
-    stockIn: number
-    stockOut: number
+  month: string;
+  productId: string;
+  productName: string;
+  afterStock: number;
+  stockIn: number;
+  stockOut: number;
+  productImage: string | null;
 }
 export interface dataTypeGetStockDetail {
-    id:string
-    productName: string
-    createdAt: string
-    type: string
-    quantity: number
-    beforeStock: number
-    afterStock: number
-    notes: string | null
+  id: string;
+  productName: string;
+  createdAt: string;
+  type: string;
+  quantity: number;
+  beforeStock: number;
+  afterStock: number;
+  notes: string | null;
+  productImage: string | null;
 }
 
 export interface Product {

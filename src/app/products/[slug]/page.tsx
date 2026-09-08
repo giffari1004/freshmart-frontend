@@ -7,10 +7,10 @@
   import { useNearestStore } from "@/features/storefront/hooks";
   export default function ProductDetailPage() {
     const params = useParams();
-    const productId = params.id as string;
+    const productSlug = params.slug as string;
     const { data: nearestStore } = useNearestStore();
     const storeId = nearestStore?.store.id || "";
-    const { data: product, isLoading } = useGetProduct(productId, storeId);
+    const { data: product, isLoading } = useGetProduct(productSlug, storeId);
     if (isLoading) {
       return (
         <div className="min-h-screen bg-stone-50">

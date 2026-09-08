@@ -14,8 +14,14 @@ export const GET_ALL_PRODUCT = z.object({
 export const CREATE_PRODUCT = z.object({
   name: z.string().trim().min(1, "Product name is required"),
   description: z.string().trim().optional(),
-  basePrice: z.coerce.number().positive("Base price must be greater than 0"),
-  weight: z.coerce.number().int().positive("Weight must be greater than 0"),
+  basePrice: z.coerce
+    .number({ error: "Pleease input number" })
+    .min(1000, "Min Rp 1.000")
+    .positive("Base price must be greater than 0"),
+  weight: z.coerce
+    .number({ error: "Pleease input number" })
+    .int()
+    .positive("Weight must be greater than 0"),
   categoryId: z.string().uuid("Invalid category id"),
   images: z
     .any()
@@ -28,11 +34,12 @@ export const UPDATE_PRODUCT = z.object({
   name: z.string().trim().min(1).optional(),
   description: z.string().trim().optional(),
   basePrice: z.coerce
-    .number()
+    .number({ error: "Please input number" })
     .positive("Base price must be greater than 0")
+    .min(1000, "Min Rp 1.000")
     .optional(),
   weight: z.coerce
-    .number()
+    .number({ error: "Please input number" })
     .int()
     .positive("Weight must be greater than 0")
     .optional(),

@@ -1,4 +1,3 @@
-import { useGetAllCategory } from "@/features/category/hooks";
 import { useUpdateProduct } from "../hooks";
 import {
   UPDATE_PRODUCT,
@@ -28,12 +27,6 @@ interface EditProductProps {
 }
 export function UpdateProduct({ product, onClose }: EditProductProps) {
   const mutation = useUpdateProduct();
-  const { data: categoryData } = useGetAllCategory({
-    page: 1,
-    limit: 100,
-    sortBy: "name",
-    sortOrder: "asc",
-  });
   const form = useForm<
     updateProductInputSchema,
     any,
@@ -74,7 +67,7 @@ export function UpdateProduct({ product, onClose }: EditProductProps) {
   }
   return (
     <Dialog open={!!product} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent className="sm: max-w-[560px] rounded-3xl p-6">
+      <DialogContent className="max-h-[90vh] overflow-y-auto rounded-3xl p-6 border-green-200">
         <DialogHeader className="space-y-2">
           <DialogTitle className="text-2xl font-bold">Edit product</DialogTitle>
           <p className="text-sm text-muted-foreground">
@@ -108,7 +101,6 @@ export function UpdateProduct({ product, onClose }: EditProductProps) {
               </p>
             )}
           </div>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="edit-basePrice">Base price</Label>
               <PriceInput form={form} name={"basePrice"} />
@@ -127,15 +119,13 @@ export function UpdateProduct({ product, onClose }: EditProductProps) {
                 </p>
               )}
             </div>
-          </div>
           <div className="space-y-2">
             <Label>Category</Label>
-            <CategorySelect form={form} name="categoryId" />
-            {form.formState.errors.categoryId && (
-              <p className="text-xs text-destructive">
-                {form.formState.errors.categoryId.message}
-              </p>
-            )}
+            <CategorySelect
+              control={form.control}
+              name="categoryId"
+              error={form.formState.errors.categoryId}
+            />
           </div>
           <Button
             type="submit"

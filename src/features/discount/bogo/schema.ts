@@ -4,8 +4,8 @@ export const CREATE_BOGO = z
   .object({
     storeId: z.string().uuid("Invalid store id"),
     productId: z.string().uuid("Invalid product id"),
-    startDate: z.coerce.date(),
-    endDate: z.coerce.date(),
+    startDate: z.coerce.date("Start date is required"),
+    endDate: z.coerce.date("End date is required"),    
   })
   .refine((data) => data.endDate > data.startDate, {
     message: "End date must be after start date",
@@ -15,18 +15,20 @@ export const CREATE_BOGO = z
 export const UPDATE_BOGO = z
   .object({
     productId: z.string().uuid("Invalid product id").optional(),
-    startDate: z.coerce.date().optional(),
-    endDate: z.coerce.date().optional(),
+    startDate: z.coerce.date("Start date is required"),
+    endDate: z.coerce.date("End date is required"),    
   })
   .refine(
-    (data) => (data.startDate && data.endDate ? data.endDate > data.startDate : true),
+    (data) =>
+      data.startDate && data.endDate ? data.endDate > data.startDate : true,
     { message: "End date must be after start date", path: ["endDate"] },
   );
 
 export const GET_BOGO = z.object({
+  page: z.coerce.number().int().positive().default(1),
+  limit: z.coerce.number().int().positive().max(100).default(10),
   storeId: z.string().uuid("Invalid store id").optional(),
   productId: z.string().uuid("Invalid product id").optional(),
-  activeOnly: z.coerce.boolean().default(true),
 });
 
 export interface Bogo {

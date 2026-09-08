@@ -22,6 +22,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { NumberStepper } from "../../../lib/number-stepper";
 import { PriceInput } from "../../../lib/price-input";
 import { CategorySelect } from "./category-select";
+import { Plus } from "lucide-react";
 
 function useCreateProductForm(onDone: () => void) {
   const form = useForm<
@@ -33,7 +34,7 @@ function useCreateProductForm(onDone: () => void) {
     defaultValues: {
       name: "",
       description: "",
-      basePrice: 0,
+      basePrice: undefined,
       weight: undefined,
       categoryId: "",
       images: undefined,
@@ -68,7 +69,7 @@ export function CreateProduct() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="h-11 rounded-full bg-green-800 px-6 text-sm font-semibold text-white shadow-sm hover:bg-green-700">
-          Create product
+          <Plus className="h-4 w-4" />Create product
         </Button>
       </DialogTrigger>
       <DialogContent className="max-h-[90vh] overflow-y-auto rounded-3xl p-6 border-green-200">
@@ -96,7 +97,6 @@ export function CreateProduct() {
                 {form.formState.errors.name.message}
               </p>
             )}
-
             <Label htmlFor="description" className="text-sm font-medium">
               Description
             </Label>
@@ -111,7 +111,6 @@ export function CreateProduct() {
                 {form.formState.errors.description.message}
               </p>
             )}
-
             <Label htmlFor="basePrice" className="text-sm font-medium">
               Base Price
             </Label>
@@ -121,7 +120,6 @@ export function CreateProduct() {
                 {form.formState.errors.basePrice.message}
               </p>
             )}
-
             <Label htmlFor="weight" className="text-sm font-medium">
               Weight
             </Label>
@@ -131,14 +129,12 @@ export function CreateProduct() {
                 {form.formState.errors.weight.message}
               </p>
             )}
-
             <Label className="text-sm font-medium">Category</Label>
-            <CategorySelect form={form} name="categoryId" />
-            {form.formState.errors.categoryId && (
-              <p className="text-xs text-destructive">
-                {form.formState.errors.categoryId.message}
-              </p>
-            )}
+            <CategorySelect
+              control={form.control}
+              name="categoryId"
+              error={form.formState.errors.categoryId}
+            />
             <Label htmlFor="images">Images</Label>
             <Input
               id="images"

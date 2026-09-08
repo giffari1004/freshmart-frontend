@@ -11,10 +11,10 @@ export function useGetProducts(query: getProductCatalogSchema) {
   });
 }
 
-export function useGetProduct(id: string, storeId: string) {
+export function useGetProduct(productSlug: string, storeId: string) {
   return useQuery({
-    queryKey: ["product", id, storeId],
-    queryFn: () => fetchProductById(id, storeId),
-    enabled: !!id && !!storeId,
+    queryKey: ["product", productSlug, storeId],
+    queryFn: () => fetchProductById(productSlug, storeId),
+    enabled: !!productSlug && !!storeId,
   });
 }

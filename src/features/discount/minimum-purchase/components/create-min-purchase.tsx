@@ -18,22 +18,16 @@ import {
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { PriceInput } from "@/lib/price-input";
-import { useGetAllProduct } from "@/features/product/hooks";
-import { Product } from "@/features/product/constans";
-const DUMMY_STORES = [
-  { id: "1", name: "Toko Jakarta" },
-  { id: "2", name: "Toko Bandung" },
-];
-
-export function CreateMinPurchaseDiscount() {
+import { useStores } from "@/features/store/hooks";
+import { FormSelect } from "@/lib/form-select-helper";
+import { Plus } from "lucide-react";
+interface CreateMinPurchaseDiscountProps {
+  isSuperAdmin: boolean;
+}
+export function CreateMinPurchaseDiscount({
+  isSuperAdmin,
+}: CreateMinPurchaseDiscountProps) {
   const [open, setOpen] = useState(false);
   const mutation = useCreateMinPurchaseDiscount();
   const form = useForm<createMinPurchaseInput, any, createMinPurchaseOutput>({
@@ -45,13 +39,9 @@ export function CreateMinPurchaseDiscount() {
       minPurchaseAmount: 0,
     },
   });
-  const { data: productsData } = useGetAllProduct({
-    page: 1,
-    limit: 50,
-    sortBy: "createdAt",
-    sortOrder: "desc",
-  });
-
+  const valueType = form.watch("valueType");
+  const isPercentage = valueType === "PERCENTAGE";
+  const { data: storesData } = useStores({ page: 1, limit: 50 });
   function onSubmitButton(value: createMinPurchaseOutput) {
     mutation.mutate(value, {
       onSuccess: () => {
@@ -60,20 +50,19 @@ export function CreateMinPurchaseDiscount() {
       },
     });
   }
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="h-11 rounded-full bg-green-800 px-6 text-sm font-semibold text-white shadow-sm hover:bg-green-700">
-          Create discount Min Purchase
+          <Plus className="h-4 w-4" /> Create discount Min Purchase
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-h-[90vh] overflow-y-auto rounded-3xl p-6 border-green-200">
+      <DialogContent className="max-h-[90vh] overflow-y-auto rounded-3xl border-green-200 p-6">
         <DialogHeader className="space-y-2">
           <DialogTitle className="text-3xl font-bold tracking-tight">
             Create discount
           </DialogTitle>
-          <p className="text-muted-foreground text-sm">
+          <p className="text-sm text-muted-foreground">
             Add a minimum purchase discount
           </p>
         </DialogHeader>
@@ -81,89 +70,83 @@ export function CreateMinPurchaseDiscount() {
           onSubmit={form.handleSubmit(onSubmitButton)}
           className="space-y-5 pt-2"
         >
-          <div className="space-y-2">
-            <Label>Store name</Label>
-            <Select
-              value={form.watch("storeId")}
-              onValueChange={(value) => form.setValue("storeId", value)}
-            >
-              <SelectTrigger className="w-full h-12 rounded-2xl">
-                <SelectValue placeholder="Choose store name" />
-              </SelectTrigger>
-              <SelectContent>
-                {DUMMY_STORES.map((store) => (
-                  <SelectItem key={store.id} value={store.id}>
-                    {store.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-2">
-            <Label>Product (Optional)</Label>
-            <Select
-              value={form.watch("productId")}
-              onValueChange={(value) => form.setValue("productId", value)}
-            >
-              <SelectTrigger className="w-full h-12 rounded-2xl">
-                <SelectValue placeholder="Applies to all products if empty" />
-              </SelectTrigger>
-              <SelectContent>
-                {productsData?.data.map((product: Product) => (
-                  <SelectItem key={product.id} value={product.id}>
-                    {product.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          {isSuperAdmin && (
+            <div className="space-y-2">
+              <Label>Store name</Label>
+              <FormSelect
+                control={form.control}
+                name="storeId"
+                placeholder="Choose store name"
+                items={
+                  storesData?.data.map((s) => ({
+                    value: s.id,
+                    label: s.name,
+                  })) ?? []
+                }
+                error={form.formState.errors.storeId}
+              />
+            </div>
+          )}
           <div className="space-y-2">
             <Label>Value type</Label>
-            <Select
-              value={form.watch("valueType")}
-              onValueChange={(value) =>
-                form.setValue(
-                  "valueType",
-                  value as createMinPurchaseOutput["valueType"],
-                )
-              }
-            >
-              <SelectTrigger className="w-full h-12 rounded-2xl">
-                <SelectValue placeholder="Choose value type" />
-              </SelectTrigger>
-              <SelectContent>
-                {MIN_PURCHASE_VALUE_TYPE.map((type) => (
-                  <SelectItem key={type} value={type}>
-                    {type}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <FormSelect
+              control={form.control}
+              name="valueType"
+              placeholder="Choose value type"
+              items={MIN_PURCHASE_VALUE_TYPE.map((t) => ({
+                value: t,
+                label: t,
+              }))}
+              error={form.formState.errors.valueType}
+            />
           </div>
           <div className="space-y-2">
             <Label htmlFor="value">Value</Label>
-            <PriceInput form={form} name="value" />
+            <PriceInput
+              form={form}
+              name="value"
+              prefix={isPercentage ? "" : "Rp "}
+              suffix={isPercentage ? "%" : undefined}
+              placeholder={isPercentage ? "0%" : "Rp 0"}
+            />
             {form.formState.errors.value && (
-              <p className="text-destructive text-xs">
+              <p className="text-xs text-destructive">
                 {form.formState.errors.value.message}
               </p>
             )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="minPurchaseAmount">Minimum purchase amount</Label>
-            <PriceInput form={form} name="minPurchaseAmount" />
+            <PriceInput
+              form={form}
+              name="minPurchaseAmount"
+              prefix="Rp "
+              placeholder="Rp 0"
+            />
             {form.formState.errors.minPurchaseAmount && (
-              <p className="text-destructive text-xs">
+              <p className="text-xs text-destructive">
                 {form.formState.errors.minPurchaseAmount.message}
               </p>
             )}
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="maxDiscountAmount">
-              Max discount amount (Optional)
-            </Label>
-            <PriceInput form={form} name="maxDiscountAmount" />
-          </div>
+          {isPercentage && (
+            <div className="space-y-2">
+              <Label htmlFor="maxDiscountAmount">
+                Max discount amount (Optional)
+              </Label>
+              <PriceInput
+                form={form}
+                name="maxDiscountAmount"
+                prefix="Rp "
+                placeholder="Rp 0"
+              />
+              {form.formState.errors.maxDiscountAmount && (
+                <p className="text-xs text-destructive">
+                  {form.formState.errors.maxDiscountAmount.message}
+                </p>
+              )}
+            </div>
+          )}
           <div className="space-y-2">
             <Label htmlFor="startDate">Start date</Label>
             <Controller
@@ -179,7 +162,7 @@ export function CreateMinPurchaseDiscount() {
               )}
             />
             {form.formState.errors.startDate && (
-              <p className="text-destructive text-xs">
+              <p className="text-xs text-destructive">
                 {form.formState.errors.startDate.message}
               </p>
             )}
@@ -199,7 +182,7 @@ export function CreateMinPurchaseDiscount() {
               )}
             />
             {form.formState.errors.endDate && (
-              <p className="text-destructive text-xs">
+              <p className="text-xs text-destructive">
                 {form.formState.errors.endDate.message}
               </p>
             )}
@@ -207,7 +190,7 @@ export function CreateMinPurchaseDiscount() {
           <Button
             type="submit"
             disabled={mutation.isPending}
-            className="w-full h-12 rounded-2xl bg-green-700 hover:bg-green-800 text-white font-medium shadow-sm"
+            className="h-12 w-full rounded-2xl bg-green-700 font-medium text-white shadow-sm hover:bg-green-800"
           >
             {mutation.isPending ? "Creating..." : "Create discount"}
           </Button>
