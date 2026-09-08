@@ -14,15 +14,16 @@ import { dataTypeGetMonthlySummary, MONTH_LABEL } from "../constant";
 interface StockReportMonthlyDetailProps {
   storeId: string | undefined;
   year: number | undefined;
+  productId: string | undefined
   month: number | undefined;
 }
 export function StockReportMonthlySummary({
   storeId,
+  productId,
   month,
   year,
 }: StockReportMonthlyDetailProps) {
-  const { data, isLoading } = useGetMonthSummary({ storeId, year, month });
-  const summary = data ?? [];
+const { data, isLoading } = useGetMonthSummary({ storeId, year, month, productId });  const summary = data ?? [];
   return (
     <div className="rounded-2xl border border-stone-200 bg-white p-4 sm:p-6">
       <h2 className="mb-4 text-base font-semibold text-stone-900">
@@ -33,16 +34,13 @@ export function StockReportMonthlySummary({
       ) : summary.length === 0 ? (
         <div className="flex flex-col items-center gap-2 py-12 text-center">
           <Inbox className="size-5 text-stone-400" />
-          <p className="text-sm text-stone-400">
-            No data for this period
-          </p>
+          <p className="text-sm text-stone-400">No data for this period</p>
         </div>
       ) : (
         <div className="overflow-x-auto rounded-xl border border-stone-200">
           <Table>
             <TableHeader>
               <TableRow className="bg-stone-50/60 hover:bg-stone-50/60">
-                <TableHead>Product id</TableHead>
                 <TableHead>Product name</TableHead>
                 <TableHead className="text-right">Stock in</TableHead>
                 <TableHead className="text-right">Stock out</TableHead>
@@ -53,11 +51,21 @@ export function StockReportMonthlySummary({
             <TableBody>
               {summary.map((item: dataTypeGetMonthlySummary) => (
                 <TableRow key={`${item.productId}-${item.month}`}>
-                  <TableCell className="text-stone-700">
-                    {item.productId}
-                  </TableCell>
-                  <TableCell className="font-medium text-stone-900">
-                    {item.productName}
+                  <TableCell className="text-right text-stone-700">
+                    <div className="flex items-center gap-3">
+                      {item.productImage ? (
+                        <img
+                          src={item.productImage}
+                          alt={item.productName}
+                          className="size-10 rounded-lg object-cover"
+                        />
+                      ) : (
+                        <div className="flex size-10 items-center justify-center rounded-lg bg-stone-100 text-stone-300">
+                          <Inbox className="size-4" />
+                        </div>
+                      )}
+                      <span>{item.productName}</span>
+                    </div>
                   </TableCell>
                   <TableCell className="text-right text-stone-700">
                     {item.stockIn}

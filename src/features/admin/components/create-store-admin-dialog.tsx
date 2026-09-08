@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Plus } from "lucide-react";
 export function CreateStoreAdmin() {
   const [open, setOpen] = useState(false);
   const mutation = useCreateAdmins();
@@ -33,6 +34,7 @@ export function CreateStoreAdmin() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="h-11 rounded-full bg-green-800 px-6 text-sm font-semibold text-white shadow-sm hover:bg-green-700">
+          <Plus className="h-4 w-4" />
           Add store admin
         </Button>
       </DialogTrigger>

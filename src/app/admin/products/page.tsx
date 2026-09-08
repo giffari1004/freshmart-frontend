@@ -4,7 +4,6 @@ import { CreateProduct } from "@/features/product/components/create-product";
 import { DeleteProduct } from "@/features/product/components/dekete-product";
 import { UpdateProduct } from "@/features/product/components/edit-product";
 import { ProductFilters } from "@/features/product/components/product-filters";
-import { ProductPagination } from "@/features/product/components/product-pagination";
 import { ProductTable } from "@/features/product/components/product-table";
 import { useGetAllProduct } from "@/features/product/hooks";
 import { getAllProductSchema } from "@/features/product/schema";
@@ -68,10 +67,9 @@ export default function AdminProductsPage() {
             canManage={canManage}
             onEdit={setEditProduct}
             onDelete={setDeleteProduct}
+            meta={data?.meta}
+            onPageChange={setPage}
           />
-          {data?.meta && (
-            <ProductPagination meta={data.meta} onPageChange={setPage} />
-          )}
         </>
       )}
       {canManage && (

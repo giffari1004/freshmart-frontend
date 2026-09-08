@@ -6,6 +6,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { MONTHS, YEARS } from "../constant";
+import { useStores } from "@/features/store/hooks";
 
 interface SalesReportFilterProps {
   storeId: string | undefined;
@@ -16,10 +17,6 @@ interface SalesReportFilterProps {
   onMonthChange: (value: number | undefined) => void;
   canFilterStore: boolean;
 }
-const DUMMY_STORES = [
-  { id: "store-1", name: "JAKARTA" },
-  { id: "store-2", name: "BSD" },
-];
 export function SalesReportFilter({
   storeId,
   onStoreIdChange,
@@ -29,6 +26,8 @@ export function SalesReportFilter({
   onMonthChange,
   canFilterStore,
 }: SalesReportFilterProps) {
+  const { data: storesData } = useStores({ page: 1, limit: 50 });
+  const stores = storesData?.data ?? [];
   return (
     <div className="flex flex-col gap-2 rounded-xl border border-stone-200 bg-white p-3 sm:flex-row sm:items-center sm:gap-3">
       {canFilterStore && (
@@ -41,7 +40,7 @@ export function SalesReportFilter({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Store</SelectItem>
-            {DUMMY_STORES.map((item) => (
+            {stores.map((item) => (
               <SelectItem key={item.id} value={item.id}>
                 {item.name}
               </SelectItem>

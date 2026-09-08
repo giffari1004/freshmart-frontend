@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   useCreateDiscount,
   useGetAllDiscounts,
@@ -22,22 +22,17 @@ import {
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { PriceInput } from "@/lib/price-input";
-import { useGetAllProduct } from "@/features/product/hooks";
 import { Product } from "@/features/product/constans";
-const DUMMY_STORES = [
-  { id: "1", name: "Toko Jakarta" },
-  { id: "2", name: "Toko Bandung" },
-];
-
-export function CreateDiscount() {
+import { useStores } from "@/features/store/hooks";
+import { FormSelect } from "@/lib/form-select-helper";
+import { Plus } from "lucide-react";
+import { useGetAllInventories } from "@/features/inventory/hooks";
+import { Inventory } from "@/features/inventory/schema";
+interface CreateDiscountProps {
+  isSuperAdmin: boolean;
+}
+export function CreateDiscount({ isSuperAdmin }: CreateDiscountProps) {
   const [open, setOpen] = useState(false);
   const mutation = useCreateDiscount();
   const form = useForm<createDiscountInput, any, createDiscountOutput>({
@@ -46,24 +41,34 @@ export function CreateDiscount() {
       storeId: "",
       productId: "",
       valueType: "PERCENTAGE",
-      value: 0,
+      value: undefined,
     },
   });
-  const { data: productsData } = useGetAllProduct({
+  const storeId = form.watch("storeId");
+  const valueType = form.watch("valueType");
+  const isPercentage = valueType === "PERCENTAGE";
+  useEffect(() => {
+    form.setValue("productId", "");
+  }, [storeId, form]);
+  const { data: inventoryData } = useGetAllInventories({
     page: 1,
     limit: 50,
+    storeId,
     sortBy: "createdAt",
     sortOrder: "desc",
   });
   const { data: activeDiscountsData } = useGetAllDiscounts({
-    activeOnly: true,
+    page: 1,
+    limit: 50,
+    storeId,
   });
-  const discountedProductIds = new Set(
-    activeDiscountsData?.data.map((d: Discount) => d.productId) ?? [],
+  const { data: storesData } = useStores({ page: 1, limit: 50 });
+  const discountProduct = new Set(
+    activeDiscountsData?.data?.map((d: Discount) => d.productId) ?? [],
   );
-  const availableProducts = productsData?.data.filter(
-    (product: Product) => !discountedProductIds.has(product.id),
-  );
+  const availableProducts = inventoryData?.data
+    .map((inv: Inventory) => inv.product)
+    .filter((product: Product) => !discountProduct.has(product.id));
   function onSubmitButton(value: createDiscountOutput) {
     mutation.mutate(value, {
       onSuccess: () => {
@@ -76,15 +81,15 @@ export function CreateDiscount() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="h-11 rounded-full bg-green-800 px-6 text-sm font-semibold text-white shadow-sm hover:bg-green-700">
-          Create direct discount 
+          <Plus className="h-4 w-4" /> Create direct discount
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-h-[90vh] overflow-y-auto rounded-3xl p-6 border-green-200">
+      <DialogContent className="max-h-[90vh] overflow-y-auto rounded-3xl border-green-200 p-6">
         <DialogHeader className="space-y-2">
           <DialogTitle className="text-3xl font-bold tracking-tight">
             Create discount
           </DialogTitle>
-          <p className="text-muted-foreground text-sm">
+          <p className="text-sm text-muted-foreground">
             Add a direct discount to a product
           </p>
         </DialogHeader>
@@ -92,70 +97,62 @@ export function CreateDiscount() {
           onSubmit={form.handleSubmit(onSubmitButton)}
           className="space-y-5 pt-2"
         >
-          <div className="space-y-2">
-            <Label>Store name</Label>
-            <Select
-              value={form.watch("storeId")}
-              onValueChange={(value) => form.setValue("storeId", value)}
-            >
-              <SelectTrigger className="w-full h-12 rounded-2xl">
-                <SelectValue placeholder="Choose store name" />
-              </SelectTrigger>
-              <SelectContent>
-                {DUMMY_STORES.map((store) => (
-                  <SelectItem key={store.id} value={store.id}>
-                    {store.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          {isSuperAdmin && (
+            <div className="space-y-2">
+              <Label>Store name</Label>
+              <FormSelect
+                control={form.control}
+                name="storeId"
+                placeholder="Choose store name"
+                items={
+                  storesData?.data.map((s) => ({
+                    value: s.id,
+                    label: s.name,
+                  })) ?? []
+                }
+                error={form.formState.errors.storeId}
+              />
+            </div>
+          )}
           <div className="space-y-2">
             <Label>Product name</Label>
-            <Select
-              value={form.watch("productId")}
-              onValueChange={(value) => form.setValue("productId", value)}
-            >
-              <SelectTrigger className="w-full h-12 rounded-2xl">
-                <SelectValue placeholder="Select product name" />
-              </SelectTrigger>
-              <SelectContent>
-                {availableProducts?.map((product: Product) => (
-                  <SelectItem key={product.id} value={product.id}>
-                    {product.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <FormSelect
+              control={form.control}
+              name="productId"
+              placeholder="Select product name"
+              items={
+                availableProducts?.map((p: Product) => ({
+                  value: p.id,
+                  label: p.name,
+                })) ?? []
+              }
+              error={form.formState.errors.productId}
+            />
           </div>
           <div className="space-y-2">
             <Label>Value type</Label>
-            <Select
-              value={form.watch("valueType")}
-              onValueChange={(value) =>
-                form.setValue(
-                  "valueType",
-                  value as createDiscountOutput["valueType"],
-                )
-              }
-            >
-              <SelectTrigger className="w-full h-12 rounded-2xl">
-                <SelectValue placeholder="Choose value type" />
-              </SelectTrigger>
-              <SelectContent>
-                {DISCOUNT_VALUE_TYPE.map((type) => (
-                  <SelectItem key={type} value={type}>
-                    {type}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <FormSelect
+              control={form.control}
+              name="valueType"
+              placeholder="Choose value type"
+              items={DISCOUNT_VALUE_TYPE.map((t) => ({
+                value: t,
+                label: t,
+              }))}
+              error={form.formState.errors.valueType}
+            />
           </div>
           <div className="space-y-2">
             <Label htmlFor="value">Value</Label>
-            <PriceInput form={form} name="value" />
+            <PriceInput
+              form={form}
+              name="value"
+              prefix={isPercentage ? "" : "Rp "}
+              suffix={isPercentage ? "%" : undefined}
+              placeholder={isPercentage ? "0%" : "Rp 0"}
+            />
             {form.formState.errors.value && (
-              <p className="text-destructive text-xs">
+              <p className="text-xs text-destructive">
                 {form.formState.errors.value.message}
               </p>
             )}
@@ -175,7 +172,7 @@ export function CreateDiscount() {
               )}
             />
             {form.formState.errors.startDate && (
-              <p className="text-destructive text-xs">
+              <p className="text-xs text-destructive">
                 {form.formState.errors.startDate.message}
               </p>
             )}
@@ -195,7 +192,7 @@ export function CreateDiscount() {
               )}
             />
             {form.formState.errors.endDate && (
-              <p className="text-destructive text-xs">
+              <p className="text-xs text-destructive">
                 {form.formState.errors.endDate.message}
               </p>
             )}
@@ -203,7 +200,7 @@ export function CreateDiscount() {
           <Button
             type="submit"
             disabled={mutation.isPending}
-            className="w-full h-12 rounded-2xl bg-green-700 hover:bg-green-800 text-white font-medium shadow-sm"
+            className="h-12 w-full rounded-2xl bg-green-700 font-medium text-white shadow-sm hover:bg-green-800"
           >
             {mutation.isPending ? "Creating..." : "Create discount"}
           </Button>

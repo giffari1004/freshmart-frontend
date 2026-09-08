@@ -7,7 +7,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Inventory } from "../schema";
-import { Inbox } from "lucide-react";
+import {
+  History,
+  Inbox,
+  MoreVertical,
+  PackageMinus,
+  PackagePlus,
+  Pencil,
+  Trash2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/lib/helper-idr";
 import {
@@ -16,6 +24,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { PaginationMeta } from "@/lib/pagination";
 
 interface InventoryTableProps {
   inventories: Inventory[];
@@ -26,6 +35,8 @@ interface InventoryTableProps {
   onStockIn: (inventory: Inventory) => void;
   onStockOut: (inventory: Inventory) => void;
   onHistory: (inventory: Inventory) => void;
+  meta?: { page: number; limit: number; totalData: number; totalPages: number };
+  onPageChange?: (value: number) => void;
 }
 export function InventoryTable({
   inventories,
@@ -36,6 +47,8 @@ export function InventoryTable({
   onStockIn,
   onStockOut,
   onHistory,
+  meta,
+  onPageChange,
 }: InventoryTableProps) {
   if (inventories.length === 0) {
     return (
@@ -62,64 +75,102 @@ export function InventoryTable({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {inventories.map((inventory) => (
-            <TableRow key={inventory.id}>
-              <TableCell className="font-medium text-stone-900">
-                {inventory.product.name}
-              </TableCell>
-              <TableCell className="font-medium text-stone-900">
-                {inventory.store.name}
-              </TableCell>
-              <TableCell className="font-medium text-stone-900">
-                {inventory.stockQuantity}
-              </TableCell>
-              <TableCell className="font-medium text-stone-900">
-                {inventory.priceOverride
-                  ? formatPrice(inventory.priceOverride)
-                  : "-"}
-              </TableCell>
-              {canManageStock && (
-                <TableCell className="text-right">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon">
-                        ...
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      {canManageStock && (
-                        <DropdownMenuItem onClick={() => onStockIn(inventory)}>
-                          Stock In
-                        </DropdownMenuItem>
-                      )}
-                      {canManageStock && (
-                        <DropdownMenuItem onClick={() => onStockOut(inventory)}>
-                          Stock Out
-                        </DropdownMenuItem>
-                      )}
-                      {canManageInventory && (
-                        <DropdownMenuItem onClick={() => onEdit(inventory)}>
-                          Edit
-                        </DropdownMenuItem>
-                      )}
-                      {canManageInventory && (
-                        <DropdownMenuItem onClick={() => onDelete(inventory)}>
-                          Delete
-                        </DropdownMenuItem>
-                      )}
-                      {canManageStock && (
-                        <DropdownMenuItem onClick={() => onHistory(inventory)}>
-                          History
-                        </DropdownMenuItem>
-                      )}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+          {inventories.map((inventory) => {
+            const primaryImage =
+              inventory.product.images.find((img) => img.isPrimary) ??
+              inventory.product.images[0];
+            return (
+              <TableRow key={inventory.id}>
+                <TableCell className="font-medium text-stone-900">
+                  <div className="flex items-center gap-3">
+                    {primaryImage ? (
+                      <img
+                        src={primaryImage.imageUrl}
+                        alt={inventory.product.name}
+                        className="size-10 rounded-lg object-cover"
+                      />
+                    ) : (
+                      <div className="flex size-10 items-center justify-center rounded-lg bg-stone-100 text-stone-300">
+                        <Inbox className="size-4" />
+                      </div>
+                    )}
+                    <span className="font-medium text-stone-900">
+                      {inventory.product.name}
+                    </span>
+                  </div>
                 </TableCell>
-              )}
-            </TableRow>
-          ))}
+                <TableCell className="font-medium text-stone-900">
+                  {inventory.store.name}
+                </TableCell>
+                <TableCell className="font-medium text-stone-900">
+                  {inventory.stockQuantity}
+                </TableCell>
+                <TableCell className="font-medium text-stone-900">
+                  {inventory.priceOverride
+                    ? formatPrice(inventory.priceOverride)
+                    : "-"}
+                </TableCell>
+                {canManageStock && (
+                  <TableCell className="text-right">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon">
+                          <MoreVertical className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        {canManageStock && (
+                          <DropdownMenuItem
+                            onClick={() => onStockIn(inventory)}
+                          >
+                            <PackagePlus className="mr-2 h-4 w-4" /> Stock In
+                          </DropdownMenuItem>
+                        )}
+                        {canManageStock && (
+                          <DropdownMenuItem
+                            onClick={() => onStockOut(inventory)}
+                          >
+                            <PackageMinus className="mr-2 h-4 w-4" /> Stock Out
+                          </DropdownMenuItem>
+                        )}
+                        {canManageInventory && (
+                          <DropdownMenuItem onClick={() => onEdit(inventory)}>
+                            <Pencil className="mr-2 h-4 w-4" /> Edit
+                          </DropdownMenuItem>
+                        )}
+                        {canManageInventory && (
+                          <DropdownMenuItem
+                            onClick={() => onDelete(inventory)}
+                            className="text-red-600"
+                          >
+                            <Trash2 className="mr-2 h-4 w-4" /> Delete
+                          </DropdownMenuItem>
+                        )}
+                        {canManageStock && (
+                          <DropdownMenuItem
+                            onClick={() => onHistory(inventory)}
+                          >
+                            <History className="mr-2 h-4 w-4" /> History
+                          </DropdownMenuItem>
+                        )}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                )}
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
+      {meta && onPageChange && (
+        <div className="border-t border-stone-200">
+          <PaginationMeta
+            meta={meta}
+            onPageChange={onPageChange}
+            itemLabel="Inventories"
+          />
+        </div>
+      )}
     </div>
   );
 }

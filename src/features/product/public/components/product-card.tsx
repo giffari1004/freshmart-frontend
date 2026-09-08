@@ -10,13 +10,41 @@ function formatPrice(price: number) {
     minimumFractionDigits: 0,
   }).format(price);
 }
+function getDiscountBadge(
+  discounts: { type: string; valueType: string; value: number }[] | undefined,
+) {
+  if (!discounts || discounts.length === 0) return null;
+  const bogo = discounts.find((d) => d.type === "BUY1GET1");
+  if (bogo) return { label: "BUY 1 GET 1", color: "bg-orange-500" };
+  const direct = discounts.find((d) => d.type === "DIRECT");
+  if (direct) {
+    const label =
+      direct.valueType === "PERCENTAGE"
+        ? `${direct.value}% OFF`
+        : `${formatPrice(direct.value)} OFF`;
+
+    return { label, color: "bg-red-500" };
+  }
+  return null;
+}
 export function ProductCard({ product }: { product: Product }) {
   const images = product.product.images ?? [];
   const primaryImage = images.find((img) => img.isPrimary) ?? images[0];
+  const badge = getDiscountBadge(product.product.discounts);
   return (
-    <Link href={`/products/${product.product.id}`} className="group block">
-      <div className="overflow-hidden rounded-3xl border border-stone-200 bg-white shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
-        <div className="aspect-square overflow-hidden bg-stone-100">
+    <Link
+      href={`/products/${product.product.slug}`}
+      className="group block h-full"
+    >
+      <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+        <div className="relative aspect-square overflow-hidden bg-stone-100">
+          {badge && (
+            <span
+              className={`absolute left-3 top-3 z-10 rounded-full ${badge.color} px-2.5 py-1 text-[10px] font-bold tracking-wide text-white shadow-md`}
+            >
+              {badge.label}
+            </span>
+          )}
           {primaryImage ? (
             <img
               src={primaryImage.imageUrl}
@@ -24,26 +52,24 @@ export function ProductCard({ product }: { product: Product }) {
               className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
             />
           ) : (
-            <div className="flex h-full items-center justify-center text-sm text-stone-400">
-              No image
+            <div className="flex h-full items-center justify-center text-xs text-stone-400">
+              No image available
             </div>
           )}
         </div>
-        <div className="space-y-3 p-4">
-          <div className="space-y-1">
-            <p className="text-xs font-medium uppercase tracking-wide text-emerald-700">
-              {product.product?.category?.name}
-            </p>
-            <h3 className="line-clamp-2 font-semibold text-stone-900">
-              {product.product.name}
-            </h3>
-          </div>
-          <p className="text-lg font-bold text-stone-900">
+        <div className="flex flex-1 flex-col gap-2 p-3">
+          <p className="line-clamp-1 text-[11px] font-semibold uppercase tracking-wider text-emerald-700">
+            {product.product.category?.name}
+          </p>
+          <h3 className="line-clamp-2 min-h-[40px] text-sm font-bold leading-5 text-stone-900">
+            {product.product.name}
+          </h3>
+          <p className="text-lg font-extrabold text-stone-900">
             {formatPrice(Number(product.product.basePrice))}
           </p>
-          <Button className="h-10 w-full rounded-2xl bg-emerald-700 hover:bg-emerald-800">
+          <Button className="mt-auto h-10 w-full rounded-xl bg-emerald-700 text-xs font-semibold text-white hover:bg-emerald-800">
             <ShoppingCart className="mr-2 size-4" />
-            View product
+            View Product
           </Button>
         </div>
       </div>

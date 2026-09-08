@@ -42,7 +42,7 @@ export function SalesCategoryReport({ storeId, year, month }: SalesCategoryRepor
             </TableHeader>
             <TableBody>
               {categories.map((item) => (
-                <TableRow key={`${item.categoryId}-${item.month}`}>
+                <TableRow key={`${item.categoryId}-${item.month}`} className="h-15">
                   <TableCell className="text-stone-700">
                     {MONTH_LABEL[new Date(item.month).getMonth()]}
                   </TableCell>

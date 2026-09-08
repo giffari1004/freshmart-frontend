@@ -7,7 +7,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { MONTHS, YEARS } from "../constant";
-import { ProductComboBox } from "./product-combobox";
+import { ProductComboBox } from "../../../../lib/product-combobox";
+import { useStores } from "@/features/store/hooks";
+import { useEffect } from "react";
 
 interface StockDetailFilterProps {
   storeId: string | undefined;
@@ -21,11 +23,6 @@ interface StockDetailFilterProps {
   canFilterStore: boolean;
 }
 
-const DUMMY_STORES = [
-  { id: "store-1", name: "JAKARTA" },
-  { id: "store-2", name: "BSD" },
-];
-
 export function StockDetailFilter({
   storeId,
   onStoreIdChange,
@@ -37,6 +34,11 @@ export function StockDetailFilter({
   onMonthChange,
   canFilterStore,
 }: StockDetailFilterProps) {
+  const { data: storesData } = useStores({ page: 1, limit: 50 });
+  const stores = storesData?.data ?? [];
+  useEffect(() => {
+    onProductIdChange(undefined)
+  },[storeId])
   return (
     <div className="flex flex-col gap-2 rounded-xl border border-stone-200 bg-white p-3 sm:flex-row sm:items-center sm:gap-3">
       {canFilterStore && (
@@ -49,7 +51,7 @@ export function StockDetailFilter({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Store</SelectItem>
-            {DUMMY_STORES.map((item) => (
+            {stores.map((item) => (
               <SelectItem key={item.id} value={item.id}>
                 {item.name}
               </SelectItem>
@@ -57,8 +59,15 @@ export function StockDetailFilter({
           </SelectContent>
         </Select>
       )}
-      <ProductComboBox productId={productId} onProductIdChange={onProductIdChange} />
-      <Select value={String(month)} onValueChange={(v) => onMonthChange(Number(v))}>
+      <ProductComboBox
+        storeId={storeId}
+        productId={productId}
+        onProductIdChange={onProductIdChange}
+      />
+      <Select
+        value={String(month)}
+        onValueChange={(v) => onMonthChange(Number(v))}
+      >
         <SelectTrigger className="w-full sm:w-40">
           <SelectValue placeholder="Month" />
         </SelectTrigger>
@@ -70,7 +79,10 @@ export function StockDetailFilter({
           ))}
         </SelectContent>
       </Select>
-      <Select value={String(year)} onValueChange={(v) => onYearChange(Number(v))}>
+      <Select
+        value={String(year)}
+        onValueChange={(v) => onYearChange(Number(v))}
+      >
         <SelectTrigger className="w-full sm:w-32">
           <SelectValue placeholder="Year" />
         </SelectTrigger>

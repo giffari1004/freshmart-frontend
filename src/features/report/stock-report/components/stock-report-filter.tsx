@@ -6,7 +6,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { MONTHS, YEARS } from "../constant";
-import { ProductComboBox } from "./product-combobox";
+import { ProductComboBox } from "../../../../lib/product-combobox";
+import { useStores } from "@/features/store/hooks";
+import { useEffect } from "react";
 
 interface StockReportMonthlySummaryFilterProps {
   storeId: string | undefined;
@@ -20,11 +22,6 @@ interface StockReportMonthlySummaryFilterProps {
   canFilterStore: boolean;
 }
 
-const DUMMY_STORES = [
-  { id: "store-1", name: "JAKARTA" },
-  { id: "store-2", name: "BSD" },
-];
-
 export function StockReportMonthlySummaryFilter({
   storeId,
   onStoreIdChange,
@@ -36,6 +33,11 @@ export function StockReportMonthlySummaryFilter({
   onYearChange,
   canFilterStore,
 }: StockReportMonthlySummaryFilterProps) {
+  const { data: storesData } = useStores({ page: 1, limit: 50 });
+  const stores = storesData?.data ?? [];
+  useEffect(() => {
+    onProductIdChange(undefined);
+  }, [storeId]);
   return (
     <div className="flex flex-col gap-2 rounded-xl border border-stone-200 bg-white p-3 sm:flex-row sm:items-center sm:gap-3">
       {canFilterStore && (
@@ -48,7 +50,7 @@ export function StockReportMonthlySummaryFilter({
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Store</SelectItem>
-            {DUMMY_STORES.map((item) => (
+            {stores.map((item) => (
               <SelectItem key={item.id} value={item.id}>
                 {item.name}
               </SelectItem>
@@ -56,7 +58,11 @@ export function StockReportMonthlySummaryFilter({
           </SelectContent>
         </Select>
       )}
-      <ProductComboBox productId={productId} onProductIdChange={onProductIdChange}/>
+      <ProductComboBox
+        storeId={storeId}
+        productId={productId}
+        onProductIdChange={onProductIdChange}
+      />
       <Select
         value={month ? String(month) : "all"}
         onValueChange={(v) =>
@@ -76,14 +82,13 @@ export function StockReportMonthlySummaryFilter({
         </SelectContent>
       </Select>
       <Select
-        value={year ? String(year) : "all"}
-        onValueChange={(v) => onYearChange(v === "all" ? undefined : Number(v))}
+        value={year ? String(year) : undefined}
+        onValueChange={(v) => onYearChange(Number(v))}
       >
         <SelectTrigger className="w-full sm:w-32">
-          <SelectValue placeholder="All years" />
+          <SelectValue placeholder="2026" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">All years</SelectItem>
           {YEARS.map((item) => (
             <SelectItem key={item.value} value={String(item.value)}>
               {item.label}
