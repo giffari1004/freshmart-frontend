@@ -22,6 +22,19 @@ export const CREATE_MIN_PURCHASE_DISCOUNT = z
     endDate: z.coerce.date("End date is required"),
   })
   .refine(
+    (data) => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const startDate = new Date(data.startDate);
+      startDate.setHours(0, 0, 0, 0);
+      return startDate >= today;
+    },
+    {
+      message: "Start date cannot be before today",
+      path: ["startDate"],
+    },
+  )
+  .refine(
     (data) => (data.valueType === "PERCENTAGE" ? data.value <= 100 : true),
     {
       message: "Percentage discount cannot exceed 100",
@@ -32,7 +45,6 @@ export const CREATE_MIN_PURCHASE_DISCOUNT = z
     message: "End date must be after start date",
     path: ["endDate"],
   });
-
 export const UPDATE_MIN_PURCHASE_DISCOUNT = z
   .object({
     valueType: z.enum(MIN_PURCHASE_VALUE_TYPE),
