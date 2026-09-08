@@ -4,7 +4,11 @@ import React, { useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { addressFormSchema, AddressFormInput, AddressFormOutput } from "@/features/address/schema";
+import {
+  addressFormSchema,
+  AddressFormInput,
+  AddressFormOutput,
+} from "@/features/address/schema";
 import { Address, geocodeCity } from "@/features/address/api";
 import { useCreateAddress, useUpdateAddress } from "@/features/address/hooks";
 import { CityCombobox } from "./city-combobox";
@@ -66,7 +70,6 @@ export function AddressFormDialog({
     reset,
     formState: { errors },
   } = form;
-
 
   useEffect(() => {
     if (open) {
@@ -231,6 +234,8 @@ export function AddressFormDialog({
                     shouldValidate: true,
                   });
 
+                  if (!selected.cityName || !selected.province) return;
+
                   try {
                     const coords = await geocodeCity(
                       `${selected.cityName}, ${selected.province}`,
@@ -241,7 +246,9 @@ export function AddressFormDialog({
                     setValue("longitude", coords.longitude, {
                       shouldValidate: true,
                     });
-                  } catch {}
+                  } catch (error) {
+                    console.error("Geocode city failed:", error);
+                  }
                 }}
               />
               {errors.city && (
