@@ -24,6 +24,7 @@ import {
   StoreFormOutput,
 } from "@/features/store/schema";
 import { useCreateStore, useUpdateStore } from "@/features/store/hooks";
+import { geocodeCity } from "@/features/address/api";
 
 const LocationPicker = dynamic(() => import("../../shared/location-picker"), {
   ssr: false,
@@ -105,7 +106,7 @@ export function StoreFormDialog({
     }
   };
 
-  const lat = useWatch({control: form.control, name: "latitude"})
+  const lat = useWatch({ control: form.control, name: "latitude" });
   const lng = useWatch({ control: form.control, name: "longitude" });
   const city = useWatch({ control: form.control, name: "city" });
   const isActive = useWatch({ control: form.control, name: "isActive" });
@@ -173,13 +174,29 @@ export function StoreFormDialog({
             <Label>City</Label>
             <CityCombobox
               value={city}
-              onSelect={(cityData) => {
+              onSelect={async (cityData) => {
                 form.setValue("city", cityData.cityName, {
                   shouldValidate: true,
                 });
                 form.setValue("rajaOngkirCityId", cityData.rajaOngkirCityId, {
                   shouldValidate: true,
                 });
+
+                if (!cityData.cityName || !cityData.province) return;
+
+                try {
+                  const coords = await geocodeCity(
+                    `${cityData.cityName}, ${cityData.province}`,
+                  );
+                  form.setValue("latitude", coords.latitude, {
+                    shouldValidate: true,
+                  });
+                  form.setValue("longitude", coords.longitude, {
+                    shouldValidate: true,
+                  });
+                } catch (error) {
+                  console.error("Geocode city failed:", error);
+                }
               }}
             />
             {form.formState.errors.city && (
@@ -260,9 +277,7 @@ export function StoreFormDialog({
                 </p>
               </div>
               <Switch
-                checked={
-                  isActive ?? true
-                }
+                checked={isActive ?? true}
                 onCheckedChange={(checked) =>
                   form.setValue("isActive", checked)
                 }
