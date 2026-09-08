@@ -8,7 +8,7 @@ export async function fetchProducts(query: getProductCatalogSchema) {
   return data;
 }
 
-export async function fetchProductById(id: string, storeId: string) {
-  const { data } = await api.get(`/products/${id}`, { params: { storeId } });
+export async function fetchProductById(slug: string, storeId: string) {
+  const { data } = await api.get(`/products/${slug}`, { params: { storeId } });
   return data.data;
 }

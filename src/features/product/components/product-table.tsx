@@ -13,17 +13,22 @@ import {
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/lib/helper-idr";
+import { PaginationMeta } from "@/lib/pagination";
 interface ProductTableProps {
   products: Product[];
   canManage: boolean;
   onEdit: (product: Product) => void;
   onDelete: (product: Product) => void;
+  meta?: { page: number; limit: number; totalData: number; totalPages: number };
+  onPageChange?: (page: number) => void;
 }
 export function ProductTable({
   products,
   canManage,
   onDelete,
   onEdit,
+  meta,
+  onPageChange,
 }: ProductTableProps) {
   if (products.length === 0) {
     return (
@@ -105,6 +110,11 @@ export function ProductTable({
           })}
         </TableBody>
       </Table>
+      {meta && onPageChange && (
+        <div className="border-t border-stone-200">
+          <PaginationMeta meta={meta} onPageChange={onPageChange} itemLabel="Products"/>
+        </div>
+      )}
     </div>
   );
 }

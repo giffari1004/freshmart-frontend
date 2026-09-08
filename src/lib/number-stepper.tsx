@@ -2,6 +2,7 @@ import { Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FieldValues, Path, PathValue, UseFormReturn, useWatch } from "react-hook-form";
+import { number } from "zod";
 interface NumberStepperProps<T extends FieldValues> {
   form: UseFormReturn<T>;
   name: Path<T>;
@@ -12,13 +13,14 @@ export function NumberStepper<T extends FieldValues>({
   name,
   min
 }: NumberStepperProps<T>) {
-  const weight = (useWatch({control:form.control,name}) ?? 0) as number;
+  const value = (useWatch({control:form.control,name}) ?? "") as number | string;
+  const weight =  typeof value === "number" ? value : 0
   return (
     <div className="flex items-center rounded-2xl border border-input overflow-hidden h-12">
       <Button
         type="button"
         variant="ghost"
-        className="h-full rounded-none px-4"
+        className="ml-5"
         onClick={() =>
           form.setValue(name, Math.max(min, weight - 1) as PathValue<T, Path<T>>,{shouldValidate:true})
         }
@@ -29,7 +31,7 @@ export function NumberStepper<T extends FieldValues>({
         type="number"
         min={0}
         className="border-0 text-center shadow-none focus-visible:ring-0 h-full"
-        value={weight}
+        value={value}
         onChange={(e) => {
           const val = e.target.value;
           form.setValue(
@@ -41,6 +43,7 @@ export function NumberStepper<T extends FieldValues>({
       <Button
         type="button"
         variant="ghost"
+        className="mr-5"
         onClick={() =>
           form.setValue(name, (weight + 1) as PathValue<T, Path<T>>,{shouldValidate:true})
         }

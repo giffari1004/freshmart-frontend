@@ -1,8 +1,14 @@
 import { api } from "@/lib/axios";
-import { createDiscountOutput, getDiscountsOutput, updateDiscountOutput } from "./schema";
+import {
+  createDiscountOutput,
+  getDiscountsOutput,
+  updateDiscountOutput,
+} from "./schema";
 
 export async function fetchDiscounts(query: getDiscountsOutput) {
-  const { data } = await api.get("/admin/discounts", { params: query });
+  const { data } = await api.get("/admin/discounts", {
+    params: query,
+  });
   return data;
 }
 export async function createDiscount(body: createDiscountOutput) {

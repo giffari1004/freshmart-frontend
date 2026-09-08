@@ -13,6 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Plus } from "lucide-react";
 export function CreateCategoryDialog() {
   const [open, setOpen] = useState(false);
   const mutation = useCreateCategory();
@@ -34,7 +35,7 @@ export function CreateCategoryDialog() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="h-11 rounded-full bg-green-800 px-6 text-sm font-semibold text-white shadow-sm hover:bg-green-700">
-          Create category
+          <Plus className="h-4 w-4" /> Create category
         </Button>
       </DialogTrigger>
       <DialogContent className="max-h-[90vh] overflow-y-auto rounded-3xl p-6 border-green-200">

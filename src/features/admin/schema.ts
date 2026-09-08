@@ -29,6 +29,7 @@ export interface AdminUser {
   storeId: string | null;
   isVerified: boolean;
   createdAt: string;
+  avatarUrl?:string
 }
 
 export interface UsersMeta {

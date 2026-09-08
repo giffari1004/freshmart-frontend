@@ -11,17 +11,22 @@ import {
 import { Button } from "@/components/ui/button";
 import { Pencil, Trash2, Inbox } from "lucide-react";
 import { Category } from "../schema";
+import { PaginationMeta } from "@/lib/pagination";
 interface CategoryTableProps {
   categories: Category[];
   canManage: boolean;
   onEdit: (category: Category) => void;
   onDelete: (category: Category) => void;
+  meta?: {page:number,limit:number,totalData:number,totalPages:number}
+  onPageChange?: (value:number) => void
 }
 export function CategoryTable({
   categories,
   canManage,
   onEdit,
   onDelete,
+  meta,
+  onPageChange
 }: CategoryTableProps) {
   if (categories.length === 0) {
     return (
@@ -78,6 +83,11 @@ export function CategoryTable({
           ))}
         </TableBody>
       </Table>
+      {meta && onPageChange && (
+        <div className="border-t border-stone-200">
+          <PaginationMeta meta={meta} onPageChange={onPageChange} itemLabel="Categories"/>
+        </div>
+      )}
     </div>
   );
 }

@@ -47,7 +47,7 @@ export function UpdateCategoryDialog({
   }
   return (
     <Dialog open={!!category} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent className="sm:max-w-[520px] rounded-3xl p-6 border-green-200">
+      <DialogContent className="max-h-[90vh] overflow-y-auto rounded-3xl p-6 border-green-200">
         <DialogHeader className="space-y-2">
           <DialogTitle className="text-3xl font-bold tracking-tight">
             Edit category

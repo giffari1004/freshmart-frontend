@@ -19,8 +19,6 @@ interface VoucherFilterProps {
   onUsageTypeChange: (value: string | undefined) => void;
   valueType: string | undefined;
   onValueTypeChange: (value: string | undefined) => void;
-  isActive: boolean | undefined;
-  onIsActiveChange: (value: boolean | undefined) => void;
   sort: string;
   onSortChange: (value: string) => void;
 }
@@ -32,8 +30,6 @@ export function VoucherFilter({
   onUsageTypeChange,
   valueType,
   onValueTypeChange,
-  isActive,
-  onIsActiveChange,
   sort,
   onSortChange,
 }: VoucherFilterProps) {
@@ -41,15 +37,13 @@ export function VoucherFilter({
 
   return (
     <div className="flex flex-wrap items-center gap-3 rounded-xl border border-stone-200 bg-white p-3">
-      <div className="relative min-w-[220px] flex-1">
-        <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-stone-400" />
+      <div className="relative min-w-[200px] flex-1">
         <Input
           defaultValue={search}
           placeholder="Search voucher code"
           onChange={(e) => debounceSearch(e.target.value)}
         />
       </div>
-
       <Select
         value={usageType ?? "all"}
         onValueChange={(val) =>
@@ -84,34 +78,6 @@ export function VoucherFilter({
               {type}
             </SelectItem>
           ))}
-        </SelectContent>
-      </Select>
-      <Select
-        value={isActive === undefined ? "all" : String(isActive)}
-        onValueChange={(val) =>
-          onIsActiveChange(val === "all" ? undefined : val === "true")
-        }
-      >
-        <SelectTrigger className="w-36">
-          <SelectValue placeholder="Status" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">All status</SelectItem>
-          <SelectItem value="true">Active</SelectItem>
-          <SelectItem value="false">Inactive</SelectItem>
-        </SelectContent>
-      </Select>
-      <Select value={sort} onValueChange={onSortChange}>
-        <SelectTrigger className="w-44">
-          <SelectValue placeholder="Sort by" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="createdAt:desc">Newest</SelectItem>
-          <SelectItem value="createdAt:asc">Oldest</SelectItem>
-          <SelectItem value="expiredAt:asc">Expiring soon</SelectItem>
-          <SelectItem value="expiredAt:desc">Expiring last</SelectItem>
-          <SelectItem value="value:desc">Value: High to Low</SelectItem>
-          <SelectItem value="value:asc">Value: Low to High</SelectItem>
         </SelectContent>
       </Select>
     </div>

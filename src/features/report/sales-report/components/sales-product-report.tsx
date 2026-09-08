@@ -50,22 +50,35 @@ export function SalesProductReport({
               </TableRow>
             </TableHeader>
             <TableBody>
-                {products.map((item)=> (
-                    <TableRow key={`${item.productId}-${item.month}`}> 
-                        <TableCell className="font-medium text-stone-900">
-                            {item.productName}
-                        </TableCell>
-                        <TableCell className="text-right text-stone-700">
-                            {item.quantitySold}
-                        </TableCell>
-                        <TableCell className="text-right text-stone-700">
-                            {formatPrice(item.totalSales)}
-                        </TableCell>
-                        <TableCell className="text-right text-stone-700">
-                            {MONTH_LABEL[new Date(item.month).getMonth()]}
-                        </TableCell>
-                    </TableRow>
-                ))}
+              {products.map((item) => (
+                <TableRow key={`${item.productId}-${item.month}`} className="h-15">
+                  <TableCell className="text-right text-stone-700">
+                    <div className="flex items-center gap-3">
+                      {item.productImage ? (
+                        <img
+                          src={item.productImage}
+                          alt={item.productName}
+                          className="size-10 rounded-lg object-cover"
+                        />
+                      ) : (
+                        <div className="flex size-10 items-center justify-center rounded-lg bg-stone-100 text-stone-300">
+                          <Inbox className="size-4" />
+                        </div>
+                      )}
+                      <span>{item.productName}</span>
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-right text-stone-700">
+                    {item.quantitySold}
+                  </TableCell>
+                  <TableCell className="text-right text-stone-700">
+                    {formatPrice(item.totalSales)}
+                  </TableCell>
+                  <TableCell className="text-right text-stone-700">
+                    {MONTH_LABEL[new Date(item.month).getMonth()]}
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </div>

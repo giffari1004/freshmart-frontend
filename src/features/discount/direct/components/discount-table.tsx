@@ -1,17 +1,38 @@
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Discount } from "../schema";
-import { Inbox } from "lucide-react";
+import { Inbox, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/lib/helper-idr";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { PaginationMeta } from "@/lib/pagination";
 
 interface DiscountTableProps {
   discounts: Discount[];
   onEdit: (discount: Discount) => void;
   onDelete: (discount: Discount) => void;
+  meta?: { page: number; limit: number; totalData: number; totalPages: number };
+  onPageChange?: (value: number) => void;
 }
 
-export function DiscountTable({ discounts, onEdit, onDelete }: DiscountTableProps) {
+export function DiscountTable({
+  discounts,
+  onEdit,
+  onDelete,
+  meta,
+  onPageChange,
+}: DiscountTableProps) {
   if (discounts.length === 0) {
     return (
       <div className="flex flex-col items-center gap-2 rounded-xl border border-stone-200 bg-white py-16 text-center">
@@ -37,26 +58,46 @@ export function DiscountTable({ discounts, onEdit, onDelete }: DiscountTableProp
         <TableBody>
           {discounts.map((discount) => (
             <TableRow key={discount.id}>
-              <TableCell className="font-medium text-stone-900">{discount.product.name}</TableCell>
-              <TableCell className="text-stone-700">{discount.store.name}</TableCell>
-              <TableCell className="text-stone-700">
-                {discount.valueType === "PERCENTAGE" ? `${discount.value}%` : formatPrice(discount.value)}
+              <TableCell className="font-medium text-stone-900">
+                {discount.product.name}
               </TableCell>
-              <TableCell className="text-stone-700">{new Date(discount.startDate).toLocaleDateString("id-ID")}</TableCell>
-              <TableCell className="text-stone-700">{new Date(discount.endDate).toLocaleDateString("id-ID")}</TableCell>
+              <TableCell className="text-stone-700">
+                {discount.store.name}
+              </TableCell>
+              <TableCell className="text-stone-700">
+                {discount.valueType === "PERCENTAGE"
+                  ? `${discount.value}%`
+                  : formatPrice(discount.value)}
+              </TableCell>
+              <TableCell className="text-stone-700">
+                {new Date(discount.startDate).toLocaleDateString("id-ID")}
+              </TableCell>
+              <TableCell className="text-stone-700">
+                {new Date(discount.endDate).toLocaleDateString("id-ID")}
+              </TableCell>
               <TableCell>
-                <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${discount.isActive ? "bg-green-100 text-green-700" : "bg-stone-100 text-stone-500"}`}>
+                <span
+                  className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${discount.isActive ? "bg-green-100 text-green-700" : "bg-stone-100 text-stone-500"}`}
+                >
                   {discount.isActive ? "Active" : "Inactive"}
                 </span>
               </TableCell>
               <TableCell className="text-right">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon">...</Button>
+                    <Button variant="ghost" size="icon">
+                      ...
+                    </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => onEdit(discount)}>Edit</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => onDelete(discount)}>Delete</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onEdit(discount)}>
+                      <Pencil className="size-4" />
+                      Edit
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onDelete(discount)}>
+                      <Trash2 className="size-4 text-rose-500" />
+                      Delete
+                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </TableCell>
@@ -64,6 +105,15 @@ export function DiscountTable({ discounts, onEdit, onDelete }: DiscountTableProp
           ))}
         </TableBody>
       </Table>
+      {meta && onPageChange && (
+        <div className="border-t border-stone-200">
+          <PaginationMeta
+            meta={meta}
+            onPageChange={onPageChange}
+            itemLabel="Direct Discount"
+          />
+        </div>
+      )}
     </div>
   );
 }

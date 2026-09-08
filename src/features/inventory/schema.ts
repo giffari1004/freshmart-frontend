@@ -6,12 +6,23 @@ import {
   STOCK_JOURNAL_TYPE,
 } from "./constant";
 export const CREATE_INVENTORY = z.object({
-  storeId: z.string().uuid("Invalid store id"),
-  productId: z.string().uuid("Invalid product id"),
-  priceOverride: z.number().optional(),
+  storeId: z.string().min(1, "Store id is required").uuid("Invalid store id"),
+  productId: z
+    .string()
+    .min(1, "Product id is required")
+    .uuid("Invalid product id"),
+  priceOverride: z
+    .number({ error: "Pleease input number" })
+    .min(1000, "Min Rp 1.000")
+    .positive("Price override must be greater than 0")
+    .optional(),
 });
 export const UPDATE_INVENTORY = z.object({
-  priceOverride: z.number().optional(),
+  priceOverride: z.coerce
+    .number({ error: "Pleease input number" })
+    .min(1000, "Min Rp 1.000")
+    .positive("Price override must be greater than 0")
+    .optional(),
 });
 export const GET_ALL_INVENTORY = z.object({
   page: z.coerce.number().int().positive().default(1),
@@ -48,6 +59,7 @@ export interface InventoryMeta {
 export interface Product {
   id: string;
   name: string;
+  images: ProductImage[];
 }
 export interface Store {
   id: string;
@@ -60,6 +72,11 @@ export interface Inventory {
   createdAt: string;
   product: Product;
   store: Store;
+}
+export interface ProductImage {
+  id: string;
+  imageUrl: string;
+  isPrimary: boolean;
 }
 export interface StockJournal {
   id: string;

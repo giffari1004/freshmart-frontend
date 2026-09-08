@@ -7,7 +7,6 @@ import { useGetAllCategory } from "@/features/category/hooks";
 import { CreateCategoryDialog } from "@/features/category/components/create-category-dialog";
 import { CategoryFilters } from "@/features/category/components/category-filters";
 import { CategoryTable } from "@/features/category/components/category-dialog-table";
-import { CategoryPagination } from "@/features/category/components/category-pagination";
 import { UpdateCategoryDialog } from "@/features/category/components/edit-category-dialog";
 import { DeleteCategoryDialog } from "@/features/category/components/delete-category-dialog";
 export default function AdminCategoriesPage() {
@@ -66,10 +65,9 @@ export default function AdminCategoriesPage() {
             canManage={canManage}
             onEdit={setEditCategory}
             onDelete={setDeleteCategoryItem}
+            meta={data?.meta}
+            onPageChange={setPage}
           />
-          {data?.meta && (
-            <CategoryPagination meta={data.meta} onPageChange={setPage} />
-          )}
         </>
       )}
       {canManage && (

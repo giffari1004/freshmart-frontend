@@ -1,6 +1,9 @@
-import { useState } from "react";
-import { useCreateBogo } from "@/features/discount/bogo/hooks";
+"use client";
+
+import { useEffect, useState } from "react";
+import { useCreateBogo, useGetAllBogo } from "@/features/discount/bogo/hooks";
 import {
+  Bogo,
   CREATE_BOGO,
   createBogoInput,
   createBogoOutput,
@@ -17,34 +20,55 @@ import {
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useGetAllProduct } from "@/features/product/hooks";
 import { Product } from "@/features/product/constans";
+import { FormSelect } from "@/lib/form-select-helper";
+import { Plus } from "lucide-react";
+import { useGetAllInventories } from "@/features/inventory/hooks";
+import { Inventory } from "@/features/inventory/schema";
+import { useStores } from "@/features/store/hooks";
 
-const DUMMY_STORES = [
-  { id: "1", name: "Toko Jakarta" },
-  { id: "2", name: "Toko Bandung" },
-];
+interface CreateBogoProps {
+  isSuperAdmin: boolean;
+}
 
-export function CreateBogo() {
+export function CreateBogo({ isSuperAdmin }: CreateBogoProps) {
   const [open, setOpen] = useState(false);
   const mutation = useCreateBogo();
+
   const form = useForm<createBogoInput, any, createBogoOutput>({
     resolver: zodResolver(CREATE_BOGO),
     defaultValues: { storeId: "", productId: "" },
   });
-  const { data: productsData } = useGetAllProduct({
+
+  const storeId = form.watch("storeId");
+
+  const { data: inventoryData } = useGetAllInventories({
     page: 1,
     limit: 50,
+    storeId,
     sortBy: "createdAt",
     sortOrder: "desc",
   });
+
+  const { data: activeBOGOData } = useGetAllBogo({
+    page: 1,
+    limit: 50,
+    storeId,
+  });
+
+  const bogoProduct = new Set(
+    activeBOGOData?.data.map((b: Bogo) => b.productId) ?? [],
+  );
+
+  const availableProducts = inventoryData?.data
+    .map((inv: Inventory) => inv.product)
+    .filter((product: Product) => !bogoProduct.has(product.id));
+
+  const { data: storesData } = useStores({ page: 1, limit: 50 });
+
+  useEffect(() => {
+    form.setValue("productId", "");
+  }, [storeId, form]);
 
   function onSubmitButton(value: createBogoOutput) {
     mutation.mutate(value, {
@@ -59,102 +83,92 @@ export function CreateBogo() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="h-11 rounded-full bg-green-800 px-6 text-sm font-semibold text-white shadow-sm hover:bg-green-700">
-          Create BOGO
+          <Plus className="h-4 w-4" /> Create BOGO
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-h-[90vh] overflow-y-auto rounded-3xl p-6 border-green-200">
+
+      <DialogContent className="max-h-[90vh] overflow-y-auto rounded-3xl border-green-200 p-6">
         <DialogHeader className="space-y-2">
           <DialogTitle className="text-3xl font-bold tracking-tight">
             Create BOGO
           </DialogTitle>
-          <p className="text-muted-foreground text-sm">
+          <p className="text-sm text-muted-foreground">
             Add a buy 1 get 1 promo
           </p>
         </DialogHeader>
+
         <form
           onSubmit={form.handleSubmit(onSubmitButton)}
           className="space-y-5 pt-2"
         >
-          <div className="space-y-2">
-            <Label>Store name</Label>
-            <Select
-              value={form.watch("storeId")}
-              onValueChange={(value) => form.setValue("storeId", value)}
-            >
-              <SelectTrigger className="w-full h-12 rounded-2xl">
-                <SelectValue placeholder="Choose store name" />
-              </SelectTrigger>
-              <SelectContent>
-                {DUMMY_STORES.map((store) => (
-                  <SelectItem key={store.id} value={store.id}>
-                    {store.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          {isSuperAdmin && (
+            <div className="space-y-2">
+              <Label>Store name</Label>
+              <FormSelect
+                control={form.control}
+                name="storeId"
+                placeholder="Choose store name"
+                items={
+                  storesData?.data.map((s) => ({
+                    value: s.id,
+                    label: s.name,
+                  })) ?? []
+                }
+                error={form.formState.errors.storeId}
+              />
+            </div>
+          )}
+
           <div className="space-y-2">
             <Label>Product name</Label>
-            <Select
-              value={form.watch("productId")}
-              onValueChange={(value) => form.setValue("productId", value)}
-            >
-              <SelectTrigger className="w-full h-12 rounded-2xl">
-                <SelectValue placeholder="Select product name" />
-              </SelectTrigger>
-              <SelectContent>
-                {productsData?.data.map((product: Product) => (
-                  <SelectItem key={product.id} value={product.id}>
-                    {product.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <FormSelect
+              control={form.control}
+              name="productId"
+              placeholder="Select product name"
+              items={
+                availableProducts?.map((p: Product) => ({
+                  value: p.id,
+                  label: p.name,
+                })) ?? []
+              }
+              error={form.formState.errors.productId}
+            />
           </div>
+
           <div className="space-y-2">
-            <Label htmlFor="startDate">Start date</Label>
+            <Label>Start date</Label>
             <Controller
               control={form.control}
               name="startDate"
               render={({ field }) => (
                 <Input
-                  id="startDate"
                   type="date"
                   className="h-12 rounded-2xl"
                   onChange={(e) => field.onChange(new Date(e.target.value))}
                 />
               )}
             />
-            {form.formState.errors.startDate && (
-              <p className="text-destructive text-xs">
-                {form.formState.errors.startDate.message}
-              </p>
-            )}
           </div>
+
           <div className="space-y-2">
-            <Label htmlFor="endDate">End date</Label>
+            <Label>End date</Label>
             <Controller
               control={form.control}
               name="endDate"
               render={({ field }) => (
                 <Input
-                  id="endDate"
                   type="date"
                   className="h-12 rounded-2xl"
                   onChange={(e) => field.onChange(new Date(e.target.value))}
                 />
               )}
             />
-            {form.formState.errors.endDate && (
-              <p className="text-destructive text-xs">
-                {form.formState.errors.endDate.message}
-              </p>
-            )}
           </div>
+
           <Button
             type="submit"
             disabled={mutation.isPending}
-            className="w-full h-12 rounded-2xl bg-green-700 hover:bg-green-800 text-white font-medium shadow-sm"
+            className="h-12 w-full rounded-2xl bg-green-700 text-white hover:bg-green-800"
           >
             {mutation.isPending ? "Creating..." : "Create BOGO"}
           </Button>

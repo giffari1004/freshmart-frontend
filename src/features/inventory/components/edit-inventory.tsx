@@ -12,17 +12,23 @@ import {
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { PriceInput } from "@/lib/price-input";
+import z from "zod";
 interface UpdateInventoryProps {
   inventory: Inventory | null;
   onClose: () => void;
 }
 export function UpdateInventory({ inventory, onClose }: UpdateInventoryProps) {
-  const form = useForm<updateInventorySchema>({
+  const form = useForm<
+    z.input<typeof UPDATE_INVENTORY>,
+    any,
+    z.output<typeof UPDATE_INVENTORY>
+  >({
     resolver: zodResolver(UPDATE_INVENTORY),
     defaultValues: {
       priceOverride: undefined,
     },
   });
+  const mutation = useUpdateInventory();
   useEffect(() => {
     if (inventory) {
       form.reset({
@@ -32,7 +38,6 @@ export function UpdateInventory({ inventory, onClose }: UpdateInventoryProps) {
   }, [inventory, form]);
   if (!inventory) return null;
   const currentInventory = inventory;
-  const mutation = useUpdateInventory();
   function onSubmit(value: updateInventorySchema) {
     mutation.mutate(
       {
@@ -44,7 +49,7 @@ export function UpdateInventory({ inventory, onClose }: UpdateInventoryProps) {
   }
   return (
     <Dialog open={!!inventory} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent className="sm:max-w-[520px] rounded-3xl p-6 border-green-200">
+      <DialogContent className="max-h-[90vh] overflow-y-auto rounded-3xl p-6 border-green-200">
         <DialogHeader className="space-y-2">
           <DialogTitle className="text-3xl font-bold tracking-tight">
             Edit inventory
@@ -58,20 +63,20 @@ export function UpdateInventory({ inventory, onClose }: UpdateInventoryProps) {
             <Label htmlFor="price" className="text-sm font-medium">
               Product price override
             </Label>
-            <PriceInput form={form} name="priceOverride"/>
+            <PriceInput form={form} name="priceOverride" />
             {form.formState.errors.priceOverride && (
               <p className="text-xs text-destructive">
                 {form.formState.errors.priceOverride.message}
               </p>
             )}
+            <Button
+              type="submit"
+              disabled={mutation.isPending}
+              className="w-full h-12 rounded-2xl bg-green-700 hover:bg-green-800 text-white font-medium"
+            >
+              {mutation.isPending ? "Saving..." : "Save changes"}
+            </Button>
           </div>
-          <Button
-            type="submit"
-            disabled={mutation.isPending}
-            className="w-full h-12 rounded-2xl bg-green-700 hover:bg-green-800 text-white font-medium"
-          >
-            {mutation.isPending ? "Saving..." : "Save changes"}
-          </Button>
         </form>
       </DialogContent>
     </Dialog>

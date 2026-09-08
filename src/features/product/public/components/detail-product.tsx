@@ -9,46 +9,81 @@ interface DetailProductProps {
 export function DetailProduct({ product }: DetailProductProps) {
   const isOutOfStock = product.isOutOfStock;
   const item = product.stock ?? 0;
-  const { mutate: addToCart , isPending } = useAddToCart();
-    const handleAddToCart = () => {
-      addToCart({
-        storeProductId: product.storeProductId,
-        quantity: 1,
-      });
+  const { mutate: addToCart, isPending } = useAddToCart();
+  const handleAddToCart = () => {
+    addToCart({ storeProductId: product.storeProductId, quantity: 1 });
   };
   return (
-    <div className="rounded-3xl border border-stone-200 bg-white p-6 shadow-sm">
-      <div className="space-y-5">
-        <div className="space-y-2">
-          <p className="text-xs font-medium uppercase tracking-wide text-emerald-700">
-            {product.category}
-          </p>
-          <h1 className="text-3xl font-bold text-stone-900">{product.name}</h1>
-          <p className="text-2xl font-bold text-stone-900">
-            {formatPrice(product.price)}
-          </p>
-        </div>
-        <div className="rounded-2xl border border-stone-200 bg-stone-50 p-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white border border-stone-200">
-              <Package className="size-5 text-stone-600" />
-            </div>
-            <div>
-              <p className="font-medium text-stone-900">Stock available</p>
-              <p className="text-sm text-stone-500">
-                {item ? `${item} items ready` : "Out of stock"}
-              </p>
+    <div className="space-y-4">
+      <div className="rounded-3xl border border-stone-200 bg-white p-6 shadow-sm">
+        <div className="space-y-5">
+          <div className="space-y-2">
+            <p className="text-xs font-medium uppercase tracking-wide text-emerald-700">
+              {product.category}
+            </p>
+            <h1 className="text-3xl font-bold text-stone-900">
+              {product.name}
+            </h1>
+            <p className="text-2xl font-bold text-stone-900">
+              {formatPrice(product.price)}
+            </p>
+          </div>
+          <div className="rounded-2xl border border-stone-200 bg-stone-50 p-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white border border-stone-200">
+                <Package className="size-5 text-stone-600" />
+              </div>
+              <div>
+                <p className="font-medium text-stone-900">Stock available</p>
+                <p className="text-sm text-stone-500">
+                  {item ? `${item} items ready` : "Out of stock"}
+                </p>
+              </div>
             </div>
           </div>
+          <div className="pt-2">
+            <ButtonCard
+              disabled={isOutOfStock}
+              onAddToCart={handleAddToCart}
+              isPending={isPending}
+            />
+          </div>
         </div>
-        <div className="space-y-2">
-          <h2 className="text-lg font-semibold text-stone-900">Description</h2>
-          <p className="whitespace-pre-line text-sm leading-7 text-stone-600">
-            {product.description || "No description available"}
+      </div>
+      <div className="rounded-3xl border border-stone-200 bg-white p-6 shadow-sm">
+        <h2 className="mb-3 text-lg font-semibold text-stone-900">
+          Description
+        </h2>
+        <p className="whitespace-pre-line text-sm leading-7 text-stone-600">
+          {product.description || "No description available"}
+        </p>
+      </div>
+      <div className="grid grid-cols-1 gap-3 rounded-3xl border border-stone-200 bg-white p-5 shadow-sm sm:grid-cols-3">
+        <div className="rounded-2xl bg-stone-50 p-4">
+          <p className="text-xs uppercase tracking-wide text-stone-500">
+            Category
+          </p>
+          <p className="mt-2 font-semibold text-stone-900">
+            {product.category}
           </p>
         </div>
-        <div className="pt-2">
-          <ButtonCard disabled={isOutOfStock} onAddToCart={handleAddToCart} isPending={isPending}/>
+        <div className="rounded-2xl bg-stone-50 p-4">
+          <p className="text-xs uppercase tracking-wide text-stone-500">
+            Delivery
+          </p>
+          <p className="mt-2 font-semibold text-stone-900">Instant Delivery</p>
+          <p className="mt-1 text-xs text-stone-500">
+            Available for same-day delivery.
+          </p>
+        </div>
+        <div className="rounded-2xl bg-stone-50 p-4">
+          <p className="text-xs uppercase tracking-wide text-stone-500">
+            Quality
+          </p>
+          <p className="mt-2 font-semibold text-stone-900">Fresh Guarantee</p>
+          <p className="mt-1 text-xs text-stone-500">
+            Carefully packed and quality checked.
+          </p>
         </div>
       </div>
     </div>

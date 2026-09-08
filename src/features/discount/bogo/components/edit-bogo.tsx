@@ -1,3 +1,4 @@
+"use client";
 import { useForm, Controller } from "react-hook-form";
 import { useUpdateBogo } from "@/features/discount/bogo/hooks";
 import {
@@ -23,10 +24,18 @@ interface UpdateBogoProps {
   onClose: () => void;
 }
 
+function toDateInputValue(value: unknown): string {
+  if (!value) return "";
+  const date = new Date(value as string | Date);
+  if (isNaN(date.getTime())) return ""; 
+  return date.toISOString().split("T")[0];
+}
+
 export function UpdateBogo({ bogo, onClose }: UpdateBogoProps) {
   const form = useForm<updateBogoInput, any, updateBogoOutput>({
     resolver: zodResolver(UPDATE_BOGO),
   });
+  const mutation = useUpdateBogo();
   useEffect(() => {
     if (bogo) {
       form.reset({
@@ -35,18 +44,20 @@ export function UpdateBogo({ bogo, onClose }: UpdateBogoProps) {
       });
     }
   }, [bogo, form]);
+
   if (!bogo) return null;
   const currentBogo = bogo;
-  const mutation = useUpdateBogo();
+
   function onSubmit(value: updateBogoOutput) {
     mutation.mutate(
       { id: currentBogo.id, body: value },
       { onSuccess: () => onClose() },
     );
   }
+
   return (
     <Dialog open={!!bogo} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent className="sm:max-w-[520px] rounded-3xl p-6 border-green-200">
+      <DialogContent className="max-h-[90vh] overflow-y-auto rounded-3xl p-6 border-green-200">
         <DialogHeader className="space-y-2">
           <DialogTitle className="text-3xl font-bold tracking-tight">
             Edit BOGO
@@ -66,17 +77,16 @@ export function UpdateBogo({ bogo, onClose }: UpdateBogoProps) {
                   id="startDate"
                   type="date"
                   className="h-12 rounded-2xl"
-                  defaultValue={
-                    field.value
-                      ? new Date(field.value as string | Date)
-                          .toISOString()
-                          .split("T")[0]
-                      : ""
-                  }
+                  value={toDateInputValue(field.value)}
                   onChange={(e) => field.onChange(new Date(e.target.value))}
                 />
               )}
             />
+            {form.formState.errors.startDate && (
+              <p className="text-destructive text-xs">
+                {form.formState.errors.startDate.message}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="endDate">End date</Label>
@@ -88,17 +98,16 @@ export function UpdateBogo({ bogo, onClose }: UpdateBogoProps) {
                   id="endDate"
                   type="date"
                   className="h-12 rounded-2xl"
-                  defaultValue={
-                    field.value
-                      ? new Date(field.value as string | Date)
-                          .toISOString()
-                          .split("T")[0]
-                      : ""
-                  }
+                  value={toDateInputValue(field.value)}
                   onChange={(e) => field.onChange(new Date(e.target.value))}
                 />
               )}
             />
+            {form.formState.errors.endDate && (
+              <p className="text-destructive text-xs">
+                {form.formState.errors.endDate.message}
+              </p>
+            )}
           </div>
           <Button
             type="submit"

@@ -1,24 +1,31 @@
-"use client"
+"use client";
+
 import { useState } from "react";
-import { StockReportMonthlySummaryFilter } from "./stock-report-filter";
 import { useAuthStore } from "@/stores/auth-store";
-import { StockDetailReport } from "./stock-detail-report";
+import { StockReportMonthlySummaryFilter } from "./stock-report-filter";
 import { StockReportMonthlySummary } from "./stock-report-monthly-summary";
 import { StockDetailFilter } from "./stock-detail-filter";
+import { StockDetailReport } from "./stock-detail-report";
 
 export function StockTabReport() {
-  const role = useAuthStore((v) => v.user?.role);
+  const role = useAuthStore((s) => s.user?.role);
   const canFilterStore = role === "SUPER_ADMIN";
-  const [month, setMonth] = useState<number | undefined>(undefined);
-  const [year, setYear] = useState<number | undefined>(undefined);
   const [storeId, setStoreId] = useState<string | undefined>(undefined);
-  const [detailYear, setDetailYear] = useState<number>(2026);
+  const [productId, setProductId] = useState<string | undefined>(undefined);
+  const [year, setYear] = useState<number | undefined>(undefined);
+  const [month, setMonth] = useState<number | undefined>(undefined);
+  const [detailStoreId, setDetailStoreId] = useState<string | undefined>(
+    undefined,
+  );
+  const [detailProductId, setDetailProductId] = useState<string | undefined>(
+    undefined,
+  );
+  const [detailYear, setDetailYear] = useState<number>(
+    new Date().getFullYear(),
+  );
   const [detailMonth, setDetailMonth] = useState<number>(
     new Date().getMonth() + 1,
   );
-  const [productId, setProductId] = useState<string | undefined>(undefined);
-  const [detailStoreId , setDetailStoreId] = useState<string | undefined>(undefined)
-  const [detailProductId , setDetailProductId] = useState<string | undefined>(undefined)
   return (
     <div className="space-y-6">
       <div>
@@ -38,22 +45,27 @@ export function StockTabReport() {
         productId={productId}
         onProductIdChange={setProductId}
         month={month}
-        onMonthChange={setMonth}  
+        onMonthChange={setMonth}
         year={year}
         onYearChange={setYear}
         canFilterStore={canFilterStore}
       />
-      <StockReportMonthlySummary storeId={storeId} month={month} year={year} />
+      <StockReportMonthlySummary
+        storeId={storeId}
+        productId={productId}
+        month={month}
+        year={year}
+      />
       <StockDetailFilter
-      storeId={detailStoreId}
-      onStoreIdChange={setDetailStoreId}
-      productId={detailProductId}
-      onProductIdChange={setDetailProductId}
-      year={detailYear}
-      onYearChange={setDetailYear}
-      month={detailMonth}
-      onMonthChange={setDetailMonth}
-      canFilterStore={canFilterStore}
+        storeId={detailStoreId}
+        onStoreIdChange={setDetailStoreId}
+        productId={detailProductId}
+        onProductIdChange={setDetailProductId}
+        year={detailYear}
+        onYearChange={setDetailYear}
+        month={detailMonth}
+        onMonthChange={setDetailMonth}
+        canFilterStore={canFilterStore}
       />
       <StockDetailReport
         storeId={detailStoreId}

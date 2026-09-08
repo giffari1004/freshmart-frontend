@@ -1,21 +1,19 @@
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { FieldValues, Path } from "react-hook-form";
 import { useGetAllCategory } from "@/features/category/hooks";
 import { Category } from "@/features/category/schema";
-import { FieldValues, Path, PathValue, UseFormReturn } from "react-hook-form";
+import { FormSelect } from "@/lib/form-select-helper";
+import { Control, FieldError } from "react-hook-form";
 
 interface CategorySelectProps<T extends FieldValues> {
-  form: UseFormReturn<T>;
+  control: Control<T>;
   name: Path<T>;
+  error?: FieldError;
 }
+
 export function CategorySelect<T extends FieldValues>({
-  form,
+  control,
   name,
+  error,
 }: CategorySelectProps<T>) {
   const { data: categoryData } = useGetAllCategory({
     page: 1,
@@ -23,23 +21,19 @@ export function CategorySelect<T extends FieldValues>({
     sortBy: "name",
     sortOrder: "asc",
   });
+
   return (
-    <Select
-      value={form.watch(name) || undefined}
-      onValueChange={(value) =>
-        form.setValue(name, value as PathValue<T, Path<T>>)
+    <FormSelect
+      control={control}
+      name={name}
+      placeholder="Select category"
+      items={
+        categoryData?.data.map((category: Category) => ({
+          value: category.id,
+          label: category.name,
+        })) ?? []
       }
-    >
-      <SelectTrigger className="h-12 rounded-2xl w-full">
-        <SelectValue placeholder="Select category" />
-      </SelectTrigger>
-      <SelectContent>
-        {categoryData?.data.map((category: Category) => (
-          <SelectItem key={category.id} value={category.id}>
-            {category.name}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+      error={error}
+    />
   );
 }
