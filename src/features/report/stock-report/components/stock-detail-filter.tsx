@@ -37,16 +37,16 @@ export function StockDetailFilter({
   const { data: storesData } = useStores({ page: 1, limit: 50 });
   const stores = storesData?.data ?? [];
   useEffect(() => {
-    onProductIdChange(undefined)
-  },[storeId])
+    onProductIdChange(undefined);
+  }, [storeId]);
   return (
-    <div className="flex flex-col gap-2 rounded-xl border border-stone-200 bg-white p-3 sm:flex-row sm:items-center sm:gap-3">
+    <div className="grid grid-cols-1 gap-2 rounded-xl border border-stone-200 bg-white p-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-3 lg:items-center">
       {canFilterStore && (
         <Select
           value={storeId ?? "all"}
           onValueChange={(v) => onStoreIdChange(v === "all" ? undefined : v)}
         >
-          <SelectTrigger className="w-full sm:w-48">
+          <SelectTrigger className="w-full">
             <SelectValue placeholder="All stores" />
           </SelectTrigger>
           <SelectContent>
@@ -59,16 +59,18 @@ export function StockDetailFilter({
           </SelectContent>
         </Select>
       )}
-      <ProductComboBox
-        storeId={storeId}
-        productId={productId}
-        onProductIdChange={onProductIdChange}
-      />
+      <div className="w-full">
+        <ProductComboBox
+          storeId={storeId}
+          productId={productId}
+          onProductIdChange={onProductIdChange}
+        />
+      </div>
       <Select
         value={String(month)}
         onValueChange={(v) => onMonthChange(Number(v))}
       >
-        <SelectTrigger className="w-full sm:w-40">
+        <SelectTrigger className="w-full">
           <SelectValue placeholder="Month" />
         </SelectTrigger>
         <SelectContent>
@@ -83,7 +85,7 @@ export function StockDetailFilter({
         value={String(year)}
         onValueChange={(v) => onYearChange(Number(v))}
       >
-        <SelectTrigger className="w-full sm:w-32">
+        <SelectTrigger className="w-full">
           <SelectValue placeholder="Year" />
         </SelectTrigger>
         <SelectContent>
