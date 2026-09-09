@@ -1,3 +1,4 @@
+"use client";
 import {
   Select,
   SelectContent,
@@ -39,13 +40,13 @@ export function StockReportMonthlySummaryFilter({
     onProductIdChange(undefined);
   }, [storeId]);
   return (
-    <div className="flex flex-col gap-2 rounded-xl border border-stone-200 bg-white p-3 sm:flex-row sm:items-center sm:gap-3">
+    <div className="grid grid-cols-1 gap-2 rounded-xl border border-stone-200 bg-white p-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-3 lg:items-center">
       {canFilterStore && (
         <Select
           value={storeId ?? "all"}
           onValueChange={(v) => onStoreIdChange(v === "all" ? undefined : v)}
         >
-          <SelectTrigger className="w-full sm:w-48">
+          <SelectTrigger className="w-full">
             <SelectValue placeholder="All stores" />
           </SelectTrigger>
           <SelectContent>
@@ -58,18 +59,20 @@ export function StockReportMonthlySummaryFilter({
           </SelectContent>
         </Select>
       )}
-      <ProductComboBox
-        storeId={storeId}
-        productId={productId}
-        onProductIdChange={onProductIdChange}
-      />
+      <div className="w-full">
+        <ProductComboBox
+          storeId={storeId}
+          productId={productId}
+          onProductIdChange={onProductIdChange}
+        />
+      </div>
       <Select
         value={month ? String(month) : "all"}
         onValueChange={(v) =>
           onMonthChange(v === "all" ? undefined : Number(v))
         }
       >
-        <SelectTrigger className="w-full sm:w-40">
+        <SelectTrigger className="w-full">
           <SelectValue placeholder="All months" />
         </SelectTrigger>
         <SelectContent>
@@ -85,7 +88,7 @@ export function StockReportMonthlySummaryFilter({
         value={year ? String(year) : undefined}
         onValueChange={(v) => onYearChange(Number(v))}
       >
-        <SelectTrigger className="w-full sm:w-32">
+        <SelectTrigger className="w-full">
           <SelectValue placeholder="2026" />
         </SelectTrigger>
         <SelectContent>
