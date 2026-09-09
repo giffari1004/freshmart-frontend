@@ -7,5 +7,5 @@ export async function fetchMonthlySummary(query: getMonthlySummarySchema) {
 }
 export async function fetchStockDetail(query: getStockDetailSchema) {
   const { data } = await api.get("/reports/stock/detail", { params: query });
-  return data.data;
+  return data;
 }
