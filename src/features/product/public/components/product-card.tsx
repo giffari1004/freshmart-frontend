@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Product } from "../constant";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
+import { getDiscountBadge } from "./product-helper";
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat("id-ID", {
@@ -9,23 +10,6 @@ function formatPrice(price: number) {
     currency: "IDR",
     minimumFractionDigits: 0,
   }).format(price);
-}
-function getDiscountBadge(
-  discounts: { type: string; valueType: string; value: number }[] | undefined,
-) {
-  if (!discounts || discounts.length === 0) return null;
-  const bogo = discounts.find((d) => d.type === "BUY1GET1");
-  if (bogo) return { label: "BUY 1 GET 1", color: "bg-orange-500" };
-  const direct = discounts.find((d) => d.type === "DIRECT");
-  if (direct) {
-    const label =
-      direct.valueType === "PERCENTAGE"
-        ? `${direct.value}% OFF`
-        : `${formatPrice(direct.value)} OFF`;
-
-    return { label, color: "bg-red-500" };
-  }
-  return null;
 }
 export function ProductCard({ product }: { product: Product }) {
   const images = product.product.images ?? [];

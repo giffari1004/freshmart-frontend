@@ -38,7 +38,7 @@ export function StockDetailReport({
     month,
     year,
     page,
-    limit: 10,
+    limit: 20,
   });
 
   const stock = data?.data ?? [];

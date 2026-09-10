@@ -26,6 +26,7 @@ import { Plus } from "lucide-react";
 import { useGetAllInventories } from "@/features/inventory/hooks";
 import { Inventory } from "@/features/inventory/schema";
 import { useStores } from "@/features/store/hooks";
+import { DiscountProductComboBox } from "@/lib/discount-combobox";
 
 interface CreateBogoProps {
   isSuperAdmin: boolean;
@@ -34,42 +35,33 @@ interface CreateBogoProps {
 export function CreateBogo({ isSuperAdmin }: CreateBogoProps) {
   const [open, setOpen] = useState(false);
   const mutation = useCreateBogo();
-
   const form = useForm<createBogoInput, any, createBogoOutput>({
     resolver: zodResolver(CREATE_BOGO),
     defaultValues: { storeId: "", productId: "" },
   });
-
   const storeId = form.watch("storeId");
-
   const { data: inventoryData } = useGetAllInventories({
     page: 1,
-    limit: 50,
+    limit: 20,
     storeId,
     sortBy: "createdAt",
     sortOrder: "desc",
   });
-
   const { data: activeBOGOData } = useGetAllBogo({
     page: 1,
-    limit: 50,
+    limit: 20,
     storeId,
   });
-
   const bogoProduct = new Set(
     activeBOGOData?.data.map((b: Bogo) => b.productId) ?? [],
   );
-
   const availableProducts = inventoryData?.data
     .map((inv: Inventory) => inv.product)
-    .filter((product: Product) => !bogoProduct.has(product.id));
-
-  const { data: storesData } = useStores({ page: 1, limit: 50 });
-
+    .filter((product: Product) => !bogoProduct.has(product.id)) ?? [];
+  const { data: storesData } = useStores({ page: 1, limit: 20 });
   useEffect(() => {
     form.setValue("productId", "");
   }, [storeId, form]);
-
   function onSubmitButton(value: createBogoOutput) {
     mutation.mutate(value, {
       onSuccess: () => {
@@ -86,7 +78,6 @@ export function CreateBogo({ isSuperAdmin }: CreateBogoProps) {
           <Plus className="h-4 w-4" /> Create BOGO
         </Button>
       </DialogTrigger>
-
       <DialogContent className="max-h-[90vh] overflow-y-auto rounded-3xl border-green-200 p-6">
         <DialogHeader className="space-y-2">
           <DialogTitle className="text-3xl font-bold tracking-tight">
@@ -96,7 +87,6 @@ export function CreateBogo({ isSuperAdmin }: CreateBogoProps) {
             Add a buy 1 get 1 promo
           </p>
         </DialogHeader>
-
         <form
           onSubmit={form.handleSubmit(onSubmitButton)}
           className="space-y-5 pt-2"
@@ -118,23 +108,19 @@ export function CreateBogo({ isSuperAdmin }: CreateBogoProps) {
               />
             </div>
           )}
-
           <div className="space-y-2">
             <Label>Product name</Label>
-            <FormSelect
-              control={form.control}
-              name="productId"
-              placeholder="Select product name"
-              items={
-                availableProducts?.map((p: Product) => ({
-                  value: p.id,
-                  label: p.name,
-                })) ?? []
-              }
-              error={form.formState.errors.productId}
+            <DiscountProductComboBox
+            products={availableProducts}
+            productId={form.watch("productId")}
+            onProductIdChange={(v) => form.setValue("productId" , v ?? "" , {shouldValidate:true})}
             />
-          </div>
-
+            {form.formState.errors.productId && (
+              <p className="text-sm text-red-500">
+                {form.formState.errors.productId.message}
+              </p>
+            )}
+            </div>
           <div className="space-y-2">
             <Label>Start date</Label>
             <Controller
