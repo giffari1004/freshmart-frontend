@@ -51,14 +51,14 @@ export function OrderStatusTimeline({ status }: { status: OrderStatus }) {
 
   if (status === "CANCELLED") {
     return (
-      <section className="overflow-hidden rounded-3xl border border-red-100 bg-white shadow-sm">
-        <div className="border-b border-red-100 bg-gradient-to-r from-red-50 to-white px-5 py-4 sm:px-6">
+      <section className="overflow-hidden rounded-xl border border-destructive/30 bg-background shadow-sm">
+        <div className="border-b border-destructive/20 bg-destructive/10 px-5 py-4 sm:px-6">
           <div className="flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-2xl bg-red-100 text-red-600">
+            <div className="flex size-10 items-center justify-center rounded-xl bg-destructive/10 text-destructive">
               <XCircle className="size-5" />
             </div>
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.12em] text-red-500">
+              <p className="text-xs font-bold uppercase tracking-[0.12em] text-destructive">
                 Order Status
               </p>
               <h2 className="text-base font-bold text-foreground sm:text-lg">
@@ -78,8 +78,8 @@ export function OrderStatusTimeline({ status }: { status: OrderStatus }) {
   }
 
   return (
-    <section className="overflow-hidden rounded-3xl border border-border bg-white shadow-sm">
-      <div className="border-b border-border bg-gradient-to-r from-accent via-white to-white px-5 py-4 sm:px-6">
+    <section className="overflow-hidden rounded-xl border border-border bg-background shadow-sm">
+      <div className="border-b border-border bg-accent px-5 py-4 sm:px-6">
         <div className="flex items-center justify-between gap-4">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.12em] text-primary">
@@ -117,9 +117,9 @@ export function OrderStatusTimeline({ status }: { status: OrderStatus }) {
 
                 <div
                   className={cn(
-                    "relative z-10 flex size-10 shrink-0 items-center justify-center rounded-2xl border transition-all",
+                    "relative z-10 flex size-10 shrink-0 items-center justify-center rounded-xl border transition-all",
                     isCurrent &&
-                      "border-primary bg-primary/90 text-white shadow-lg shadow-sm",
+                      "border-primary bg-primary text-primary-foreground shadow-sm",
                     isComplete && !isCurrent &&
                       "border-border bg-accent text-primary",
                     isUpcoming &&

@@ -1,3 +1,4 @@
+export * from "./CartHeader";
 export * from "./cartItems";
 export * from "./cartList";
 export * from "./cartSummary";

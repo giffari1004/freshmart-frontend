@@ -10,34 +10,30 @@ import { useBogo } from "../hooks";
 interface CartItemProps {
   item: CartItemType;
   storeId: string | null;
-  onIncrease: () => void;
-  onDecrease: () => void;
+  onChangeQuantity: (quantity: number) => void;
   onRemove: () => void;
 }
 
 interface CartItemActionsProps {
   item: CartItemType;
-  onIncrease: () => void;
-  onDecrease: () => void;
+  onChangeQuantity: (quantity: number) => void;
   onRemove: () => void;
 }
 
 export function CartItem({
   item,
   storeId,
-  onIncrease,
-  onDecrease,
+  onChangeQuantity,
   onRemove,
 }: CartItemProps) {
   return (
-    <article>
+    <article className="rounded-xl border border-border bg-background p-4 shadow-sm sm:p-5">
       <ProductImage item={item} />
 
       <ProductInfo
         item={item}
         storeId={storeId}
-        onIncrease={onIncrease}
-        onDecrease={onDecrease}
+        onChangeQuantity={onChangeQuantity}
         onRemove={onRemove}
       />
     </article>
@@ -46,7 +42,7 @@ export function CartItem({
 
 function ProductImage({ item }: { item: CartItemType }) {
   return (
-    <div className="relative size-24 shrink-0 overflow-hidden rounded-[1.35rem] bg-gradient-to-br from-emerald-50 to-lime-50 ring-1 ring-stone-200 shadow-inner sm:size-28">
+    <div className="relative size-24 shrink-0 overflow-hidden rounded-xl bg-accent ring-1 ring-border sm:size-28">
       <Image
         src={item.product.imageUrl || "/placeholder.png"}
         alt={item.product.name}
@@ -55,8 +51,8 @@ function ProductImage({ item }: { item: CartItemType }) {
         className="object-cover transition-transform duration-300 group-hover:scale-105"
       />
 
-      <div className="absolute right-2 top-2 flex size-8 items-center justify-center rounded-full bg-white/95 shadow-md backdrop-blur">
-        <ShoppingBag className="size-3.5 text-emerald-700" />
+      <div className="absolute right-2 top-2 flex size-8 items-center justify-center rounded-full bg-background shadow-sm">
+        <ShoppingBag className="size-3.5 text-primary" />
       </div>
     </div>
   );
@@ -65,8 +61,7 @@ function ProductImage({ item }: { item: CartItemType }) {
 function ProductInfo({
   item,
   storeId,
-  onIncrease,
-  onDecrease,
+  onChangeQuantity,
   onRemove,
 }: CartItemProps) {
   const { data: bogo } = useBogo({
@@ -79,16 +74,16 @@ function ProductInfo({
     <div className="min-w-0 flex-1">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h3 className="truncate text-lg font-black tracking-tight text-stone-950">
+          <h3 className="truncate text-lg font-semibold tracking-tight text-foreground">
             {item.product.name}
           </h3>
 
-          <p className="mt-1 text-sm text-stone-500">
+          <p className="mt-1 text-sm text-muted-foreground">
             {formatPrice(item.unitPrice)} / item
           </p>
 
           {bogo?.eligible && (
-            <p className="mt-2 text-sm font-semibold text-emerald-700">
+            <p className="mt-2 text-sm font-semibold text-primary">
               🎁 Buy 1 Get 1 · {bogo.freeQuantity} free
             </p>
           )}
@@ -97,8 +92,7 @@ function ProductInfo({
 
       <CartItemActions
         item={item}
-        onIncrease={onIncrease}
-        onDecrease={onDecrease}
+        onChangeQuantity={onChangeQuantity}
         onRemove={onRemove}
       />
     </div>
@@ -107,20 +101,18 @@ function ProductInfo({
 
 function CartItemActions({
   item,
-  onIncrease,
-  onDecrease,
+  onChangeQuantity,
   onRemove,
 }: CartItemActionsProps) {
   return (
     <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <QuantitySelector
         quantity={item.quantity}
-        onIncrease={onIncrease}
-        onDecrease={onDecrease}
+        onChange={onChangeQuantity}
       />
 
       <div className="flex items-center justify-between gap-3 sm:justify-end">
-        <p className="text-lg font-black tracking-tight text-stone-950">
+        <p className="text-lg font-bold tracking-tight text-foreground">
           {formatPrice(item.subtotal)}
         </p>
 
@@ -130,7 +122,7 @@ function CartItemActions({
           size="icon"
           onClick={onRemove}
           aria-label={`Remove ${item.product.name} from cart`}
-          className="rounded-xl border border-stone-200/70 bg-white text-stone-400 shadow-sm transition hover:border-red-200 hover:bg-red-50 hover:text-red-500"
+          className="rounded-lg border border-border bg-background text-muted-foreground transition hover:border-destructive/30 hover:bg-destructive/10 hover:text-destructive"
         >
           <Trash2 className="size-4" />
         </Button>

@@ -6,25 +6,47 @@ import { Button } from "@/components/ui/button";
 
 export function EmptyCart() {
   return (
-    <div className="mx-auto flex max-w-2xl flex-col items-center justify-center rounded-3xl border border-dashed border-emerald-200 bg-white px-6 py-20 text-center shadow-sm">
-      <div className="flex size-16 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700">
-        <ShoppingCart className="size-8" />
-      </div>
-      <h2 className="mt-6 text-2xl font-bold tracking-tight text-stone-900">
+    <div className="flex min-h-[370px] w-full flex-col items-center justify-center rounded-xl border border-dashed border-border bg-background p-8 text-center shadow-sm">
+      <EmptyCartIcon />
+      <EmptyCartMessage />
+      <ContinueShopping />
+    </div>
+  );
+}
+
+function EmptyCartIcon() {
+  return (
+    <div className="flex size-16 items-center justify-center rounded-xl bg-accent text-primary">
+      <ShoppingCart className="size-8" />
+    </div>
+  );
+}
+
+function EmptyCartMessage() {
+  return (
+    <>
+      <h2 className="mt-6 text-2xl font-semibold tracking-tight text-foreground">
         Your cart is empty
       </h2>
-      <p className="mt-2 max-w-md text-sm leading-6 text-stone-500">
-        Looks like you haven&apos;t added any products yet. Explore the catalog and start your grocery order.
+
+      <p className="mt-2 max-w-md text-sm leading-6 text-muted-foreground">
+        Looks like you haven&apos;t added any products yet. Explore the
+        catalog and start your grocery order.
       </p>
-      <Button
-        asChild
-        className="mt-8 h-11 rounded-xl bg-emerald-700 px-5 font-semibold hover:bg-emerald-800"
-      >
-        <Link href="/products">
-          Continue Shopping
-          <ArrowRight className="size-4" />
-        </Link>
-      </Button>
-    </div>
+    </>
+  );
+}
+
+function ContinueShopping() {
+  return (
+    <Button
+      asChild
+      className="mt-8 h-10 rounded-lg bg-primary px-5 font-semibold text-primary-foreground hover:bg-primary/80"
+    >
+      <Link href="/products">
+        Continue Shopping
+        <ArrowRight className="size-4" />
+      </Link>
+    </Button>
   );
 }

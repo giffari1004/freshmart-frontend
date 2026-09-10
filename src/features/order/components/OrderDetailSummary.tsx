@@ -7,9 +7,9 @@ export function OrderDetailSummary({
   order: OrderDetail;
 }) {
   return (
-    <section className="rounded-[1.65rem] border border-border bg-white/95 p-5 shadow-[0_16px_38px_-26px_rgba(15,23,42,0.28)] sm:p-6">
+    <section className="rounded-xl border border-border bg-background p-5 shadow-sm sm:p-6">
       <div className="flex items-center gap-3">
-        <div className="flex size-11 items-center justify-center rounded-2xl bg-gradient-to-br from-accent to-accent text-primary shadow-sm">
+        <div className="flex size-11 items-center justify-center rounded-xl bg-accent text-primary shadow-sm">
           <ReceiptText className="size-5" />
         </div>
         <div>
@@ -22,7 +22,7 @@ export function OrderDetailSummary({
         <SummaryRow label="Subtotal" value={order.subtotal} />
         <SummaryRow label="Discount" value={-order.discountAmount} />
         <SummaryRow label="Shipping" value={order.shippingCost} />
-        <div className="rounded-2xl border border-border bg-gradient-to-br from-accent to-accent p-4">
+        <div className="rounded-xl border border-border bg-accent p-4">
           <SummaryRow label="Total" value={order.totalAmount} strong />
         </div>
       </div>
@@ -47,7 +47,7 @@ function SummaryRow({
       <span
         className={
           strong
-            ? "text-2xl font-black tracking-tight text-foreground"
+            ? "text-2xl font-bold tracking-tight text-foreground"
             : "font-semibold text-foreground"
         }
       >

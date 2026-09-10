@@ -23,7 +23,7 @@ export function OrdersContent({
 }: OrdersContentProps) {
   if (isPending) {
     return (
-      <div className="flex items-center gap-3 rounded-[1.6rem] border border-border bg-white/95 p-6 text-sm font-semibold text-muted-foreground shadow-sm">
+      <div className="flex items-center gap-3 rounded-xl border border-border bg-background p-6 text-sm font-semibold text-muted-foreground shadow-sm">
         <Loader2 className="size-4 animate-spin text-primary" />
         Loading orders...
       </div>
@@ -32,7 +32,7 @@ export function OrdersContent({
 
   if (isError) {
     return (
-      <div className="rounded-[1.6rem] border border-red-200 bg-red-50/90 p-6 text-red-700 shadow-sm">
+      <div className="rounded-xl border border-destructive/30 bg-destructive/10 p-6 text-destructive shadow-sm">
         <p className="font-semibold">Unable to load orders.</p>
         <p className="mt-1 text-sm leading-6">
           Please refresh the page and try again.
@@ -71,7 +71,7 @@ function OrderPagination({
   const pages = buildPageNumbers(page, totalPages);
 
   return (
-    <div className="flex flex-col gap-3 rounded-3xl border border-border bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex flex-col gap-3 rounded-xl border border-border bg-background p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
       <p className="text-sm text-muted-foreground">
         Page <span className="font-semibold text-foreground">{page}</span> of{" "}
         <span className="font-semibold text-foreground">{totalPages}</span>
@@ -101,7 +101,7 @@ function OrderPagination({
               onClick={() => onPageChange(value)}
               className={
                 value === page
-                  ? "rounded-xl bg-primary px-3 py-2 text-sm font-bold text-white shadow-sm"
+                  ? "rounded-xl bg-primary px-3 py-2 text-sm font-bold text-primary-foreground shadow-sm"
                   : "rounded-xl border border-border px-3 py-2 text-sm font-semibold text-foreground transition hover:border-border hover:bg-accent disabled:opacity-40"
               }
             >
@@ -149,8 +149,8 @@ function buildPageNumbers(
 
 function EmptyOrders() {
   return (
-    <div className="rounded-[1.75rem] border border-dashed border-border bg-white/95 p-12 text-center shadow-sm">
-      <div className="mx-auto flex size-16 items-center justify-center rounded-[1.35rem] bg-gradient-to-br from-accent to-accent text-primary shadow-sm">
+    <div className="rounded-xl border border-dashed border-border bg-background p-12 text-center shadow-sm">
+      <div className="mx-auto flex size-16 items-center justify-center rounded-xl bg-accent text-primary shadow-sm">
         <PackageOpen className="size-7" />
       </div>
       <p className="mt-4 font-bold text-foreground">No orders found</p>

@@ -8,12 +8,9 @@ import { OrderConfirmButton } from "./OrderConfirmButton";
 import { useConfirmOrder } from "../hooks/useConfirmOrder";
 import { OrderDetailHeader } from "./OrderDetailHeader";
 import { OrderStatusTimeline } from "./OrderStatusTimeline";
+import { OrderPayAgainButton } from "./OrderPayAgainButton";
 
-export function OrderDetailContent({
-  order,
-}: {
-  order: OrderDetail;
-}) {
+export function OrderDetailContent({ order }: { order: OrderDetail }) {
   const confirmOrder = useConfirmOrder();
 
   const handleConfirm = (onDone: () => void) => {
@@ -21,7 +18,7 @@ export function OrderDetailContent({
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-accent via-background to-background">
+    <main className="min-h-screen bg-background">
       <div className="mx-auto max-w-5xl space-y-5 px-4 py-6 sm:space-y-6 sm:py-8">
         <OrderDetailHeader order={order} />
         <OrderStatusTimeline status={order.status} />
@@ -30,9 +27,11 @@ export function OrderDetailContent({
         <OrderDetailSummary order={order} />
 
         {order.status === "WAITING_PAYMENT" ? (
-          <OrderCancelButton orderId={order.id} />
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <OrderPayAgainButton orderId={order.id} />
+            <OrderCancelButton orderId={order.id} />
+          </div>
         ) : null}
-
         <OrderConfirmButton
           canConfirm={order.status === "SHIPPED"}
           isPending={confirmOrder.isPending}
@@ -40,7 +39,7 @@ export function OrderDetailContent({
         />
 
         {order.status === "CONFIRMED" ? (
-          <div className="flex items-center gap-2 rounded-2xl border border-border bg-accent p-4 text-sm font-semibold text-primary">
+          <div className="flex items-center gap-2 rounded-xl border border-border bg-accent p-4 text-sm font-semibold text-primary">
             <CheckCircle2 className="size-4" />
             This order has been confirmed as received.
           </div>

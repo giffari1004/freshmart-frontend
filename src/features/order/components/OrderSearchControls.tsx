@@ -36,9 +36,9 @@ export function OrderSearchControls({
   onQueryChange,
 }: Props) {
   return (
-    <section className="relative overflow-hidden rounded-[1.75rem] border border-border bg-white/95 p-4 shadow-[0_18px_40px_-26px_rgba(15,23,42,0.28)] sm:p-5">
+    <section className="relative overflow-hidden rounded-xl border border-border bg-background p-4 shadow-sm sm:p-5">
       <div className="mb-5">
-        <p className="text-xs font-black uppercase tracking-[0.16em] text-primary">
+        <p className="text-xs font-bold uppercase tracking-[0.16em] text-primary">
           Find an order
         </p>
         <p className="mt-1 text-sm text-muted-foreground">
@@ -55,7 +55,7 @@ export function OrderSearchControls({
             })
           }
           placeholder="Search order number"
-          className="h-11 rounded-xl border border-border bg-background/60 px-3 text-sm text-foreground outline-none transition placeholder:text-muted-foreground hover:bg-white focus:border-primary focus:bg-white focus:ring-4 focus:ring-ring/20"
+          className="h-11 rounded-xl border border-border bg-background/60 px-3 text-sm text-foreground outline-none transition placeholder:text-muted-foreground hover:bg-background focus:border-primary focus:bg-background focus:ring-4 focus:ring-ring/20"
         />
 
         <select
@@ -67,7 +67,7 @@ export function OrderSearchControls({
                 : undefined,
             })
           }
-          className="h-11 rounded-xl border border-border bg-white px-3 text-sm font-medium text-foreground outline-none transition focus:border-primary focus:ring-4 focus:ring-ring/20"
+          className="h-11 rounded-xl border border-border bg-background px-3 text-sm font-medium text-foreground outline-none transition focus:border-primary focus:ring-4 focus:ring-ring/20"
         >
           <option value="">All statuses</option>
           {STATUS_OPTIONS.map((option) => (
@@ -85,7 +85,7 @@ export function OrderSearchControls({
               fromDate: event.target.value || undefined,
             })
           }
-          className="h-11 rounded-xl border border-border bg-white px-3 text-sm text-foreground outline-none transition focus:border-primary focus:ring-4 focus:ring-ring/20"
+          className="h-11 rounded-xl border border-border bg-background px-3 text-sm text-foreground outline-none transition focus:border-primary focus:ring-4 focus:ring-ring/20"
         />
 
         <input
@@ -96,7 +96,7 @@ export function OrderSearchControls({
               toDate: event.target.value || undefined,
             })
           }
-          className="h-11 rounded-xl border border-border bg-white px-3 text-sm text-foreground outline-none transition focus:border-primary focus:ring-4 focus:ring-ring/20"
+          className="h-11 rounded-xl border border-border bg-background px-3 text-sm text-foreground outline-none transition focus:border-primary focus:ring-4 focus:ring-ring/20"
         />
 
         <select
@@ -106,7 +106,7 @@ export function OrderSearchControls({
               sortBy: event.target.value as OrderListSortBy,
             })
           }
-          className="h-11 rounded-xl border border-border bg-white px-3 text-sm font-medium text-foreground outline-none transition focus:border-primary focus:ring-4 focus:ring-ring/20"
+          className="h-11 rounded-xl border border-border bg-background px-3 text-sm font-medium text-foreground outline-none transition focus:border-primary focus:ring-4 focus:ring-ring/20"
         >
           {SORT_OPTIONS.map((option) => (
             <option key={option.value} value={option.value}>
@@ -122,7 +122,7 @@ export function OrderSearchControls({
               sortOrder: event.target.value as OrderListSortOrder,
             })
           }
-          className="h-11 rounded-xl border border-border bg-white px-3 text-sm font-medium text-foreground outline-none transition focus:border-primary focus:ring-4 focus:ring-ring/20"
+          className="h-11 rounded-xl border border-border bg-background px-3 text-sm font-medium text-foreground outline-none transition focus:border-primary focus:ring-4 focus:ring-ring/20"
         >
           <option value="desc">Descending</option>
           <option value="asc">Ascending</option>

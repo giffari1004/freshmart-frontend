@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useCart } from "@/features/cart/hooks";
 import { useCheckoutPreview } from "./useCheckoutPreview";
 import { useCheckoutAddresses } from "./useCheckoutAddresses";
 import { useCheckoutShippingOptions } from "./useCheckoutShippingOptions";
@@ -14,15 +15,11 @@ export function useCheckoutFlow() {
   const [snapToken, setSnapToken] = useState("");
   const [createdOrderId, setCreatedOrderId] = useState("");
 
+  const cart = useCart();
   const addresses = useCheckoutAddresses();
-
-  const shippingOptions =
-    useCheckoutShippingOptions(addressId);
-
+  const shippingOptions = useCheckoutShippingOptions(addressId);
   const preview = useCheckoutPreview();
-
   const order = useCreateOrder();
-
   const payment = useCreatePayment();
 
   const disabled =
@@ -30,9 +27,10 @@ export function useCheckoutFlow() {
     order.isPending ||
     payment.isPending;
 
-  const canPreview =
+  const canCreateOrder =
     Boolean(addressId) &&
-    Boolean(shippingMethodId);
+    Boolean(shippingMethodId) &&
+    Boolean(preview.data);
 
   useEffect(() => {
     if (!addressId && addresses.data?.length) {
@@ -43,7 +41,6 @@ export function useCheckoutFlow() {
       setAddressId(
         primary?.id ?? addresses.data[0].id,
       );
-
       return;
     }
 
@@ -63,20 +60,6 @@ export function useCheckoutFlow() {
     preview.reset();
   }, [addressId]);
 
-  // useEffect(() => {
-  //   if (
-  //     !shippingMethodId &&
-  //     shippingOptions.data?.length
-  //   ) {
-  //     setShippingMethodId(
-  //       shippingOptions.data[0].id,
-  //     );
-  //   }
-  // }, [
-  //   shippingMethodId,
-  //   shippingOptions.data,
-  // ]);
-
   const changeAddress = (value: string) => {
     setAddressId(value);
     setShippingMethodId("");
@@ -85,16 +68,24 @@ export function useCheckoutFlow() {
 
   const changeShipping = (value: string) => {
     setShippingMethodId(value);
-    preview.reset();
+
+    if (!addressId) {
+      return;
+    }
+
+    preview.mutate(
+      buildPayload(
+        addressId,
+        value,
+        userVoucherId,
+      ),
+    );
   };
 
   const changeVoucher = (value: string) => {
     setUserVoucherId(value);
-    preview.reset();
-  };
 
-  const handlePreview = () => {
-    if (!canPreview) {
+    if (!addressId || !shippingMethodId) {
       return;
     }
 
@@ -102,7 +93,7 @@ export function useCheckoutFlow() {
       buildPayload(
         addressId,
         shippingMethodId,
-        userVoucherId,
+        value,
       ),
     );
   };
@@ -129,10 +120,7 @@ export function useCheckoutFlow() {
   };
 
   const handleCreateOrder = () => {
-    if (
-      !preview.data ||
-      !canPreview
-    ) {
+    if (!canCreateOrder) {
       return;
     }
 
@@ -155,6 +143,7 @@ export function useCheckoutFlow() {
     snapToken,
     createdOrderId,
 
+    cart,
     addresses,
     shippingOptions,
     preview,
@@ -162,13 +151,12 @@ export function useCheckoutFlow() {
     payment,
 
     disabled,
-    canPreview,
+    canCreateOrder,
 
     changeAddress,
     changeShipping,
     changeVoucher,
 
-    handlePreview,
     handleCreateOrder,
   };
 }

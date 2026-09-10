@@ -12,10 +12,14 @@ import {
   CheckoutSummary,
 } from "@/features/checkout/component";
 import { useCheckoutFlow } from "@/features/checkout/hooks/useCheckoutFlow";
-import { MidtransPayment } from "@/features/payment/components";
+import {
+  MidtransPayment,
+  MidtransScript,
+} from "@/features/payment/components";
 
 export default function CheckoutPage() {
   const flow = useCheckoutFlow();
+
   return <CheckoutLayout flow={flow} />;
 }
 
@@ -25,8 +29,10 @@ function CheckoutLayout({
   flow: ReturnType<typeof useCheckoutFlow>;
 }) {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-emerald-50/50 via-stone-50 to-stone-50">
-      <div className="mx-auto max-w-7xl px-4 py-6 sm:py-8">
+    <main className="min-h-screen bg-background text-foreground">
+      <MidtransScript />
+
+      <div className="mx-auto max-w-7xl space-y-6 px-4 py-6 md:px-8">
         <BackLink />
         <CheckoutHeader />
 
@@ -40,10 +46,7 @@ function CheckoutLayout({
 
         <CheckoutContent flow={flow} />
 
-        <div className="mt-8 flex items-center gap-2 rounded-2xl border border-emerald-100 bg-white/80 px-4 py-3 text-xs text-stone-500 shadow-sm">
-          <ShieldCheck className="size-4 shrink-0 text-emerald-700" />
-          Secure payment is handled through the Midtrans checkout window.
-        </div>
+        <SecurityNotice />
       </div>
 
       {flow.snapToken && flow.createdOrderId ? (
@@ -60,7 +63,7 @@ function BackLink() {
   return (
     <Link
       href="/cart"
-      className="inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm font-semibold text-stone-500 transition hover:bg-white hover:text-stone-900"
+      className="inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm font-semibold text-muted-foreground transition hover:bg-muted hover:text-primary"
     >
       <ArrowLeft className="size-4" />
       Back to Cart
@@ -74,7 +77,7 @@ function CheckoutContent({
   flow: ReturnType<typeof useCheckoutFlow>;
 }) {
   return (
-    <div className="mt-8 grid gap-6 lg:grid-cols-3 lg:gap-8">
+    <div className="grid gap-6 lg:grid-cols-3 lg:gap-8">
       <div className="space-y-5 lg:col-span-2">
         <CheckoutAddress
           addressId={flow.addressId}
@@ -84,7 +87,9 @@ function CheckoutContent({
           isLoading={flow.addresses.isLoading}
           isError={flow.addresses.isError}
         />
+
         <CheckoutItems preview={flow.preview.data} />
+
         <CheckoutShipping
           shippingMethodId={flow.shippingMethodId}
           shippingMethods={flow.shippingOptions.data ?? []}
@@ -94,6 +99,7 @@ function CheckoutContent({
           isLoading={flow.shippingOptions.isLoading}
           isError={flow.shippingOptions.isError}
         />
+
         <CheckoutVoucher
           value={flow.userVoucherId}
           onChange={flow.changeVoucher}
@@ -103,13 +109,25 @@ function CheckoutContent({
 
       <CheckoutSummary
         preview={flow.preview.data}
-        onPreview={flow.handlePreview}
+        cart={flow.cart.data}
         onCreateOrder={flow.handleCreateOrder}
-        isPreviewLoading={flow.preview.isPending}
-        isOrderLoading={flow.order.isPending || flow.payment.isPending}
-        orderCreated={flow.order.isSuccess && !!flow.snapToken}
-        canPreview={flow.canPreview}
+        isOrderLoading={
+          flow.order.isPending || flow.payment.isPending
+        }
+        orderCreated={
+          flow.order.isSuccess && !!flow.snapToken
+        }
+        canCreateOrder={flow.canCreateOrder}
       />
+    </div>
+  );
+}
+
+function SecurityNotice() {
+  return (
+    <div className="flex items-center gap-2 rounded-lg border border-border bg-background px-4 py-3 text-xs text-muted-foreground shadow-sm">
+      <ShieldCheck className="size-4 shrink-0 text-primary" />
+      Secure payment is handled through the Midtrans checkout window.
     </div>
   );
 }

@@ -11,12 +11,12 @@ const labels: Record<OrderStatus, string> = {
 };
 
 const styles: Record<OrderStatus, string> = {
-  WAITING_PAYMENT: "bg-amber-50 text-amber-700 ring-amber-200",
-  PAID: "bg-sky-50 text-sky-700 ring-sky-200",
-  PROCESSED: "bg-violet-50 text-violet-700 ring-violet-200",
+  WAITING_PAYMENT: "bg-warning/15 text-warning-foreground ring-warning/30",
+  PAID: "bg-success/15 text-success-foreground ring-success/30",
+  PROCESSED: "bg-accent text-primary ring-border",
   SHIPPED: "bg-primary/10 text-primary ring-border",
   CONFIRMED: "bg-accent text-primary ring-border",
-  CANCELLED: "bg-red-50 text-red-700 ring-red-200",
+  CANCELLED: "bg-destructive/10 text-destructive ring-destructive/30",
 };
 
 export function OrderStatusBadge({

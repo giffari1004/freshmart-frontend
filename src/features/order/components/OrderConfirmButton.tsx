@@ -37,7 +37,7 @@ export function OrderConfirmButton({
         type="button"
         onClick={() => setOpen(true)}
         disabled={isPending}
-        className="h-12 w-full rounded-xl bg-primary px-4 text-sm font-bold text-white shadow-sm transition hover:bg-primary/90 disabled:opacity-50"
+        className="h-12 w-full rounded-xl bg-primary px-4 text-sm font-bold text-primary-foreground shadow-sm transition hover:bg-primary/90 disabled:opacity-50"
       >
         <CheckCircle2 className="size-4" />
         Confirm Order Received
