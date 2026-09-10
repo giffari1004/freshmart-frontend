@@ -14,13 +14,11 @@ export function StockTabReport() {
   const [year, setYear] = useState<number | undefined>();
   const [storeId, setStoreId] = useState<string | undefined>();
   const [productId, setProductId] = useState<string | undefined>();
-
   const [detailYear, setDetailYear] = useState(2026);
   const [detailMonth, setDetailMonth] = useState(new Date().getMonth() + 1);
   const [detailStoreId, setDetailStoreId] = useState<string | undefined>();
   const [detailProductId, setDetailProductId] = useState<string | undefined>();
   const [page, setPage] = useState(1);
-
   return (
     <div className="space-y-6">
       <div>

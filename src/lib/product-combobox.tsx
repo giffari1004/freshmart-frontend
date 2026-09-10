@@ -48,7 +48,7 @@ export function ProductComboBox({
           role="combobox"
           className="w-full justify-between"
         >
-          {selected ? selected.name : "Select product"}
+          {selected ? selected.name : "All products"}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-full p-0" align="start">
@@ -59,16 +59,24 @@ export function ProductComboBox({
             onValueChange={setSearch}
           />
           <CommandList className="max-h-64 overflow-y-auto">
-            <CommandEmpty>No product found.</CommandEmpty>
+            <CommandEmpty>No product found</CommandEmpty>
             <CommandGroup>
+              <CommandItem
+                value="All products"
+                onSelect={() => {
+                  onProductIdChange(undefined);
+                  setOpen(false);
+                }}
+              ><Check className={cn("mr-2 h-4 w-4", !productId ? "opacity-100" : "opacity-0")}/>All products</CommandItem>
               {products.map((item: Product) => (
                 <CommandItem
                   key={item.id}
                   value={item.name}
                   onSelect={() => {
                     onProductIdChange(item.id);
-                    setOpen(false);
+                    setOpen(false)
                   }}
+                
                 >
                   <Check
                     className={cn(
