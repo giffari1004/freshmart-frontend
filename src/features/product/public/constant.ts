@@ -33,4 +33,9 @@ export interface ProductDetail {
   stock: number;
   isOutOfStock: boolean;
   images: ProductImage[];
+  discounts: {
+    type: string;
+    valueType: string;
+    value: number;
+  }[];
 }

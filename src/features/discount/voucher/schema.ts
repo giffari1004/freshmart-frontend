@@ -74,29 +74,21 @@ export const CREATE_VOUCHER = z
 export const UPDATE_VOUCHER = z
   .object({
     code: z.string().min(1, "Voucher code is required"),
-
     usageType: z.enum(VOUCHER_USAGE_TYPE),
-
     valueType: z.enum(VOUCHER_VALUE_TYPE),
-
     value: z.coerce.number().positive("Value must be greater than 0"),
-
     maxDiscountAmount: z.coerce
       .number()
       .min(1000, "Maximum discount must be at least Rp 1.000")
       .optional(),
-
     minPurchaseAmount: z.coerce
       .number()
       .min(1000, "Minimum purchase must be at least Rp 1.000")
       .optional(),
-
     productId: z.string().uuid().optional(),
-
     expiredAt: z.coerce.date({
       error: "Expired date is required",
     }),
-
     isActive: z.boolean(),
   })
   .refine((data) => data.valueType !== "PERCENTAGE" || data.value <= 100, {
@@ -127,6 +119,7 @@ export const GET_ALL_VOUCHER = z.object({
   ),
   usageType: z.enum(VOUCHER_USAGE_TYPE).optional(),
   valueType: z.enum(VOUCHER_VALUE_TYPE).optional(),
+  storeId: z.string().uuid("Invalid store id").optional(),
   sortBy: z.enum(VOUCHER_SORT_BY).default("createdAt"),
   sortOrder: z.enum(VOUCHER_SORT_ORDER).default("desc"),
 });

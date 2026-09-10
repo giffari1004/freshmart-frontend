@@ -1,6 +1,5 @@
 import z from "zod";
 import { PRODUCT_SORT_BY, PRODUCT_SORT_ORDER } from "../constans";
-import { ProductImage } from "../constans";
 export const GET_CATALOG = z.object({
   storeId: z.string().uuid("Invalid store id"),
   page: z.coerce.number().int().positive().default(1),

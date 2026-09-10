@@ -34,7 +34,7 @@ export function StockReportMonthlySummaryFilter({
   onYearChange,
   canFilterStore,
 }: StockReportMonthlySummaryFilterProps) {
-  const { data: storesData } = useStores({ page: 1, limit: 50 });
+  const { data: storesData } = useStores({ page: 1, limit: 20 });
   const stores = storesData?.data ?? [];
   useEffect(() => {
     onProductIdChange(undefined);

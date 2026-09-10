@@ -29,6 +29,7 @@ import { FormSelect } from "@/lib/form-select-helper";
 import { Plus } from "lucide-react";
 import { useGetAllInventories } from "@/features/inventory/hooks";
 import { Inventory } from "@/features/inventory/schema";
+import { DiscountProductComboBox } from "@/lib/discount-combobox";
 interface CreateDiscountProps {
   isSuperAdmin: boolean;
 }
@@ -68,7 +69,7 @@ export function CreateDiscount({ isSuperAdmin }: CreateDiscountProps) {
   );
   const availableProducts = inventoryData?.data
     .map((inv: Inventory) => inv.product)
-    .filter((product: Product) => !discountProduct.has(product.id));
+    .filter((product: Product) => !discountProduct.has(product.id)) ?? [];
   function onSubmitButton(value: createDiscountOutput) {
     mutation.mutate(value, {
       onSuccess: () => {
@@ -116,18 +117,18 @@ export function CreateDiscount({ isSuperAdmin }: CreateDiscountProps) {
           )}
           <div className="space-y-2">
             <Label>Product name</Label>
-            <FormSelect
-              control={form.control}
-              name="productId"
-              placeholder="Select product name"
-              items={
-                availableProducts?.map((p: Product) => ({
-                  value: p.id,
-                  label: p.name,
-                })) ?? []
+            <DiscountProductComboBox
+              products={availableProducts}
+              productId={form.watch("productId")}
+              onProductIdChange={(v) =>
+                form.setValue("productId", v ?? "", { shouldValidate: true })
               }
-              error={form.formState.errors.productId}
             />
+            {form.formState.errors.productId && (
+              <p className="text-sm text-red-500">
+                {form.formState.errors.productId.message}
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label>Value type</Label>

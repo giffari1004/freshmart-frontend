@@ -26,7 +26,7 @@ export function SalesReportFilter({
   onMonthChange,
   canFilterStore,
 }: SalesReportFilterProps) {
-  const { data: storesData } = useStores({ page: 1, limit: 50 });
+  const { data: storesData } = useStores({ page: 1, limit: 20 });
   const stores = storesData?.data ?? [];
   return (
     <div className="flex flex-col gap-2 rounded-xl border border-stone-200 bg-white p-3 sm:flex-row sm:items-center sm:gap-3">

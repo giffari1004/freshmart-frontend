@@ -8,9 +8,9 @@ import { UserFilter } from "@/features/admin/components/user-filters";
 import { UsersTable } from "@/features/admin/components/user-table";
 import { EditStoreAdmin } from "@/features/admin/components/edit-store-admin-dialog";
 import { DeleteStoreAdmin } from "@/features/admin/components/delete-store-admin-dialog";
-import { StatCard } from "@/features/admin/components/star-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuthStore } from "@/stores/auth-store";
+import { ShieldCheck, ShoppingBag, Store, Users } from "lucide-react";
 export default function AdminUsersPage() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -32,26 +32,21 @@ export default function AdminUsersPage() {
   const canManage = roleUser === "SUPER_ADMIN";
   if (canManage) {
     return (
-      <div className="mx-auto max-w-5xl space-y-6 p-8">
-        <div className="flex flex-wrap items-end justify-between gap-4">
+      <div className="mx-auto w-full max-w-6xl space-y-6 p-4 sm:p-6 lg:p-8">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-xs font-medium uppercase tracking-wide text-emerald-700">
-              User management
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-700">
+              User Management
             </p>
-            <h1 className="mt-1 font-serif text-3xl text-stone-900">
+            <h1 className="mt-1 font-serif text-2xl sm:text-3xl text-stone-900">
               Registered Users
             </h1>
-            <p className="mt-1 text-sm text-stone-500">
-              Manage store administrator accounts.
+            <p className="mt-2 text-sm text-stone-500">
+              Manage customer, store admin, and super admin accounts.
             </p>
           </div>
           <CreateStoreAdmin />
         </div>
-        {data?.meta && (
-          <div className="flex flex-wrap gap-3">
-            <StatCard label="Total users" value={data.meta.totalData} />
-          </div>
-        )}
         <UserFilter
           search={search}
           role={role}
@@ -72,21 +67,78 @@ export default function AdminUsersPage() {
         {isLoading ? (
           <Skeleton className="h-64 w-full rounded-xl" />
         ) : (
-          <>
-            <UsersTable
-              users={data?.data ?? []}
-              onEdit={setEditUser}
-              onDelete={setDeleteUser}
-              meta={data?.meta}
-              onPageChange={setPage}
-            />
-          </>
+          <UsersTable
+            users={data?.data ?? []}
+            onEdit={setEditUser}
+            onDelete={setDeleteUser}
+            meta={data?.meta}
+            onPageChange={setPage}
+          />
         )}
         <EditStoreAdmin user={editUser} onClose={() => setEditUser(null)} />
         <DeleteStoreAdmin
           user={deleteUser}
           onClose={() => setDeleteUser(null)}
         />
+        {data?.data && (
+          <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+            <div className="rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
+              <div className="flex items-center justify-between">
+                <div className="rounded-xl bg-emerald-100 p-2.5">
+                  <Users className="h-5 w-5 text-emerald-700" />
+                </div>
+              </div>
+              <h2 className="mt-4 text-2xl font-bold text-stone-900">
+                {data.meta.totalData}
+              </h2>
+              <p className="mt-1 text-xs font-medium text-stone-500">
+                Total Users
+              </p>
+            </div>
+            <div className="rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
+              <div className="rounded-xl bg-orange-100 p-2.5 w-fit">
+                <ShoppingBag className="h-5 w-5 text-orange-600" />
+              </div>
+              <h2 className="mt-4 text-2xl font-bold text-stone-900">
+                {
+                  data.data.filter((u: AdminUser) => u.role === "CUSTOMER")
+                    .length
+                }
+              </h2>
+              <p className="mt-1 text-xs font-medium text-stone-500">
+                Customers
+              </p>
+            </div>
+            <div className="rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
+              <div className="rounded-xl bg-blue-100 p-2.5 w-fit">
+                <Store className="h-5 w-5 text-blue-600" />
+              </div>
+              <h2 className="mt-4 text-2xl font-bold text-stone-900">
+                {
+                  data.data.filter((u: AdminUser) => u.role === "STORE_ADMIN")
+                    .length
+                }
+              </h2>
+              <p className="mt-1 text-xs font-medium text-stone-500">
+                Store Admins
+              </p>
+            </div>
+            <div className="rounded-2xl border border-stone-200 bg-white p-4 shadow-sm">
+              <div className="rounded-xl bg-purple-100 p-2.5 w-fit">
+                <ShieldCheck className="h-5 w-5 text-purple-600" />
+              </div>
+              <h2 className="mt-4 text-2xl font-bold text-stone-900">
+                {
+                  data.data.filter((u: AdminUser) => u.role === "SUPER_ADMIN")
+                    .length
+                }
+              </h2>
+              <p className="mt-1 text-xs font-medium text-stone-500">
+                Super Admins
+              </p>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
