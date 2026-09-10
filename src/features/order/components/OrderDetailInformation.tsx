@@ -115,8 +115,8 @@ function Info({
   children: ReactNode;
 }) {
   return (
-    <div className="rounded-[1.65rem] border border-border bg-white/95 p-5 shadow-[0_16px_38px_-26px_rgba(15,23,42,0.28)] transition hover:-translate-y-0.5 hover:border-border sm:p-6">
-      <h2 className="text-xs font-black uppercase tracking-[0.16em] text-primary">
+    <div className="rounded-xl border border-border bg-background p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-border sm:p-6">
+      <h2 className="text-xs font-bold uppercase tracking-[0.16em] text-primary">
         {title}
       </h2>
       <div className="mt-4 text-sm text-foreground">{children}</div>

@@ -6,16 +6,14 @@ import { CartItem } from "./cartItems";
 interface CartListProps {
   items: CartItemType[];
   storeId: string | null;
-  onIncrease: (item: CartItemType) => void;
-  onDecrease: (item: CartItemType) => void;
+  onChangeQuantity: (item: CartItemType, quantity: number) => void;
   onRemove: (item: CartItemType) => void;
 }
 
 export function CartList({
   items,
   storeId,
-  onIncrease,
-  onDecrease,
+  onChangeQuantity,
   onRemove,
 }: CartListProps) {
   return (
@@ -25,8 +23,7 @@ export function CartList({
           key={item.id}
           item={item}
           storeId={storeId}
-          onIncrease={() => onIncrease(item)}
-          onDecrease={() => onDecrease(item)}
+          onChangeQuantity={(quantity) => onChangeQuantity(item, quantity)}
           onRemove={() => onRemove(item)}
         />
       ))}

@@ -8,37 +8,31 @@ import { StockDetailFilter } from "./stock-detail-filter";
 import { StockDetailReport } from "./stock-detail-report";
 
 export function StockTabReport() {
-  const role = useAuthStore((s) => s.user?.role);
+  const role = useAuthStore((v) => v.user?.role);
   const canFilterStore = role === "SUPER_ADMIN";
-  const [storeId, setStoreId] = useState<string | undefined>(undefined);
-  const [productId, setProductId] = useState<string | undefined>(undefined);
-  const [year, setYear] = useState<number | undefined>(undefined);
-  const [month, setMonth] = useState<number | undefined>(undefined);
-  const [detailStoreId, setDetailStoreId] = useState<string | undefined>(
-    undefined,
-  );
-  const [detailProductId, setDetailProductId] = useState<string | undefined>(
-    undefined,
-  );
-  const [detailYear, setDetailYear] = useState<number>(
-    new Date().getFullYear(),
-  );
-  const [detailMonth, setDetailMonth] = useState<number>(
-    new Date().getMonth() + 1,
-  );
+  const [month, setMonth] = useState<number | undefined>();
+  const [year, setYear] = useState<number | undefined>();
+  const [storeId, setStoreId] = useState<string | undefined>();
+  const [productId, setProductId] = useState<string | undefined>();
+  const [detailYear, setDetailYear] = useState(2026);
+  const [detailMonth, setDetailMonth] = useState(new Date().getMonth() + 1);
+  const [detailStoreId, setDetailStoreId] = useState<string | undefined>();
+  const [detailProductId, setDetailProductId] = useState<string | undefined>();
+  const [page, setPage] = useState(1);
   return (
     <div className="space-y-6">
       <div>
         <p className="text-xs font-medium uppercase tracking-wide text-emerald-700">
-          Report management
+          Report Management
         </p>
         <h1 className="mt-1 font-serif text-3xl text-stone-900">
           Stock Report
         </h1>
         <p className="mt-1 text-sm text-stone-500">
-          Monthly stock report by product and store
+          Monthly stock report by product and store.
         </p>
       </div>
+
       <StockReportMonthlySummaryFilter
         storeId={storeId}
         onStoreIdChange={setStoreId}
@@ -50,28 +44,42 @@ export function StockTabReport() {
         onYearChange={setYear}
         canFilterStore={canFilterStore}
       />
+
       <StockReportMonthlySummary
         storeId={storeId}
         productId={productId}
         month={month}
         year={year}
       />
+
       <StockDetailFilter
         storeId={detailStoreId}
         onStoreIdChange={setDetailStoreId}
         productId={detailProductId}
-        onProductIdChange={setDetailProductId}
+        onProductIdChange={(value) => {
+          setDetailProductId(value);
+          setPage(1);
+        }}
         year={detailYear}
-        onYearChange={setDetailYear}
+        onYearChange={(value) => {
+          setDetailYear(value);
+          setPage(1);
+        }}
         month={detailMonth}
-        onMonthChange={setDetailMonth}
+        onMonthChange={(value) => {
+          setDetailMonth(value);
+          setPage(1);
+        }}
         canFilterStore={canFilterStore}
       />
+
       <StockDetailReport
         storeId={detailStoreId}
         productId={detailProductId}
         month={detailMonth}
         year={detailYear}
+        page={page}
+        onPageChange={setPage}
       />
     </div>
   );

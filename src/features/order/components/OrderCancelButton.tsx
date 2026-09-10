@@ -25,7 +25,7 @@ export function OrderCancelButton({ orderId }: { orderId: string }) {
 
   if (mutation.isSuccess) {
     return (
-      <div className="flex items-center gap-2 rounded-2xl border border-border bg-accent p-4 text-sm font-semibold text-primary">
+      <div className="flex items-center gap-2 rounded-lg border border-border bg-accent p-4 text-sm font-semibold text-primary">
         <XCircle className="size-4" />
         Order cancelled successfully.
       </div>
@@ -39,15 +39,15 @@ export function OrderCancelButton({ orderId }: { orderId: string }) {
         variant="outline"
         onClick={() => setOpen(true)}
         disabled={mutation.isPending}
-        className="h-11 rounded-xl border-red-200 px-5 text-sm font-semibold text-red-600 transition hover:bg-red-50 hover:text-red-700"
+        className="h-11 rounded-lg border-destructive/30 px-5 text-sm font-semibold text-destructive transition hover:bg-destructive/10 hover:text-destructive"
       >
         Cancel Order
       </Button>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="rounded-2xl">
+        <DialogContent className="rounded-lg">
           <DialogHeader>
-            <div className="mb-1 flex size-10 items-center justify-center rounded-2xl bg-red-50 text-red-600">
+            <div className="mb-1 flex size-10 items-center justify-center rounded-lg bg-destructive/10 text-destructive">
               <AlertTriangle className="size-5" />
             </div>
             <DialogTitle>Cancel this order?</DialogTitle>

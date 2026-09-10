@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useGetAllInventories } from "@/features/inventory/hooks";
-import { Inventory } from "@/features/inventory/schema";
+import { useGetAllProduct } from "@/features/product/hooks";
+import { Product } from "@/features/product/constans";
 import {
   Popover,
   PopoverContent,
@@ -26,84 +26,65 @@ interface ProductComboBoxProps {
   onProductIdChange: (value: string | undefined) => void;
 }
 export function ProductComboBox({
-  storeId,
   productId,
   onProductIdChange,
 }: ProductComboBoxProps) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
-  const { data } = useGetAllInventories({
+  const { data } = useGetAllProduct({
     page: 1,
-    limit: 20,
-    storeId,
+    limit: 50,
     search: search || undefined,
     sortBy: "createdAt",
     sortOrder: "desc",
   });
   const products = data?.data ?? [];
-  const uniqueProducts = products.reduce(
-    (acc: Inventory[], item: Inventory) => {
-      const exists = acc.some((p) => p.product.id === item.product.id);
-      if (!exists) {
-        acc.push(item);
-      }
-      return acc;
-    },
-    [],
-  );
-  const selected = uniqueProducts.find((item:Inventory) => item.product.id === productId);
+  const selected = products.find((p: Product) => p.id === productId);
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
           role="combobox"
-          className="w-full justify-between sm:w-52"
+          className="w-full justify-between"
         >
-          {selected ? selected.product.name : "All products"}
+          {selected ? selected.name : "All products"}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-64 p-0" align="start">
+      <PopoverContent className="w-full p-0" align="start">
         <Command shouldFilter={false}>
           <CommandInput
-            placeholder="Search product"
+            placeholder="Search product..."
             value={search}
             onValueChange={setSearch}
           />
           <CommandList className="max-h-64 overflow-y-auto">
-            <CommandEmpty>No product available</CommandEmpty>
+            <CommandEmpty>No product found</CommandEmpty>
             <CommandGroup>
               <CommandItem
+                value="All products"
                 onSelect={() => {
                   onProductIdChange(undefined);
                   setOpen(false);
                 }}
-              >
-                <Check
-                  className={cn(
-                    "mr-2 size-4",
-                    !productId ? "opacity-100" : "opacity-0",
-                  )}
-                />
-                All products
-              </CommandItem>
-              {uniqueProducts.map((item:Inventory) => (
+              ><Check className={cn("mr-2 h-4 w-4", !productId ? "opacity-100" : "opacity-0")}/>All products</CommandItem>
+              {products.map((item: Product) => (
                 <CommandItem
-                  key={item.product.id}
+                  key={item.id}
+                  value={item.name}
                   onSelect={() => {
-                    onProductIdChange(item.product.id);
-                    setOpen(false);
+                    onProductIdChange(item.id);
+                    setOpen(false)
                   }}
+                
                 >
                   <Check
                     className={cn(
-                      "mr-2 size-4",
-                      productId === item.product.id
-                        ? "opacity-100"
-                        : "opacity-0",
+                      "mr-2 h-4 w-4",
+                      productId === item.id ? "opacity-100" : "opacity-0",
                     )}
                   />
-                  {item.product.name}
+                  {item.name}
                 </CommandItem>
               ))}
             </CommandGroup>

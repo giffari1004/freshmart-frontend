@@ -6,13 +6,19 @@ import {
   Percent,
   FileBarChart,
   Store,
+  ShoppingCart,
 } from "lucide-react";
 export const ROLE = ["SUPER_ADMIN", "STORE_ADMIN", "CUSTOMER"] as const;
 export type UserRole = (typeof ROLE)[number];
 export const USER_SORT_BY = ["name", "createdAt"] as const;
 export const USER_SORT_ORDER = ["asc", "desc"] as const;
 export const ADMIN_NAV_ITEMS = [
-  { label: "Users", href: "/admin/users", roles: ["SUPER_ADMIN"], icon: Users },
+  {
+    label: "Users",
+    href: "/admin/users",
+    roles: ["SUPER_ADMIN"],
+    icon: Users,
+  },
   {
     label: "Stores",
     href: "/admin/stores",
@@ -23,5 +29,6 @@ export const ADMIN_NAV_ITEMS = [
   { label: "Products", href: "/admin/products", icon: Package },
   { label: "Inventory", href: "/admin/inventory", icon: Boxes },
   { label: "Discounts", href: "/admin/discounts", icon: Percent },
+  { label: "Orders", href: "/admin/orders", icon: ShoppingCart },
   { label: "Reports", href: "/admin/reports", icon: FileBarChart },
 ];

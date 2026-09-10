@@ -3,12 +3,14 @@ import { ProductDetail } from "../constant";
 import { ButtonCard } from "./button-card";
 import { formatPrice } from "@/lib/helper-idr";
 import { useAddToCart } from "@/features/cart/hooks";
+import { getDiscountBadge } from "./product-helper";
 interface DetailProductProps {
   product: ProductDetail;
 }
 export function DetailProduct({ product }: DetailProductProps) {
   const isOutOfStock = product.isOutOfStock;
   const item = product.stock ?? 0;
+  const badge = getDiscountBadge(product.discounts);
   const { mutate: addToCart, isPending } = useAddToCart();
   const handleAddToCart = () => {
     addToCart({ storeProductId: product.storeProductId, quantity: 1 });
@@ -21,6 +23,13 @@ export function DetailProduct({ product }: DetailProductProps) {
             <p className="text-xs font-medium uppercase tracking-wide text-emerald-700">
               {product.category}
             </p>
+            {badge && (
+              <span
+                className={`rounded-full ${badge.color} px-2.5 py-0.5 text-[10px] font-bold text-white`}
+              >
+                {badge.label}
+              </span>
+            )}
             <h1 className="text-3xl font-bold text-stone-900">
               {product.name}
             </h1>

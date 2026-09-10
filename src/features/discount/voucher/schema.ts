@@ -9,37 +9,41 @@ import {
 export const CREATE_VOUCHER = z
   .object({
     storeId: z.string().uuid("Invalid store id").optional(),
-
     code: z.string().min(1, "Voucher code is required"),
-
     usageType: z.enum(VOUCHER_USAGE_TYPE),
-
     valueType: z.enum(VOUCHER_VALUE_TYPE),
-
     value: z
       .number("Input number min 1 character")
       .positive("Min Rp 1.000 or 1%"),
-
     maxDiscountAmount: z
       .number("Min Rp 1.000")
       .positive("Min Rp 1.000")
       .min(1000, "Min Rp 1.000")
       .optional(),
-
     minPurchaseAmount: z
       .number("Min Rp 1.000")
       .positive("Min Rp 1.000")
       .min(1000, "Min Rp 1.000")
       .optional(),
-
     productId: z.string().uuid("Invalid product id").optional(),
-
     expiredAt: z.coerce.date({
       error: "Expired date is required",
     }),
-
     isActive: z.boolean().optional(),
   })
+  .refine(
+    (data) => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const expiredAt = new Date(data.expiredAt);
+      expiredAt.setHours(0, 0, 0, 0);
+      return expiredAt >= today;
+    },
+    {
+      message: "Expired date cannot be before today",
+      path: ["expiredAt"],
+    },
+  )
   .refine(
     (data) => (data.valueType === "PERCENTAGE" ? data.value <= 100 : true),
     {
@@ -67,33 +71,24 @@ export const CREATE_VOUCHER = z
       path: ["productId"],
     },
   );
-
 export const UPDATE_VOUCHER = z
   .object({
     code: z.string().min(1, "Voucher code is required"),
-
     usageType: z.enum(VOUCHER_USAGE_TYPE),
-
     valueType: z.enum(VOUCHER_VALUE_TYPE),
-
     value: z.coerce.number().positive("Value must be greater than 0"),
-
     maxDiscountAmount: z.coerce
       .number()
       .min(1000, "Maximum discount must be at least Rp 1.000")
       .optional(),
-
     minPurchaseAmount: z.coerce
       .number()
       .min(1000, "Minimum purchase must be at least Rp 1.000")
       .optional(),
-
     productId: z.string().uuid().optional(),
-
     expiredAt: z.coerce.date({
       error: "Expired date is required",
     }),
-
     isActive: z.boolean(),
   })
   .refine((data) => data.valueType !== "PERCENTAGE" || data.value <= 100, {
@@ -124,6 +119,7 @@ export const GET_ALL_VOUCHER = z.object({
   ),
   usageType: z.enum(VOUCHER_USAGE_TYPE).optional(),
   valueType: z.enum(VOUCHER_VALUE_TYPE).optional(),
+  storeId: z.string().uuid("Invalid store id").optional(),
   sortBy: z.enum(VOUCHER_SORT_BY).default("createdAt"),
   sortOrder: z.enum(VOUCHER_SORT_ORDER).default("desc"),
 });

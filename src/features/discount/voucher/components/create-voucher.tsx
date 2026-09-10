@@ -1,20 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus } from "lucide-react";
-import { useCreateVoucher } from "../hooks";
+import { useCreateVoucher, useGetAllVouchers } from "../hooks";
 import {
   CREATE_VOUCHER,
   createVoucherInput,
   createVoucherOutput,
+  Voucher,
 } from "../schema";
 import {
   VOUCHER_USAGE_TYPE,
   VOUCHER_VALUE_TYPE,
 } from "@/features/discount/voucher/constant";
-import { useGetAllProduct } from "@/features/product/hooks";
 import { useStores } from "@/features/store/hooks";
 import { Product } from "@/features/product/constans";
 import {
@@ -30,12 +30,18 @@ import { Input } from "@/components/ui/input";
 import { PriceInput } from "@/lib/price-input";
 import { FormSelect } from "@/lib/form-select-helper";
 import { toDateInputValue } from "@/lib/to-date-input";
+import { DiscountProductComboBox } from "@/lib/discount-combobox";
+import { useGetAllInventories } from "@/features/inventory/hooks";
+import { Inventory } from "@/features/inventory/schema";
+
 interface CreateVoucherProps {
   isSuperAdmin: boolean;
 }
+
 export function CreateVoucher({ isSuperAdmin }: CreateVoucherProps) {
   const [open, setOpen] = useState(false);
   const mutation = useCreateVoucher();
+
   const form = useForm<createVoucherInput, any, createVoucherOutput>({
     resolver: zodResolver(CREATE_VOUCHER),
     defaultValues: {
@@ -51,15 +57,37 @@ export function CreateVoucher({ isSuperAdmin }: CreateVoucherProps) {
       isActive: true,
     },
   });
-  const { data: productsData } = useGetAllProduct({
-    page: 1,
-    limit: 50,
-    sortBy: "createdAt",
-    sortOrder: "desc",
-  });
+
   const { data: storesData } = useStores({ page: 1, limit: 50 });
   const valueType = form.watch("valueType");
   const isPercentage = valueType === "PERCENTAGE";
+  const storeId = form.watch("storeId");
+  useEffect(() => {
+    form.setValue("productId", "");
+  }, [storeId, form]);
+  const { data: inventoryData } = useGetAllInventories({
+    page: 1,
+    limit: 50,
+    storeId,
+    sortBy: "createdAt",
+    sortOrder: "desc",
+  });
+  const { data: vouchersData } = useGetAllVouchers({
+    page: 1,
+    limit: 50,
+    storeId,
+    sortBy: "createdAt",
+    sortOrder: "desc",
+  });
+  const voucherProducts = new Set(
+    vouchersData?.data
+      ?.filter((voucher:Voucher) => voucher.usageType === "PRODUCT_SPECIFIC")
+      .map((voucher: Voucher) => voucher.productId) ?? [],
+  );
+  const availableProducts =
+    inventoryData?.data
+      .map((inv: Inventory) => inv.product)
+      .filter((product: Product) => !voucherProducts.has(product.id)) ?? [];
   function onSubmitButton(value: createVoucherOutput) {
     mutation.mutate(value, {
       onSuccess: () => {
@@ -68,6 +96,7 @@ export function CreateVoucher({ isSuperAdmin }: CreateVoucherProps) {
       },
     });
   }
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -76,13 +105,16 @@ export function CreateVoucher({ isSuperAdmin }: CreateVoucherProps) {
           Create voucher
         </Button>
       </DialogTrigger>
+
       <DialogContent className="max-h-[90vh] overflow-y-auto rounded-3xl border-green-200 p-6">
         <DialogHeader>
           <DialogTitle className="text-3xl font-bold">
             Create voucher
           </DialogTitle>
+
           <p className="text-sm text-muted-foreground">Add a new voucher</p>
         </DialogHeader>
+
         <form
           onSubmit={form.handleSubmit(onSubmitButton)}
           className="space-y-5 pt-2"
@@ -90,6 +122,7 @@ export function CreateVoucher({ isSuperAdmin }: CreateVoucherProps) {
           {isSuperAdmin && (
             <div className="space-y-2">
               <Label>Store</Label>
+
               <FormSelect
                 control={form.control}
                 name="storeId"
@@ -104,21 +137,26 @@ export function CreateVoucher({ isSuperAdmin }: CreateVoucherProps) {
               />
             </div>
           )}
+
           <div className="space-y-2">
             <Label>Voucher code</Label>
+
             <Input
               className="h-12 rounded-2xl"
               placeholder="e.g. FRESH10"
               {...form.register("code")}
             />
+
             {form.formState.errors.code && (
               <p className="text-xs text-destructive">
                 {form.formState.errors.code.message}
               </p>
             )}
           </div>
+
           <div className="space-y-2">
             <Label>Usage type</Label>
+
             <FormSelect
               control={form.control}
               name="usageType"
@@ -130,25 +168,32 @@ export function CreateVoucher({ isSuperAdmin }: CreateVoucherProps) {
               error={form.formState.errors.usageType}
             />
           </div>
+
           {form.watch("usageType") === "PRODUCT_SPECIFIC" && (
             <div className="space-y-2">
               <Label>Product</Label>
-              <FormSelect
-                control={form.control}
-                name="productId"
-                placeholder="Select product"
-                items={
-                  productsData?.data.map((p: Product) => ({
-                    value: p.id,
-                    label: p.name,
-                  })) ?? []
+
+              <DiscountProductComboBox
+                products={availableProducts}
+                productId={form.watch("productId")}
+                onProductIdChange={(v) =>
+                  form.setValue("productId", v ?? "", {
+                    shouldValidate: true,
+                  })
                 }
-                error={form.formState.errors.productId}
               />
+
+              {form.formState.errors.productId && (
+                <p className="text-sm text-red-500">
+                  {form.formState.errors.productId.message}
+                </p>
+              )}
             </div>
           )}
+
           <div className="space-y-2">
             <Label>Value type</Label>
+
             <FormSelect
               control={form.control}
               name="valueType"
@@ -160,8 +205,10 @@ export function CreateVoucher({ isSuperAdmin }: CreateVoucherProps) {
               error={form.formState.errors.valueType}
             />
           </div>
+
           <div className="space-y-2">
             <Label>Value</Label>
+
             <PriceInput
               form={form}
               name="value"
@@ -169,21 +216,25 @@ export function CreateVoucher({ isSuperAdmin }: CreateVoucherProps) {
               suffix={isPercentage ? "%" : undefined}
               placeholder={isPercentage ? "0%" : "Rp 0"}
             />
+
             {form.formState.errors.value && (
               <p className="text-xs text-destructive">
                 {form.formState.errors.value.message}
               </p>
             )}
           </div>
+
           {isPercentage && (
             <div className="space-y-2">
               <Label>Max discount amount</Label>
+
               <PriceInput
                 form={form}
                 name="maxDiscountAmount"
                 prefix="Rp "
                 placeholder="Rp 0"
               />
+
               {form.formState.errors.maxDiscountAmount && (
                 <p className="text-xs text-destructive">
                   {form.formState.errors.maxDiscountAmount.message}
@@ -191,14 +242,17 @@ export function CreateVoucher({ isSuperAdmin }: CreateVoucherProps) {
               )}
             </div>
           )}
+
           <div className="space-y-2">
             <Label>Min purchase amount (Optional)</Label>
+
             <PriceInput
               form={form}
               name="minPurchaseAmount"
               prefix="Rp "
               placeholder="Rp 0"
             />
+
             {form.formState.errors.minPurchaseAmount && (
               <p className="text-xs text-destructive">
                 {form.formState.errors.minPurchaseAmount.message}
@@ -208,6 +262,7 @@ export function CreateVoucher({ isSuperAdmin }: CreateVoucherProps) {
 
           <div className="space-y-2">
             <Label>Expired at</Label>
+
             <Controller
               control={form.control}
               name="expiredAt"
@@ -220,6 +275,7 @@ export function CreateVoucher({ isSuperAdmin }: CreateVoucherProps) {
                 />
               )}
             />
+
             {form.formState.errors.expiredAt && (
               <p className="text-xs text-destructive">
                 {form.formState.errors.expiredAt.message}
