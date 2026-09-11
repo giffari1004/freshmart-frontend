@@ -1,8 +1,22 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { jwtVerify } from "jose";
 
-export function middleware(req: NextRequest) {
-  const role = req.cookies.get("role")?.value;
+const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+
+async function getRoleFromToken(token: string | undefined) {
+  if (!token) return null;
+  try {
+    const { payload } = await jwtVerify(token, secret);
+    return payload.role as string;
+  } catch {
+    return null;
+  }
+}
+
+export async function middleware(req: NextRequest) {
+  const token = req.cookies.get("token")?.value;
+  const role = await getRoleFromToken(token);
   const isLoggedIn = Boolean(role);
   const { pathname } = req.nextUrl;
 
