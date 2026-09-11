@@ -13,8 +13,12 @@ import {
 import { useUpdatePassword } from "@/features/profile/hooks";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+import { useAuthStore } from "@/stores/auth-store";
+import { useRouter } from "next/navigation";
 
 export function ChangePasswordForm() {
+  const router = useRouter();
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
@@ -25,7 +29,6 @@ export function ChangePasswordForm() {
     register,
     handleSubmit,
     setError,
-    reset,
     formState: { errors },
   } = useForm<ChangePasswordInput>({
     resolver: zodResolver(changePasswordSchema),
@@ -44,7 +47,9 @@ export function ChangePasswordForm() {
       },
       {
         onSuccess: () => {
-          reset();
+          toast.success("Password updated. Please log in again.");
+          useAuthStore.getState().logout();
+          router.push("/login");
         },
         onError: (error) => {
           if (axios.isAxiosError(error) && error.response?.data?.message) {
