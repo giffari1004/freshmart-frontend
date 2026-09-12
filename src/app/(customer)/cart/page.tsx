@@ -123,11 +123,18 @@ interface CartItemsProps {
   remove: RemoveMutation;
 }
 
-function CartItems({ data, update, remove }: CartItemsProps) {
-  const busy = update.isPending || remove.isPending;
-
-  const changeQuantity = (item: CartItem, quantity: number) => {
-    if (busy || quantity < 1 || quantity === item.quantity) return;
+function CartItems({
+  data,
+  update,
+  remove,
+}: CartItemsProps) {
+  const changeQuantity = (
+    item: CartItem,
+    quantity: number,
+  ) => {
+    if (quantity < 1 || quantity === item.quantity) {
+      return;
+    }
 
     update.mutate({
       itemId: item.id,
@@ -136,7 +143,9 @@ function CartItems({ data, update, remove }: CartItemsProps) {
   };
 
   const removeItem = (item: CartItem) => {
-    if (!busy) remove.mutate(item.id);
+    if (!remove.isPending) {
+      remove.mutate(item.id);
+    }
   };
 
   return (

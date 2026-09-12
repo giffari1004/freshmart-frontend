@@ -1,21 +1,31 @@
 "use client";
 
-import {
-  useMutation,
-} from "@tanstack/react-query";
-
+import { useQuery } from "@tanstack/react-query";
 import { checkoutService } from "../checkout.service";
-import {
-  CheckoutPreviewRequest,
-} from "../checkout.type";
+import { CheckoutPreviewRequest } from "../checkout.type";
 
-export function useCheckoutPreview() {
-  return useMutation({
-    mutationFn: (
-      payload: CheckoutPreviewRequest,
-    ) =>
-      checkoutService.getPreview(
-        payload,
-      ),
+export function useCheckoutPreview(
+  addressId: string,
+  shippingMethodId: string,
+  userVoucherId: string,
+) {
+  const enabled = Boolean(addressId && shippingMethodId);
+
+  return useQuery({
+    queryKey: [
+      "checkout-preview",
+      addressId,
+      shippingMethodId,
+      userVoucherId,
+    ],
+    queryFn: () =>
+      checkoutService.getPreview({
+        addressId,
+        shippingMethodId,
+        ...(userVoucherId.trim()
+          ? { userVoucherId }
+          : {}),
+      }),
+    enabled,
   });
 }

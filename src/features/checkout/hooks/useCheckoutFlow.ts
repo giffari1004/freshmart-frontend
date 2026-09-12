@@ -8,6 +8,12 @@ import { useCheckoutShippingOptions } from "./useCheckoutShippingOptions";
 import { useCreateOrder } from "@/features/order/hooks";
 import { useCreatePayment } from "@/features/payment/hooks";
 
+type PreviewPayload = {
+  addressId: string;
+  shippingMethodId: string;
+  userVoucherId?: string;
+};
+
 export function useCheckoutFlow() {
   const [addressId, setAddressId] = useState("");
   const [shippingMethodId, setShippingMethodId] = useState("");
@@ -18,12 +24,16 @@ export function useCheckoutFlow() {
   const cart = useCart();
   const addresses = useCheckoutAddresses();
   const shippingOptions = useCheckoutShippingOptions(addressId);
-  const preview = useCheckoutPreview();
+  const preview = useCheckoutPreview(
+  addressId,
+  shippingMethodId,
+  userVoucherId,
+);
   const order = useCreateOrder();
   const payment = useCreatePayment();
 
   const disabled =
-    preview.isPending ||
+    preview.isFetching ||
     order.isPending ||
     payment.isPending;
 
@@ -32,70 +42,23 @@ export function useCheckoutFlow() {
     Boolean(shippingMethodId) &&
     Boolean(preview.data);
 
-  useEffect(() => {
-    if (!addressId && addresses.data?.length) {
-      const primary = addresses.data.find(
-        (item) => item.isPrimary,
-      );
-
-      setAddressId(
-        primary?.id ?? addresses.data[0].id,
-      );
-      return;
-    }
-
-    if (
-      addressId &&
-      addresses.data &&
-      !addresses.data.some(
-        (item) => item.id === addressId,
-      )
-    ) {
-      setAddressId("");
-    }
-  }, [addressId, addresses.data]);
-
-  useEffect(() => {
-    setShippingMethodId("");
-    preview.reset();
-  }, [addressId]);
+  useAddressValidation(
+    addressId,
+    addresses.data,
+    setAddressId,
+  );
 
   const changeAddress = (value: string) => {
     setAddressId(value);
     setShippingMethodId("");
-    preview.reset();
   };
 
   const changeShipping = (value: string) => {
     setShippingMethodId(value);
-
-    if (!addressId) {
-      return;
-    }
-
-    preview.mutate(
-      buildPayload(
-        addressId,
-        value,
-        userVoucherId,
-      ),
-    );
   };
 
   const changeVoucher = (value: string) => {
     setUserVoucherId(value);
-
-    if (!addressId || !shippingMethodId) {
-      return;
-    }
-
-    preview.mutate(
-      buildPayload(
-        addressId,
-        shippingMethodId,
-        value,
-      ),
-    );
   };
 
   const handlePaymentSuccess = (result: {
@@ -104,35 +67,17 @@ export function useCheckoutFlow() {
     setSnapToken(result.snapToken);
   };
 
-  const handleOrderSuccess = (result: {
-    id: string;
-  }) => {
+  const handleOrderSuccess = (result: { id: string }) => {
     setCreatedOrderId(result.id);
-
-    payment.mutate(
-      {
-        orderId: result.id,
-      },
-      {
-        onSuccess: handlePaymentSuccess,
-      },
-    );
+    createPayment(result.id, payment, handlePaymentSuccess);
   };
 
   const handleCreateOrder = () => {
-    if (!canCreateOrder) {
-      return;
-    }
+    if (!canCreateOrder) return;
 
     order.mutate(
-      buildPayload(
-        addressId,
-        shippingMethodId,
-        userVoucherId,
-      ),
-      {
-        onSuccess: handleOrderSuccess,
-      },
+      buildPayload(addressId, shippingMethodId, userVoucherId),
+      { onSuccess: handleOrderSuccess },
     );
   };
 
@@ -142,30 +87,57 @@ export function useCheckoutFlow() {
     userVoucherId,
     snapToken,
     createdOrderId,
-
     cart,
     addresses,
     shippingOptions,
     preview,
     order,
     payment,
-
     disabled,
     canCreateOrder,
-
     changeAddress,
     changeShipping,
     changeVoucher,
-
     handleCreateOrder,
   };
+}
+
+function useAddressValidation(
+  addressId: string,
+  addresses: Array<{ id: string; isPrimary: boolean }> | undefined,
+  setAddressId: (value: string) => void,
+) {
+  useEffect(() => {
+    if (!addresses?.length) return;
+
+    if (!addressId) {
+      const primary = addresses.find((item) => item.isPrimary);
+      setAddressId(primary?.id ?? addresses[0].id);
+      return;
+    }
+
+    const exists = addresses.some((item) => item.id === addressId);
+
+    if (!exists) setAddressId("");
+  }, [addressId, addresses, setAddressId]);
+}
+
+function createPayment(
+  orderId: string,
+  payment: ReturnType<typeof useCreatePayment>,
+  onSuccess: (result: { snapToken: string }) => void,
+) {
+  payment.mutate(
+    { orderId },
+    { onSuccess },
+  );
 }
 
 function buildPayload(
   addressId: string,
   shippingMethodId: string,
   userVoucherId: string,
-) {
+): PreviewPayload {
   return {
     addressId,
     shippingMethodId,
