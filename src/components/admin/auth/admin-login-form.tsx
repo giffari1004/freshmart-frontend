@@ -33,7 +33,7 @@ export function AdminLoginForm() {
   const onSubmit = (data: LoginFormInput) => {
     setFormError(null);
     mutate(data, {
-      onSuccess: (responseData) => {
+      onSuccess: async (responseData) => {
         const { accessToken, user } = responseData;
 
         if (!ADMIN_ROLES.includes(user.role)) {
@@ -41,7 +41,7 @@ export function AdminLoginForm() {
           return;
         }
 
-        useAuthStore.getState().setAuth(accessToken, user);
+        await useAuthStore.getState().setAuth(accessToken, user);
         router.push("/admin/products");
       },
       onError: (error) => {
