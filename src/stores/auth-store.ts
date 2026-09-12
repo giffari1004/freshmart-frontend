@@ -6,7 +6,7 @@ import { persist } from "zustand/middleware";
 interface AuthStore {
   accessToken: string | null;
   user: { id: string; role: string } | null;
-  setAuth: (token: string, user: AuthStore["user"]) => void;
+  setAuth: (token: string, user: AuthStore["user"]) => Promise<void>;
   logout: () => void;
 }
 
@@ -17,11 +17,17 @@ export const useAuthStore = create<AuthStore>()(
       user: null,
       setAuth: async (accessToken, user) => {
         set({ accessToken, user });
-        fetch("/api/session", {
+        const response = await fetch("/api/session", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify({ token: accessToken }),
-        }).catch(() => {});
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to create session");
+        }
       },
       logout: () => {
         set({ accessToken: null, user: null });
