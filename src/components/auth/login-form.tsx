@@ -47,11 +47,11 @@ export function LoginForm() {
   const onSubmit = (data: LoginFormInput) => {
     setFormError(null);
     mutate(data, {
-      onSuccess: (responseData) => {
+      onSuccess: async (responseData) => {
         const { accessToken, user } = responseData;
 
         // 1. Update Zustand store
-        useAuthStore.getState().setAuth(accessToken, user);
+        await useAuthStore.getState().setAuth(accessToken, user);
 
         // 2. Redirect
         router.push(redirectTo);
