@@ -15,7 +15,7 @@ export const useAuthStore = create<AuthStore>()(
     (set) => ({
       accessToken: null,
       user: null,
-      setAuth: (accessToken, user) => {
+      setAuth: async (accessToken, user) => {
         set({ accessToken, user });
         fetch("/api/session", {
           method: "POST",
