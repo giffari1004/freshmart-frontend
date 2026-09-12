@@ -1,166 +1,100 @@
-import {
-  Check,
-  Clock3,
-  PackageCheck,
-  Truck,
-  XCircle,
-} from "lucide-react";
+import { Check, Clock3, PackageCheck, Truck, XCircle } from "lucide-react";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import type { OrderStatus } from "../order.type";
 import { cn } from "@/lib/utils";
 
 const steps = [
-  {
-    status: "WAITING_PAYMENT",
-    label: "Menunggu Pembayaran",
-    description: "Order dibuat dan menunggu pembayaran.",
-    icon: Clock3,
-  },
-  {
-    status: "PAID",
-    label: "Pembayaran Diterima",
-    description: "Pembayaran berhasil diterima melalui gateway.",
-    icon: Check,
-  },
-  {
-    status: "PROCESSED",
-    label: "Diproses",
-    description: "Pesanan sedang disiapkan oleh store.",
-    icon: PackageCheck,
-  },
-  {
-    status: "SHIPPED",
-    label: "Dikirim",
-    description: "Pesanan sudah dikirim ke alamat tujuan.",
-    icon: Truck,
-  },
-  {
-    status: "CONFIRMED",
-    label: "Pesanan Dikonfirmasi",
-    description: "Pesanan telah diterima dan dikonfirmasi.",
-    icon: Check,
-  },
+  ["WAITING_PAYMENT", "Menunggu Pembayaran", "Order dibuat dan menunggu pembayaran.", Clock3],
+  ["PAID", "Pembayaran Diterima", "Pembayaran berhasil diterima melalui gateway.", Check],
+  ["PROCESSED", "Diproses", "Pesanan sedang disiapkan oleh store.", PackageCheck],
+  ["SHIPPED", "Dikirim", "Pesanan sudah dikirim ke alamat tujuan.", Truck],
+  ["CONFIRMED", "Pesanan Dikonfirmasi", "Pesanan telah diterima dan dikonfirmasi.", Check],
 ] as const;
 
 function getActiveIndex(status: OrderStatus) {
-  if (status === "CANCELLED") return -1;
-  return steps.findIndex((step) => step.status === status);
+  return status === "CANCELLED" ? -1 : steps.findIndex(([value]) => value === status);
 }
 
 export function OrderStatusTimeline({ status }: { status: OrderStatus }) {
-  const activeIndex = getActiveIndex(status);
+  if (status === "CANCELLED") return <CancelledTimeline />;
+  return <ActiveTimeline activeIndex={getActiveIndex(status)} />;
+}
 
-  if (status === "CANCELLED") {
-    return (
-      <section className="overflow-hidden rounded-xl border border-destructive/30 bg-background shadow-sm">
-        <div className="border-b border-destructive/20 bg-destructive/10 px-5 py-4 sm:px-6">
-          <div className="flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-xl bg-destructive/10 text-destructive">
-              <XCircle className="size-5" />
-            </div>
-            <div>
-              <p className="text-xs font-bold uppercase tracking-[0.12em] text-destructive">
-                Order Status
-              </p>
-              <h2 className="text-base font-bold text-foreground sm:text-lg">
-                Pesanan Dibatalkan
-              </h2>
-            </div>
-          </div>
-        </div>
-        <div className="px-5 py-5 sm:px-6">
-          <p className="text-sm leading-6 text-muted-foreground">
-            Pesanan ini sudah dibatalkan dan tidak dapat dilanjutkan ke tahap
-            berikutnya.
-          </p>
-        </div>
-      </section>
-    );
-  }
-
+function CancelledTimeline() {
   return (
-    <section className="overflow-hidden rounded-xl border border-border bg-background shadow-sm">
-      <div className="border-b border-border bg-accent px-5 py-4 sm:px-6">
-        <div className="flex items-center justify-between gap-4">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.12em] text-primary">
-              Order Status
-            </p>
-            <h2 className="text-base font-bold text-foreground sm:text-lg">
-              Perjalanan Pesanan
-            </h2>
+    <Card className="border-destructive/30 shadow-sm">
+      <CardHeader className="border-b border-destructive/20 bg-destructive/5 py-4">
+        <div className="flex items-center gap-3">
+          <div className="flex size-9 items-center justify-center rounded-lg bg-destructive/10 text-destructive">
+            <XCircle className="size-5" />
           </div>
-          <span className="rounded-full bg-accent px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.1em] text-primary">
-            {steps[activeIndex]?.label ?? "Order"}
-          </span>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.1em] text-destructive">Order Status</p>
+            <h2 className="font-semibold text-foreground">Pesanan Dibatalkan</h2>
+          </div>
         </div>
-      </div>
-
-      <div className="px-5 py-6 sm:px-6">
-        <ol className="relative">
-          {steps.map((step, index) => {
-            const Icon = step.icon;
-            const isComplete = activeIndex > index;
-            const isCurrent = activeIndex === index;
-            const isUpcoming = activeIndex < index;
-
-            return (
-              <li key={step.status} className="relative flex gap-4 pb-6 last:pb-0">
-                {index < steps.length - 1 ? (
-                  <span
-                    className={cn(
-                      "absolute left-[19px] top-10 h-[calc(100%-8px)] w-px",
-                      isComplete ? "bg-primary/70" : "bg-border",
-                    )}
-                    aria-hidden="true"
-                  />
-                ) : null}
-
-                <div
-                  className={cn(
-                    "relative z-10 flex size-10 shrink-0 items-center justify-center rounded-xl border transition-all",
-                    isCurrent &&
-                      "border-primary bg-primary text-primary-foreground shadow-sm",
-                    isComplete && !isCurrent &&
-                      "border-border bg-accent text-primary",
-                    isUpcoming &&
-                      "border-border bg-background text-muted-foreground",
-                  )}
-                >
-                  <Icon className="size-4" />
-                </div>
-
-                <div className="min-w-0 flex-1 pt-0.5">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h3
-                      className={cn(
-                        "text-sm font-bold",
-                        isCurrent && "text-foreground",
-                        isComplete && !isCurrent && "text-foreground",
-                        isUpcoming && "text-muted-foreground",
-                      )}
-                    >
-                      {step.label}
-                    </h3>
-                    {isCurrent ? (
-                      <span className="rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] text-primary">
-                        Saat ini
-                      </span>
-                    ) : null}
-                  </div>
-                  <p
-                    className={cn(
-                      "mt-1 text-xs leading-5",
-                      isUpcoming ? "text-muted-foreground" : "text-muted-foreground",
-                    )}
-                  >
-                    {step.description}
-                  </p>
-                </div>
-              </li>
-            );
-          })}
-        </ol>
-      </div>
-    </section>
+      </CardHeader>
+      <CardContent className="pt-4">
+        <p className="text-sm text-muted-foreground">
+          Pesanan ini sudah dibatalkan dan tidak dapat dilanjutkan ke tahap berikutnya.
+        </p>
+      </CardContent>
+    </Card>
   );
+}
+
+function ActiveTimeline({ activeIndex }: { activeIndex: number }) {
+  const currentLabel = steps[activeIndex]?.[1] ?? "Order";
+  return (
+    <Card className="shadow-sm">
+      <CardHeader className="flex flex-row items-center justify-between gap-3 border-b border-border py-4">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.1em] text-primary">Order Status</p>
+          <h2 className="font-semibold text-foreground">Perjalanan Pesanan</h2>
+        </div>
+        <Badge variant="secondary">{currentLabel}</Badge>
+      </CardHeader>
+      <CardContent className="pt-5">
+        <ol>
+          {steps.map((step, index) => (
+            <TimelineStep key={step[0]} step={step} index={index} activeIndex={activeIndex} />
+          ))}
+        </ol>
+      </CardContent>
+    </Card>
+  );
+}
+
+function TimelineStep({
+  step,
+  index,
+  activeIndex,
+}: {
+  step: (typeof steps)[number];
+  index: number;
+  activeIndex: number;
+}) {
+  const Icon = step[3];
+  const complete = activeIndex > index;
+  const current = activeIndex === index;
+  return (
+    <li className="relative flex gap-3 pb-5 last:pb-0">
+      {index < steps.length - 1 ? <TimelineLine complete={complete} /> : null}
+      <div className={cn("relative z-10 flex size-9 shrink-0 items-center justify-center rounded-lg border", current && "border-primary bg-primary text-primary-foreground", complete && !current && "border-border bg-accent text-primary", !current && !complete && "border-border bg-background text-muted-foreground")}>
+        <Icon className="size-4" />
+      </div>
+      <div className="min-w-0 pt-0.5">
+        <div className="flex flex-wrap items-center gap-2">
+          <h3 className={cn("text-sm font-semibold", !current && !complete && "text-muted-foreground")}>{step[1]}</h3>
+          {current ? <Badge variant="secondary" className="text-[10px]">Saat ini</Badge> : null}
+        </div>
+        <p className="mt-1 text-xs leading-5 text-muted-foreground">{step[2]}</p>
+      </div>
+    </li>
+  );
+}
+
+function TimelineLine({ complete }: { complete: boolean }) {
+  return <span className={cn("absolute left-[17px] top-9 h-[calc(100%-4px)] w-px", complete ? "bg-primary/60" : "bg-border")} aria-hidden="true" />;
 }

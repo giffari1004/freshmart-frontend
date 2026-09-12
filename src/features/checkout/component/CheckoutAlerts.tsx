@@ -1,4 +1,6 @@
 import { AlertCircle, CheckCircle2 } from "lucide-react";
+import type { ReactNode } from "react";
+import { Card } from "@/components/ui/card";
 
 interface CheckoutAlertsProps {
   checkoutError?: boolean;
@@ -13,86 +15,25 @@ interface CheckoutAlertsProps {
 
 export function CheckoutAlerts(props: CheckoutAlertsProps) {
   return (
-    <div className="mt-5 space-y-3">
-      <ErrorAlert
-        show={props.checkoutError}
-        title="Unable to calculate checkout"
-        text={
-          props.checkoutErrorMessage ??
-          "Please check your selected address and shipping method."
-        }
-      />
-      <ErrorAlert
-        show={props.orderError}
-        title="Failed to create order"
-        text={
-          props.orderErrorMessage ??
-          "Please review the checkout details and try again."
-        }
-      />
-      <ErrorAlert
-        show={props.paymentError}
-        title="Failed to initialize payment"
-        text={
-          props.paymentErrorMessage ??
-          "Your order was created, but payment initialization failed."
-        }
-      />
-      <SuccessAlert
-        orderNumber={props.orderNumber}
-        status={props.orderStatus}
-      />
+    <div className="space-y-3">
+      <ErrorAlert show={props.checkoutError} title="Unable to calculate checkout" text={props.checkoutErrorMessage ?? "Please check your selected address and shipping method."} />
+      <ErrorAlert show={props.orderError} title="Failed to create order" text={props.orderErrorMessage ?? "Please review the checkout details and try again."} />
+      <ErrorAlert show={props.paymentError} title="Failed to initialize payment" text={props.paymentErrorMessage ?? "Your order was created, but payment initialization failed."} />
+      <SuccessAlert orderNumber={props.orderNumber} status={props.orderStatus} />
     </div>
   );
 }
 
-function ErrorAlert({
-  show,
-  title,
-  text,
-}: {
-  show?: boolean;
-  title: string;
-  text: string;
-}) {
+function ErrorAlert({ show, title, text }: { show?: boolean; title: string; text: string }) {
   if (!show) return null;
-
-  return (
-    <div className="flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 p-4">
-      <AlertCircle className="mt-0.5 size-5 shrink-0 text-red-600" />
-      <div>
-        <p className="font-semibold text-red-800">{title}</p>
-        <p className="mt-1 text-sm leading-6 text-red-700">{text}</p>
-      </div>
-    </div>
-  );
+  return <Card className="border-destructive/30 bg-destructive/5 p-4"><AlertContent icon={<AlertCircle className="size-4 text-destructive" />} title={title} text={text} /></Card>;
 }
 
-function SuccessAlert({
-  orderNumber,
-  status,
-}: {
-  orderNumber?: string;
-  status?: string;
-}) {
+function SuccessAlert({ orderNumber, status }: { orderNumber?: string; status?: string }) {
   if (!orderNumber) return null;
+  return <Card className="border-success/30 bg-success/5 p-4"><AlertContent icon={<CheckCircle2 className="size-4 text-primary" />} title="Order created successfully" text={`Order number: ${orderNumber}${status ? ` · Status: ${status}` : ""}`} /></Card>;
+}
 
-  return (
-    <div className="flex items-start gap-3 rounded-2xl border border-border bg-accent p-4">
-      <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-primary" />
-      <div>
-        <p className="font-semibold text-primary">
-          Order created successfully
-        </p>
-        <p className="mt-1 text-sm text-primary">
-          Order number: <span className="font-bold">{orderNumber}</span>
-        </p>
-        {status ? (
-          <p className="mt-1 text-sm text-primary">
-            Status: <span className="font-semibold">{status}</span>
-          </p>
-        ) : null}
-      </div>
-    </div>
-  );
+function AlertContent({ icon, title, text }: { icon: ReactNode; title: string; text: string }) {
+  return <div className="flex items-start gap-3"><div className="pt-0.5">{icon}</div><div><p className="text-sm font-semibold text-foreground">{title}</p><p className="mt-1 text-xs leading-5 text-muted-foreground">{text}</p></div></div>;
 }
