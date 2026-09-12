@@ -15,11 +15,17 @@ export const useAuthStore = create<AuthStore>()(
     (set) => ({
       accessToken: null,
       user: null,
-      setAuth: (accessToken, user) => {
+      setAuth: async (accessToken, user) => {
         set({ accessToken, user });
+        fetch("/api/session", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token: accessToken }),
+        }).catch(() => {});
       },
       logout: () => {
         set({ accessToken: null, user: null });
+        fetch("/api/session", { method: "DELETE" }).catch(() => {});
         api.post("/auth/logout").catch(() => {});
       },
     }),
