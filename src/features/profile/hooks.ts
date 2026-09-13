@@ -81,7 +81,6 @@ export const useUpdatePassword = () => {
     mutationFn: updatePassword,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["profile"] });
-      toast.success("Password updated successfully");
     },
     onError: (error) => {
       if (axios.isAxiosError(error) && error.response?.data?.message) {
