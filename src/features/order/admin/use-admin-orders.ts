@@ -21,6 +21,8 @@ export function useAdminOrders(
         sortOrder,
       }),
     placeholderData: (previousData) => previousData,
+    refetchInterval: 5000,
+    refetchIntervalInBackground: false,
   });
 }
 
