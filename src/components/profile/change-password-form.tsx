@@ -47,7 +47,7 @@ export function ChangePasswordForm() {
       },
       {
         onSuccess: () => {
-          toast.success("Password updated. Please log in again.");
+          toast.success("Password updated successfully. Please log in again.");
           useAuthStore.getState().logout();
           router.push("/login");
         },
