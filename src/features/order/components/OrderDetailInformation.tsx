@@ -1,125 +1,58 @@
 import type { ReactNode } from "react";
 import { MapPin, PackageCheck, Store, WalletCards } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import { OrderDetail } from "../order.type";
 
-export function OrderDetailInformation({
-  order,
-}: {
-  order: OrderDetail;
-}) {
-  const cards = buildCards(order);
-
+export function OrderDetailInformation({ order }: { order: OrderDetail }) {
   return (
     <section className="grid gap-4 md:grid-cols-2">
-      {cards.map(renderCard)}
+      <InfoCard title="Store" icon={<Store className="size-4" />}>
+        <p className="font-semibold">{order.store.name || "Store unavailable"}</p>
+        <p className="mt-1 text-xs text-muted-foreground">Code: {order.store.code || "-"}</p>
+      </InfoCard>
+      <InfoCard title="Delivery Address" icon={<MapPin className="size-4" />}>
+        <p className="font-semibold">{order.deliveryAddress.recipientName} · {order.deliveryAddress.recipientPhone}</p>
+        <p className="mt-1 text-sm leading-5 text-muted-foreground">{formatAddress(order.deliveryAddress)}</p>
+      </InfoCard>
+      <InfoCard title="Shipping Method" icon={<PackageCheck className="size-4" />}>
+        <p className="font-semibold">{order.shipping.serviceName || "Shipping unavailable"}</p>
+        <p className="mt-1 text-sm text-muted-foreground">{order.shipping.etd || "Estimated time unavailable"}</p>
+      </InfoCard>
+      <InfoCard title="Payment" icon={<WalletCards className="size-4" />}>
+        <p className="font-semibold">{order.payment?.method ?? "Payment Gateway"}</p>
+        <p className="mt-1 text-sm capitalize text-muted-foreground">{formatPaymentStatus(order.payment?.status)}</p>
+        {order.payment ? <p className="mt-1 font-semibold">Rp {order.payment.amount.toLocaleString("id-ID")}</p> : null}
+      </InfoCard>
     </section>
   );
 }
 
-function buildCards(order: OrderDetail) {
-  const { deliveryAddress, shipping, payment, store } = order;
-
-  return [
-    [
-      "Store",
-      <div className="flex gap-3">
-        <Store className="mt-0.5 size-5 shrink-0 text-primary" />
-        <div>
-          <p className="font-semibold text-foreground">{store.name || "Store unavailable"}</p>
-          <p className="mt-1 text-xs text-muted-foreground">Code: {store.code || "-"}</p>
-        </div>
-      </div>,
-    ],
-    [
-      "Delivery Address",
-      <div className="flex gap-3">
-        <MapPin className="mt-0.5 size-5 shrink-0 text-primary" />
-        <div>
-          <p className="font-semibold text-foreground">
-            {deliveryAddress.recipientName} · {deliveryAddress.recipientPhone}
-          </p>
-          <p className="mt-1 text-sm leading-6 text-muted-foreground">
-            {formatAddress(deliveryAddress)}
-          </p>
-        </div>
-      </div>,
-    ],
-    [
-      "Shipping Method",
-      <div className="flex gap-3">
-        <PackageCheck className="mt-0.5 size-5 shrink-0 text-primary" />
-        <div>
-          <p className="font-semibold text-foreground">
-            {shipping.serviceName || "Shipping unavailable"}
-          </p>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {shipping.etd || "Estimated time unavailable"}
-          </p>
-        </div>
-      </div>,
-    ],
-    [
-      "Payment",
-      <div className="flex gap-3">
-        <WalletCards className="mt-0.5 size-5 shrink-0 text-primary" />
-        <div>
-          <p className="font-semibold text-foreground">
-            {payment?.method ?? "Payment Gateway"}
-          </p>
-          <p className="mt-1 text-sm capitalize text-muted-foreground">
-            {formatPaymentStatus(payment?.status)}
-          </p>
-          {payment ? (
-            <p className="mt-1 font-bold text-foreground">
-              Rp {payment.amount.toLocaleString("id-ID")}
-            </p>
-          ) : null}
-        </div>
-      </div>,
-    ],
-  ] as const;
-}
-
-function renderCard([
+function InfoCard({
   title,
+  icon,
   children,
-]: readonly [string, ReactNode]) {
+}: {
+  title: string;
+  icon: ReactNode;
+  children: ReactNode;
+}) {
   return (
-    <Info key={title} title={title}>
-      {children}
-    </Info>
+    <Card className="shadow-sm">
+      <CardContent className="p-4 sm:p-5">
+        <div className="flex items-center gap-2 text-primary">
+          <span className="flex size-8 items-center justify-center rounded-lg bg-accent">{icon}</span>
+          <h2 className="text-xs font-semibold uppercase tracking-[0.1em]">{title}</h2>
+        </div>
+        <div className="mt-3 text-sm text-foreground">{children}</div>
+      </CardContent>
+    </Card>
   );
 }
 
 function formatAddress(address: OrderDetail["deliveryAddress"]) {
-  return [
-    address.fullAddress,
-    address.district,
-    address.city,
-    address.province,
-  ]
-    .filter(Boolean)
-    .join(", ");
+  return [address.fullAddress, address.district, address.city, address.province].filter(Boolean).join(", ");
 }
 
 function formatPaymentStatus(status?: string) {
-  if (!status) return "Payment status unavailable";
-  return status.replaceAll("_", " ");
-}
-
-function Info({
-  title,
-  children,
-}: {
-  title: string;
-  children: ReactNode;
-}) {
-  return (
-    <div className="rounded-xl border border-border bg-background p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-border sm:p-6">
-      <h2 className="text-xs font-bold uppercase tracking-[0.16em] text-primary">
-        {title}
-      </h2>
-      <div className="mt-4 text-sm text-foreground">{children}</div>
-    </div>
-  );
+  return status ? status.replaceAll("_", " ") : "Payment status unavailable";
 }

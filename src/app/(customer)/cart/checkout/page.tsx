@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { ArrowLeft, ShieldCheck } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import {
   CheckoutHeader,
   CheckoutAlerts,
@@ -78,33 +80,40 @@ function CheckoutContent({
 }) {
   return (
     <div className="grid gap-6 lg:grid-cols-3 lg:gap-8">
-      <div className="space-y-5 lg:col-span-2">
-        <CheckoutAddress
-          addressId={flow.addressId}
-          addresses={flow.addresses.data ?? []}
-          onChange={flow.changeAddress}
-          disabled={flow.disabled}
-          isLoading={flow.addresses.isLoading}
-          isError={flow.addresses.isError}
-        />
+      <div className="lg:col-span-2">
+        <Card className="overflow-hidden">
+          <CheckoutAddress
+            addressId={flow.addressId}
+            addresses={flow.addresses.data ?? []}
+            onChange={flow.changeAddress}
+            disabled={flow.disabled}
+            isLoading={flow.addresses.isLoading}
+            isError={flow.addresses.isError}
+          />
 
-        <CheckoutItems preview={flow.preview.data} />
+          <Separator />
 
-        <CheckoutShipping
-          shippingMethodId={flow.shippingMethodId}
-          shippingMethods={flow.shippingOptions.data ?? []}
-          preview={flow.preview.data}
-          onChange={flow.changeShipping}
-          disabled={flow.disabled || !flow.addressId}
-          isLoading={flow.shippingOptions.isLoading}
-          isError={flow.shippingOptions.isError}
-        />
+          <CheckoutItems preview={flow.preview.data} />
 
-        <CheckoutVoucher
-          value={flow.userVoucherId}
-          onChange={flow.changeVoucher}
-          disabled={flow.disabled}
-        />
+          <Separator />
+
+          <CheckoutShipping
+            shippingMethodId={flow.shippingMethodId}
+            shippingMethods={flow.shippingOptions.data ?? []}
+            onChange={flow.changeShipping}
+            disabled={flow.disabled || !flow.addressId}
+            isLoading={flow.shippingOptions.isLoading}
+            isError={flow.shippingOptions.isError}
+          />
+
+          <Separator />
+
+          <CheckoutVoucher
+            value={flow.userVoucherId}
+            onChange={flow.changeVoucher}
+            disabled={flow.disabled}
+          />
+        </Card>
       </div>
 
       <CheckoutSummary

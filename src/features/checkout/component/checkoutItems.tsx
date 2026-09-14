@@ -1,23 +1,21 @@
 import { ShoppingBag } from "lucide-react";
-import { CheckoutPreviewResponse } from "../checkout.type";
+import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import type { CartResponse } from "@/features/cart/cartType";
+import type { CheckoutPreviewResponse } from "../checkout.type";
 
 interface CheckoutItemsProps {
   preview?: CheckoutPreviewResponse;
+  cart?: CartResponse;
 }
 
-export function CheckoutItems({ preview }: CheckoutItemsProps) {
+export function CheckoutItems({ preview, cart }: CheckoutItemsProps) {
+  const items = preview?.items ?? cart?.items ?? [];
   return (
-    <section className="rounded-[1.65rem] border border-border bg-white/95 p-5 shadow-[0_16px_38px_-26px_rgba(15,23,42,0.28)] transition hover:border-border sm:p-6">
-      <SectionHeader />
-      {preview?.items?.length ? (
-        <div className="mt-6 space-y-3">
-          {preview.items.map((item) => (
-            <ItemRow key={item.id} item={item} />
-          ))}
-        </div>
-      ) : (
-        <EmptyItems />
-      )}
+    <section>
+      <CardHeader className="px-4 sm:px-5"><SectionHeader /></CardHeader>
+      <CardContent className="px-4 sm:px-5">
+        {items.length ? <ItemList items={items} preview={Boolean(preview)} /> : <EmptyItems />}
+      </CardContent>
     </section>
   );
 }
@@ -25,47 +23,33 @@ export function CheckoutItems({ preview }: CheckoutItemsProps) {
 function SectionHeader() {
   return (
     <div className="flex items-center gap-3">
-      <div className="flex size-11 items-center justify-center rounded-2xl bg-gradient-to-br from-accent to-accent text-primary shadow-sm">
-        <ShoppingBag className="size-5" />
-      </div>
+      <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-accent text-primary"><ShoppingBag className="size-4" /></div>
       <div>
-        <h2 className="font-bold text-foreground">Your Items</h2>
-        <p className="text-sm text-muted-foreground">
-          Review the products in your order.
-        </p>
+        <CardTitle className="text-base font-semibold">Your Items</CardTitle>
+        <p className="text-xs text-muted-foreground">Review the products in your order.</p>
       </div>
     </div>
   );
 }
 
-function ItemRow({
-  item,
-}: {
-  item: CheckoutPreviewResponse["items"][number];
-}) {
+function ItemList({ items, preview }: { items: Array<CheckoutPreviewResponse["items"][number] | CartResponse["items"][number]>; preview: boolean }) {
   return (
-    <div className="flex flex-col gap-3 rounded-2xl border border-border bg-gradient-to-r from-background to-white p-4 shadow-sm transition hover:border-border hover:shadow-md sm:flex-row sm:items-center sm:justify-between">
-      <div className="min-w-0">
-        <p className="truncate font-semibold text-foreground">
-          {item.productName}
-        </p>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {item.quantity} × Rp {item.unitPrice.toLocaleString("id-ID")}
-        </p>
-      </div>
-      <p className="font-bold text-foreground">
-        Rp {item.subtotal.toLocaleString("id-ID")}
-      </p>
+    <div className="divide-y divide-border">
+      {items.map((item) => <ItemRow key={item.id} item={item} preview={preview} />)}
+    </div>
+  );
+}
+
+function ItemRow({ item, preview }: { item: CheckoutPreviewResponse["items"][number] | CartResponse["items"][number]; preview: boolean }) {
+  const name = preview && "productName" in item ? item.productName : "product" in item ? item.product.name : "";
+  return (
+    <div className="flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0">
+      <div className="min-w-0"><p className="truncate text-sm font-semibold text-foreground">{name}</p><p className="mt-0.5 text-xs text-muted-foreground">{item.quantity} × Rp {item.unitPrice.toLocaleString("id-ID")}</p></div>
+      <p className="shrink-0 text-sm font-semibold text-foreground">Rp {item.subtotal.toLocaleString("id-ID")}</p>
     </div>
   );
 }
 
 function EmptyItems() {
-  return (
-    <div className="mt-6 rounded-2xl border border-dashed border-border bg-background p-5">
-      <p className="text-sm leading-6 text-muted-foreground">
-        Cart data will appear after checkout preview.
-      </p>
-    </div>
-  );
+  return <div className="rounded-lg border border-dashed border-border bg-muted/20 px-3 py-3 text-sm text-muted-foreground">Your cart is empty.</div>;
 }

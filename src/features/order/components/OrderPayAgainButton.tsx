@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useCreatePayment } from "@/features/payment/hooks";
 
 interface OrderPayAgainButtonProps {
@@ -24,38 +25,15 @@ declare global {
   }
 }
 
-export function OrderPayAgainButton({
-  orderId,
-}: OrderPayAgainButtonProps) {
+export function OrderPayAgainButton({ orderId }: OrderPayAgainButtonProps) {
   const payment = useCreatePayment();
   const [error, setError] = useState("");
 
   const handlePayAgain = async () => {
     setError("");
-
     try {
       const result = await payment.mutateAsync({ orderId });
-
-      if (!window.snap) {
-        setError("Payment gateway is not ready. Please try again.");
-        return;
-      }
-
-      window.snap.pay(result.snapToken, {
-        onSuccess: () => {
-          setError("");
-          window.location.href = `/orders/${orderId}`;
-        },
-        onPending: () => {
-          setError("");
-        },
-        onError: () => {
-          setError("Payment could not be completed.");
-        },
-        onClose: () => {
-          setError("");
-        },
-      });
+      openPayment(result.snapToken, orderId, setError);
     } catch {
       setError("Unable to open payment. Please try again.");
     }
@@ -63,25 +41,40 @@ export function OrderPayAgainButton({
 
   return (
     <div className="flex flex-col gap-1">
-      <button
+      <Button
         type="button"
         onClick={handlePayAgain}
         disabled={payment.isPending}
-        className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-primary px-4 text-sm font-extrabold text-primary-foreground shadow-sm transition hover:bg-primary/80 disabled:cursor-not-allowed disabled:opacity-60"
+        className="h-11 rounded-lg px-5 text-sm font-semibold"
       >
-        {payment.isPending ? (
-          <>
-            <Loader2 className="size-4 animate-spin" />
-            Opening...
-          </>
-        ) : (
-          "Pay Again"
-        )}
-      </button>
-
-      {error ? (
-        <p className="text-xs font-medium text-destructive">{error}</p>
-      ) : null}
+        {payment.isPending ? <Loader2 className="size-4 animate-spin" /> : null}
+        {payment.isPending ? "Opening..." : "Pay Again"}
+      </Button>
+      {error ? <p className="text-xs font-medium text-destructive">{error}</p> : null}
     </div>
   );
+}
+
+function openPayment(
+  token: string,
+  orderId: string,
+  setError: (message: string) => void,
+) {
+  if (!window.snap) {
+    setError("Payment gateway is not ready. Please try again.");
+    return;
+  }
+  window.snap.pay(token, paymentOptions(orderId, setError));
+}
+
+function paymentOptions(orderId: string, setError: (message: string) => void) {
+  return {
+    onSuccess: () => {
+      setError("");
+      window.location.href = `/orders/${orderId}`;
+    },
+    onPending: () => setError(""),
+    onError: () => setError("Payment could not be completed."),
+    onClose: () => setError(""),
+  };
 }
