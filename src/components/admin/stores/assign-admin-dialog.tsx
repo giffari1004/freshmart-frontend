@@ -15,6 +15,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   useSearchStoreAdminUsers,
   useAssignStoreAdmin,
+  useUnassignStoreAdmin,
 } from "@/features/store/hooks";
 
 interface AssignAdminDialogProps {
@@ -38,6 +39,7 @@ export function AssignAdminDialog({
   const { data: usersResponse, isLoading } =
     useSearchStoreAdminUsers(searchQuery);
   const assignMutation = useAssignStoreAdmin();
+  const unassignMutation = useUnassignStoreAdmin();
 
   const users = usersResponse?.data ?? [];
 
@@ -56,6 +58,14 @@ export function AssignAdminDialog({
     );
   };
 
+  const handleRemoveAdmin = () => {
+    unassignMutation.mutate(storeId, {
+      onSuccess: () => {
+        onOpenChange(false);
+      },
+    });
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
@@ -65,12 +75,31 @@ export function AssignAdminDialog({
 
         <div className="space-y-4 py-2">
           {currentAdminName && (
-            <div className="flex items-start gap-3 rounded-lg border border-blue-200 bg-blue-50 p-3 text-blue-900 dark:border-blue-900 dark:bg-blue-950/40 dark:text-blue-200">
-              <Info className="h-5 w-5 shrink-0 text-blue-600 dark:text-blue-400 mt-0.5" />
-              <p className="text-xs leading-relaxed">
-                This store already has an admin assigned. Assigning a new one
-                will replace the current admin.
-              </p>
+            <div className="space-y-3 rounded-lg border border-blue-200 bg-blue-50 p-3">
+              <div className="flex items-start gap-3 text-blue-900">
+                <Info className="mt-0.5 h-5 w-5 shrink-0 text-blue-600" />
+
+                <p className="text-xs leading-relaxed">
+                  This store already has an admin assigned. Assigning a new one
+                  will replace the current admin.
+                </p>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium">
+                  Current admin: {currentAdminName}
+                </span>
+
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="sm"
+                  onClick={handleRemoveAdmin}
+                  disabled={unassignMutation.isPending}
+                >
+                  {unassignMutation.isPending ? "Removing..." : "Remove Admin"}
+                </Button>
+              </div>
             </div>
           )}
 
