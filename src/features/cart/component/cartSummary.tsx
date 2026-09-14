@@ -25,7 +25,11 @@ export function CartSummary(props: CartSummaryProps) {
   return (
     <aside className="relative h-fit overflow-hidden rounded-xl border border-border bg-background p-5 shadow-sm sm:p-6 lg:sticky lg:top-24">
       <SummaryHeader />
-      <SummaryRows totalItems={props.totalItems} subtotal={props.subtotal} />
+      <SummaryRows
+        totalItems={props.totalItems}
+        subtotal={props.subtotal}
+        promotions={promotions.data?.promotions ?? []}
+      />
       <PromotionList
         promotions={promotions.data?.promotions ?? []}
         vouchers={promotions.data?.vouchers ?? []}
@@ -54,11 +58,14 @@ function SummaryHeader() {
   );
 }
 
-function SummaryRows({ totalItems, subtotal }: { totalItems: number; subtotal: number }) {
+function SummaryRows({ totalItems, subtotal, promotions }: { totalItems: number; subtotal: number; promotions: CartPromotion[] }) {
+  const freeItems = promotions.reduce((total, promotion) => total + promotion.freeQuantity, 0);
   return (
     <div className="mt-7 space-y-4">
-      <Row label="Total Items" value={String(totalItems)} />
-      <Row label="Subtotal" value={formatPrice(subtotal)} strong />
+      <Row label="Paid Items" value={String(totalItems)} />
+      {freeItems > 0 ? <Row label="Free Items" value={String(freeItems)} /> : null}
+      <Row label="Total Units" value={String(totalItems + freeItems)} strong />
+      <Row label="Subtotal" value={formatPrice(subtotal)} />
     </div>
   );
 }

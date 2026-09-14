@@ -68,29 +68,27 @@ function ProductInfo({
     <div className="min-w-0 flex-1">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h3 className="truncate text-lg font-semibold tracking-tight text-foreground">
-            {item.product.name}
-          </h3>
-
-          <p className="mt-1 text-sm text-muted-foreground">
-            {formatPrice(item.unitPrice)} / item
-          </p>
-          {promotion && item.quantity === 1 ? (
-            <div className="mt-2 inline-flex items-center gap-2 rounded-lg bg-primary/10 px-2.5 py-1.5 text-primary">
-              <Gift className="size-3.5" />
-              <span className="text-xs font-bold">BUY 1 GET 1</span>
-              <span className="text-xs">· Gratis {promotion.freeQuantity} item</span>
-            </div>
-          ) : null}
+          <h3 className="truncate text-lg font-semibold tracking-tight text-foreground">{item.product.name}</h3>
+          <p className="mt-1 text-sm text-muted-foreground">{formatPrice(item.unitPrice)} / item</p>
+          <BogoBenefit item={item} promotion={promotion} />
         </div>
       </div>
-
-      <CartItemActions
-        item={item}
-        onChangeQuantity={onChangeQuantity}
-        onRemove={onRemove}
-      />
+      <CartItemActions item={item} onChangeQuantity={onChangeQuantity} onRemove={onRemove} />
     </div>
+  );
+}
+
+function BogoBenefit({ item, promotion }: { item: CartItemType; promotion?: CartPromotion }) {
+  if (!promotion || promotion.freeQuantity <= 0) return null;
+  return (
+    <>
+      <div className="mt-2 inline-flex items-center gap-2 rounded-lg bg-primary/10 px-2.5 py-1.5 text-primary">
+        <Gift className="size-3.5" />
+        <span className="text-xs font-bold">BUY 1 GET 1</span>
+        <span className="text-xs">· {item.quantity} bayar + {promotion.freeQuantity} gratis = {item.quantity + promotion.freeQuantity} unit</span>
+      </div>
+      <p className="mt-2 text-xs font-medium text-primary">🎁 Free item: {item.product.name} × {promotion.freeQuantity}</p>
+    </>
   );
 }
 
