@@ -59,7 +59,13 @@ function SummaryHeader() {
 }
 
 function SummaryRows({ totalItems, subtotal, promotions }: { totalItems: number; subtotal: number; promotions: CartPromotion[] }) {
-  const freeItems = promotions.reduce((total, promotion) => total + promotion.freeQuantity, 0);
+  const freeItems = promotions.reduce(
+    (total, promotion) =>
+      promotion.type === "BUY1GET1" && promotion.freeQuantity === 1
+        ? total + 1
+        : total,
+    0,
+  );
   return (
     <div className="mt-7 space-y-4">
       <Row label="Paid Items" value={String(totalItems)} />
