@@ -43,7 +43,7 @@ export function DiscountUsageTab() {
         }}
         startDate={startDate}
         onStartDateChange={(v) => {
-          (setStoreId(v), setPage(1));
+          (setStartDate(v), setPage(1));
         }}
         endDate={endDate}
         onEndDateChange={(v) => {
