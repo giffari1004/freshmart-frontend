@@ -13,22 +13,17 @@ import { VoucherTable } from "./voucher-table";
 
 export function VoucherTab() {
   const role = useAuthStore((s) => s.user?.role);
-
   const canManageVoucher =
     role === "SUPER_ADMIN" || role === "STORE_ADMIN";
-
   const isSuperAdmin = role === "SUPER_ADMIN";
-
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [usageType, setUsageType] = useState<string | undefined>();
   const [valueType, setValueType] = useState<string | undefined>();
   const [sort, setSort] = useState("createdAt:desc");
   const [sortBy, sortOrder] = sort.split(":");
-
   const [editVoucher, setEditVoucher] = useState<Voucher | null>(null);
   const [deleteVoucher, setDeleteVoucher] = useState<Voucher | null>(null);
-
   const query: getAllVoucherSchema = {
     page,
     limit: 10,
@@ -38,9 +33,7 @@ export function VoucherTab() {
     sortBy: sortBy as getAllVoucherSchema["sortBy"],
     sortOrder: sortOrder as getAllVoucherSchema["sortOrder"],
   };
-
   const { data, isLoading } = useGetAllVouchers(query);
-
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
