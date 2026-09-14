@@ -1,5 +1,11 @@
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useStores } from "@/features/store/hooks";
 
 interface DiscountUsageFilterProps {
@@ -11,6 +17,7 @@ interface DiscountUsageFilterProps {
   onEndDateChange: (value: string) => void;
   canFilterStore: boolean;
 }
+
 export function DiscountUsageFilter({
   storeId,
   onStoreIdChange,
@@ -20,41 +27,59 @@ export function DiscountUsageFilter({
   onEndDateChange,
   canFilterStore,
 }: DiscountUsageFilterProps) {
-  const { data: StoresData } = useStores({ page: 1, limit: 20 });
-  const stores = StoresData?.data ?? [];
+  const { data: storesData } = useStores({
+    page: 1,
+    limit: 20,
+  });
+
+  const stores = storesData?.data ?? [];
+
+  const selectedStoreId = storeId || "all";
+
   return (
-    <div className="flex flex-col gap-2 rounded-xl border border-stone-200 bg-white p-3 sm:flex-row sm:items-center sm:gap-3">
+    <div className="flex flex-col gap-3 rounded-xl border border-stone-200 bg-white p-3 sm:flex-row sm:items-center">
       {canFilterStore && (
         <Select
-          value={storeId ?? "all"}
-          onValueChange={(v) => onStoreIdChange(v === "all" ? undefined : v)}
+          value={selectedStoreId}
+          onValueChange={(value) => {
+            onStoreIdChange(value === "all" ? undefined : value);
+          }}
         >
           <SelectTrigger className="w-full sm:w-48">
-            <SelectValue placeholder="All stores" />
+            <SelectValue placeholder="All Store" />
           </SelectTrigger>
+
           <SelectContent>
             <SelectItem value="all">All Store</SelectItem>
-            {stores.map((item) => (
-              <SelectItem key={item.id} value={item.id}>
-                {item.name}
+
+            {stores.map((store) => (
+              <SelectItem key={store.id} value={store.id}>
+                {store.name}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
       )}
+
       <Input
         type="date"
         className="w-full sm:w-40"
-        value={startDate}
-        onChange={(e) => onStartDateChange(e.target.value)}
-        placeholder="Start date"
+        value={startDate || ""}
+        onChange={(event) => {
+          onStartDateChange(event.target.value);
+        }}
+        aria-label="Start date"
       />
+
       <Input
         type="date"
         className="w-full sm:w-40"
-        value={endDate}
-        onChange={(e) => onEndDateChange(e.target.value)}
-        placeholder="End date"
+        value={endDate || ""}
+        onChange={(event) => {
+          onEndDateChange(event.target.value);
+        }}
+        min={startDate || undefined}
+        aria-label="End date"
       />
     </div>
   );
