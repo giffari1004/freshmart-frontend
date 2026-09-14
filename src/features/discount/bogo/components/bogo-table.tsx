@@ -16,6 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { PaginationMeta } from "@/lib/pagination";
+import { format } from "date-fns";
 
 interface BogoTableProps {
   bogos: Bogo[];
@@ -65,10 +66,10 @@ export function BogoTable({
                 {bogo.store.name}
               </TableCell>
               <TableCell className="text-stone-700">
-                {new Date(bogo.startDate).toLocaleDateString("id-ID")}
+                {format(new Date(bogo.startDate), "d MMM yyyy")}
               </TableCell>
               <TableCell className="text-stone-700">
-                {new Date(bogo.endDate).toLocaleDateString("id-ID")}
+                {format(new Date(bogo.endDate), "d MMM yyyy")}
               </TableCell>
               <TableCell>
                 <span

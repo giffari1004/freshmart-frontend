@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/table";
 import { formatPrice } from "@/lib/helper-idr";
 import { PaginationMeta } from "@/lib/pagination";
+import { format } from "date-fns";
 
 interface DiscountUsageTableProps {
   usages: DiscountUsageRow[];
@@ -60,7 +61,7 @@ export function DiscountUsageTable({
                   {formatPrice(item.amountDeducted)}
                 </TableCell>
                 <TableCell className="text-stone-700">
-                  {new Date(item.createdAt).toLocaleDateString("id-ID")}
+                {format(new Date(item.createdAt), "d MMM yyyy")}
                 </TableCell>
               </TableRow>
             ))}
