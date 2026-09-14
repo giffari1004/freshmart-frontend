@@ -9,6 +9,7 @@ import {
   assignStoreAdmin,
   searchStoreAdminUsers,
   GetStoresParams,
+  unassignStoreAdmin,
 } from "./api";
 import { StoreFormInput } from "./schema";
 import axios from "axios";
@@ -89,6 +90,25 @@ export function useAssignStoreAdmin() {
         toast.error(error.response.data.message);
       } else {
         toast.error("Failed to assign admin");
+      }
+    },
+  });
+}
+
+export function useUnassignStoreAdmin() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (storeId: string) => unassignStoreAdmin(storeId),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["stores"] });
+      toast.success(data.message || "Store admin removed successfully");
+    },
+    onError: (error) => {
+      if (axios.isAxiosError(error) && error.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("Failed to remove store admin");
       }
     },
   });

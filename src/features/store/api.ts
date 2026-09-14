@@ -54,6 +54,14 @@ export const assignStoreAdmin = async (storeId: string, userId: string) => {
   return response.data;
 };
 
+export const unassignStoreAdmin = async (storeId: string) => {
+  const response = await api.delete<ApiResponse<null>>(
+    `/stores/${storeId}/admin`,
+  );
+
+  return response.data;
+};
+
 export const searchStoreAdminUsers = async (query: string) => {
   const response = await api.get<ApiResponse<StoreAdmin[]>>(
     "/admin/users",
