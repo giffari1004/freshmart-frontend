@@ -1,17 +1,16 @@
 "use client";
 
 import Image from "next/image";
-import { ShoppingBag, Trash2 } from "lucide-react";
+import { Gift, ShoppingBag, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { CartItem as CartItemType } from "../cartType";
+import { CartItem as CartItemType, CartPromotion } from "../cartType";
 import { QuantitySelector } from "./quantity-selector/quantitySelector";
-import { useBogo } from "../hooks";
 
 interface CartItemProps {
   item: CartItemType;
-  storeId: string | null;
   onChangeQuantity: (quantity: number) => void;
   onRemove: () => void;
+  promotion?: CartPromotion;
 }
 
 interface CartItemActionsProps {
@@ -22,17 +21,18 @@ interface CartItemActionsProps {
 
 export function CartItem({
   item,
-  storeId,
   onChangeQuantity,
   onRemove,
+  promotion,
 }: CartItemProps) {
+
   return (
     <article className="rounded-xl border border-border bg-background p-4 shadow-sm sm:p-5">
       <ProductImage item={item} />
 
       <ProductInfo
         item={item}
-        storeId={storeId}
+        promotion={promotion}
         onChangeQuantity={onChangeQuantity}
         onRemove={onRemove}
       />
@@ -60,16 +60,10 @@ function ProductImage({ item }: { item: CartItemType }) {
 
 function ProductInfo({
   item,
-  storeId,
   onChangeQuantity,
   onRemove,
+  promotion,
 }: CartItemProps) {
-  const { data: bogo } = useBogo({
-    storeId,
-    productId: item.product.id,
-    quantity: item.quantity,
-  });
-
   return (
     <div className="min-w-0 flex-1">
       <div className="flex items-start justify-between gap-3">
@@ -81,12 +75,13 @@ function ProductInfo({
           <p className="mt-1 text-sm text-muted-foreground">
             {formatPrice(item.unitPrice)} / item
           </p>
-
-          {bogo?.eligible && (
-            <p className="mt-2 text-sm font-semibold text-primary">
-              🎁 Buy 1 Get 1 · {bogo.freeQuantity} free
-            </p>
-          )}
+          {promotion && item.quantity === 1 ? (
+            <div className="mt-2 inline-flex items-center gap-2 rounded-lg bg-primary/10 px-2.5 py-1.5 text-primary">
+              <Gift className="size-3.5" />
+              <span className="text-xs font-bold">BUY 1 GET 1</span>
+              <span className="text-xs">· Gratis {promotion.freeQuantity} item</span>
+            </div>
+          ) : null}
         </div>
       </div>
 

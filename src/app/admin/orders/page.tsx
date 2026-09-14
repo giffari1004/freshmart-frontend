@@ -8,7 +8,7 @@ import { AdminOrderStatusDialog } from "@/features/order/admin/AdminOrderStatusD
 import { useAdminOrdersPage } from "@/features/order/admin/use-admin-orders-page";
 import { AdminOrderSortBy, AdminOrderStatus } from "@/features/order/admin/order-admin.type";
 
-const STATUS_OPTIONS = ["WAITING_PAYMENT", "PROCESSED", "SHIPPED", "CONFIRMED", "CANCELLED"] as const;
+const STATUS_OPTIONS = ["WAITING_PAYMENT", "PAID", "PROCESSED", "SHIPPED", "CONFIRMED", "CANCELLED"] as const;
 const SORT_OPTIONS: { label: string; value: AdminOrderSortBy }[] = [
   { label: "Created At", value: "createdAt" },
   { label: "Total Amount", value: "totalAmount" },

@@ -18,7 +18,7 @@ export function OrderDetailContent({ order }: { order: OrderDetail }) {
     <main className="min-h-screen bg-background">
       <div className="mx-auto max-w-6xl space-y-4 px-4 py-6 sm:space-y-5 sm:py-8">
         <OrderDetailHeader order={order} />
-        <OrderStatusTimeline status={order.status} />
+        <OrderStatusTimeline status={order.status} statusHistory={order.statusHistory} />
         <OrderDetailInformation order={order} />
         <OrderDetailItems items={order.items} />
         <OrderDetailSummary order={order} />

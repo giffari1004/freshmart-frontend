@@ -4,6 +4,7 @@ import {
   CheckoutOptionShipping,
   CheckoutPreviewRequest,
   CheckoutPreviewResponse,
+  CheckoutVoucherOption,
 } from "./checkout.type";
 
 interface ApiResponse<T> {
@@ -32,12 +33,28 @@ export const checkoutService = {
     return data.data;
   },
 
+  // TAMBAHAN: mengambil voucher yang tersedia untuk user dan store
+  async getVouchers(
+    storeId?: string,
+  ): Promise<CheckoutVoucherOption[]> {
+    const { data } = await api.get<ApiResponse<CheckoutVoucherOption[]>>(
+      "/checkout/vouchers",
+      {
+        params: storeId ? { storeId } : undefined,
+      },
+    );
+
+    return data.data;
+  },
+
   async getShippingOptions(
     addressId: string,
   ): Promise<CheckoutOptionShipping[]> {
     const { data } = await api.get<ApiResponse<CheckoutOptionShipping[]>>(
       "/checkout/shipping-options",
-      { params: { addressId } },
+      {
+        params: { addressId },
+      },
     );
 
     return data.data;

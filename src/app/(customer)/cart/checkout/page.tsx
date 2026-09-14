@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ArrowLeft, ShieldCheck } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+
 import {
   CheckoutHeader,
   CheckoutAlerts,
@@ -13,7 +14,12 @@ import {
   CheckoutVoucher,
   CheckoutSummary,
 } from "@/features/checkout/component";
-import { useCheckoutFlow } from "@/features/checkout/hooks/useCheckoutFlow";
+
+import {
+  useCheckoutFlow,
+  useCheckoutVouchers,
+} from "@/features/checkout/hooks";
+
 import {
   MidtransPayment,
   MidtransScript,
@@ -22,20 +28,18 @@ import {
 export default function CheckoutPage() {
   const flow = useCheckoutFlow();
 
-  return <CheckoutLayout flow={flow} />;
-}
 
-function CheckoutLayout({
-  flow,
-}: {
-  flow: ReturnType<typeof useCheckoutFlow>;
-}) {
+ const vouchers = useCheckoutVouchers(
+  flow.cart.data?.storeId ?? undefined,
+);
+
   return (
     <main className="min-h-screen bg-background text-foreground">
       <MidtransScript />
 
       <div className="mx-auto max-w-7xl space-y-6 px-4 py-6 md:px-8">
         <BackLink />
+
         <CheckoutHeader />
 
         <CheckoutAlerts
@@ -46,7 +50,10 @@ function CheckoutLayout({
           orderStatus={flow.order.data?.status}
         />
 
-        <CheckoutContent flow={flow} />
+        <CheckoutContent
+          flow={flow}
+          vouchers={vouchers}
+        />
 
         <SecurityNotice />
       </div>
@@ -75,8 +82,10 @@ function BackLink() {
 
 function CheckoutContent({
   flow,
+  vouchers,
 }: {
   flow: ReturnType<typeof useCheckoutFlow>;
+  vouchers: ReturnType<typeof useCheckoutVouchers>;
 }) {
   return (
     <div className="grid gap-6 lg:grid-cols-3 lg:gap-8">
@@ -93,25 +102,40 @@ function CheckoutContent({
 
           <Separator />
 
-          <CheckoutItems preview={flow.preview.data} />
+          <CheckoutItems
+            preview={flow.preview.data}
+          />
 
           <Separator />
 
           <CheckoutShipping
             shippingMethodId={flow.shippingMethodId}
-            shippingMethods={flow.shippingOptions.data ?? []}
+            shippingMethods={
+              flow.shippingOptions.data ?? []
+            }
             onChange={flow.changeShipping}
-            disabled={flow.disabled || !flow.addressId}
-            isLoading={flow.shippingOptions.isLoading}
-            isError={flow.shippingOptions.isError}
+            disabled={
+              flow.disabled ||
+              !flow.addressId
+            }
+            isLoading={
+              flow.shippingOptions.isLoading
+            }
+            isError={
+              flow.shippingOptions.isError
+            }
           />
 
           <Separator />
 
           <CheckoutVoucher
+            vouchers={vouchers.data ?? []}
             value={flow.userVoucherId}
             onChange={flow.changeVoucher}
-            disabled={flow.disabled}
+            disabled={
+              flow.disabled ||
+              vouchers.isLoading
+            }
           />
         </Card>
       </div>
@@ -121,12 +145,16 @@ function CheckoutContent({
         cart={flow.cart.data}
         onCreateOrder={flow.handleCreateOrder}
         isOrderLoading={
-          flow.order.isPending || flow.payment.isPending
+          flow.order.isPending ||
+          flow.payment.isPending
         }
         orderCreated={
-          flow.order.isSuccess && !!flow.snapToken
+          flow.order.isSuccess &&
+          !!flow.snapToken
         }
-        canCreateOrder={flow.canCreateOrder}
+        canCreateOrder={
+          flow.canCreateOrder
+        }
       />
     </div>
   );
@@ -134,8 +162,9 @@ function CheckoutContent({
 
 function SecurityNotice() {
   return (
-    <div className="flex items-center gap-2 rounded-lg border border-border bg-background px-4 py-3 text-xs text-muted-foreground shadow-sm">
+    <div className="flex items-center gap-2 rounded-lg border border-border bg-background px-4 py-3 text-xs text-muted-foreground">
       <ShieldCheck className="size-4 shrink-0 text-primary" />
+
       Secure payment is handled through the Midtrans checkout window.
     </div>
   );

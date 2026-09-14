@@ -22,6 +22,7 @@ export function CheckoutSummary(props: CheckoutSummaryProps) {
       <CardHeader className="px-4 sm:px-5"><SectionHeader /></CardHeader>
       <CardContent className="space-y-5 px-4 sm:px-5">
         <SummaryRows preview={props.preview} values={values} />
+        <DiscountBreakdown preview={props.preview} />
         <OrderButton {...props} />
       </CardContent>
     </Card>
@@ -41,6 +42,25 @@ function SectionHeader() {
 
 function SummaryRows({ preview, values }: { preview?: CheckoutPreviewResponse; values: Values }) {
   return <div className="space-y-3 text-sm"><SummaryRow label="Items" value={String(preview?.totalItems ?? "—")} /><SummaryRow label="Subtotal" value={formatPrice(values.subtotal)} /><SummaryRow label="Discount" value={`- ${formatPrice(values.discount)}`} primary /><SummaryRow label="Shipping" value={preview ? formatPrice(values.shipping) : "—"} />{preview?.store ? <SummaryRow label="Distance" value={`${preview.store.distanceKm.toFixed(2)} km`} /> : null}<TotalRow value={formatPrice(values.total)} /></div>;
+}
+
+function DiscountBreakdown({ preview }: { preview?: CheckoutPreviewResponse }) {
+  const automatic = preview?.discount.automatic ?? [];
+  const voucher = preview?.discount.voucherCode;
+  if (!automatic.length && !voucher) return null;
+  return (
+    <div className="rounded-lg border border-border bg-accent p-3 text-xs">
+      <p className="font-semibold text-foreground">Applied discounts</p>
+      {automatic.map((item) => <p key={item.discountId} className="mt-1 text-muted-foreground">{discountLabel(item.type)}: - {formatPrice(item.amount)}</p>)}
+      {voucher ? <p className="mt-1 text-muted-foreground">Voucher {voucher}: - {formatPrice(preview?.discount.voucherAmount ?? 0)}</p> : null}
+    </div>
+  );
+}
+
+function discountLabel(type: "DIRECT" | "MIN_PURCHASE" | "BUY1GET1") {
+  if (type === "DIRECT") return "Product discount";
+  if (type === "MIN_PURCHASE") return "Minimum purchase";
+  return "Buy 1 Get 1";
 }
 
 function SummaryRow({ label, value, primary = false }: { label: string; value: string; primary?: boolean }) {
