@@ -13,6 +13,7 @@ import { Inbox, Pencil, Trash2 } from "lucide-react";
 import { AdminUser } from "../schema";
 import { RoleBadge } from "./role-badge";
 import { PaginationMeta } from "@/lib/pagination";
+import { format } from "date-fns";
 
 export interface UsersTableProps {
   users: AdminUser[];
@@ -45,7 +46,7 @@ export function UsersTable({
             <TableHead>Email</TableHead>
             <TableHead>Role</TableHead>
             <TableHead>StoreId</TableHead>
-            <TableHead>List</TableHead>
+            <TableHead>Created</TableHead>
             <TableHead>Action</TableHead>
           </TableRow>
         </TableHeader>
@@ -73,7 +74,7 @@ export function UsersTable({
                 <RoleBadge role={user.role} />
               </TableCell>
               <TableCell>{user.storeId ?? "—"}</TableCell>
-              <TableCell>{user.createdAt}</TableCell>
+              <TableCell className="text-stone-500">{format(new Date(user.createdAt), "d MMM yyyy")}</TableCell>
               <TableCell>
                 {user.role === "STORE_ADMIN" && (
                   <div>
