@@ -17,6 +17,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { PaginationMeta } from "@/lib/pagination";
+import { format } from "date-fns";
 
 interface DiscountTableProps {
   discounts: Discount[];
@@ -70,10 +71,10 @@ export function DiscountTable({
                   : formatPrice(discount.value)}
               </TableCell>
               <TableCell className="text-stone-700">
-                {new Date(discount.startDate).toLocaleDateString("id-ID")}
+                {format(new Date(discount.startDate), "d MMM yyyy")}
               </TableCell>
               <TableCell className="text-stone-700">
-                {new Date(discount.endDate).toLocaleDateString("id-ID")}
+                {format(new Date(discount.startDate), "d MMM yyyy")}
               </TableCell>
               <TableCell>
                 <span
