@@ -5,6 +5,7 @@ import { DirectDiscountTab } from "@/features/discount/direct/components/discoun
 import { MinPurchaseTab } from "@/features/discount/minimum-purchase/components/min-purchase-tab";
 import { BogoTab } from "@/features/discount/bogo/components/bogo-tab";
 import { VoucherTab } from "@/features/discount/voucher/components/voucher-tab";
+import { DiscountUsageTab } from "@/features/discount/usage/components/discount-usage-tab";
 
 export default function DiscountsPage() {
   return (
@@ -25,6 +26,7 @@ export default function DiscountsPage() {
           <TabsTrigger value="min-purchase">Min. Purchase</TabsTrigger>
           <TabsTrigger value="bogo">Buy 1 Get 1</TabsTrigger>
           <TabsTrigger value="voucher">Vouchers</TabsTrigger>
+          <TabsTrigger value="history">Usage History</TabsTrigger>
         </TabsList>
         <TabsContent value="direct" className="pt-6">
           <DirectDiscountTab />
@@ -37,6 +39,9 @@ export default function DiscountsPage() {
         </TabsContent>
         <TabsContent value="voucher" className="pt-6">
           <VoucherTab />
+        </TabsContent>
+        <TabsContent value="history" className="pt-6">
+          <DiscountUsageTab/>
         </TabsContent>
       </Tabs>
     </div>

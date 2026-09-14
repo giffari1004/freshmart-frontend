@@ -8,6 +8,7 @@ import {
   CartResponse,
   UpdateCartPayload,
 } from "../cartType";
+import { useCartStore } from "../../../stores/cart-store";
 
 type UpdateInput = {
   itemId: string;
@@ -20,6 +21,7 @@ type MutationContext = {
 
 export function useUpdateCart() {
   const queryClient = useQueryClient();
+  const setItemCount = useCartStore((state) => state.setItemCount);
 
   return useMutation({
     mutationKey: ["cart-update"],
@@ -31,6 +33,9 @@ export function useUpdateCart() {
       updateOptimisticCart(queryClient, input),
     onError: (_, __, context) =>
       rollbackCart(queryClient, context),
+    onSuccess: (cart) => {
+      setItemCount(cart.totalItems);
+    },
     onSettled: () => {
       queryClient.invalidateQueries({
         queryKey: ["cart"],

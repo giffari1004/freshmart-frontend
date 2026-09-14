@@ -5,6 +5,7 @@ import { useCart } from "@/features/cart/hooks";
 import { useCheckoutPreview } from "./useCheckoutPreview";
 import { useCheckoutAddresses } from "./useCheckoutAddresses";
 import { useCheckoutShippingOptions } from "./useCheckoutShippingOptions";
+import { useCheckoutVouchers } from "./useCheckoutVouchers";
 import { useCreateOrder } from "@/features/order/hooks";
 import { useCreatePayment } from "@/features/payment/hooks";
 
@@ -24,6 +25,9 @@ export function useCheckoutFlow() {
   const cart = useCart();
   const addresses = useCheckoutAddresses();
   const shippingOptions = useCheckoutShippingOptions(addressId);
+  const vouchers = useCheckoutVouchers(
+  cart.data?.storeId ?? undefined,
+);
   const preview = useCheckoutPreview(
   addressId,
   shippingMethodId,
@@ -90,6 +94,7 @@ export function useCheckoutFlow() {
     cart,
     addresses,
     shippingOptions,
+    vouchers,
     preview,
     order,
     payment,

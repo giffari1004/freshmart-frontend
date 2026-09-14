@@ -9,8 +9,9 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useCartStore } from "@/stores/cart-store";
 import { useAuthStore } from "@/stores/auth-store";
 import { useProfile } from "@/features/profile/hooks";
+import { useCart } from "@/features/cart/hooks";
 import { cn } from "@/lib/utils";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 interface SiteHeaderProps {
   showSearch?: boolean;
@@ -26,7 +27,13 @@ export function SiteHeader({
   const itemCount = useCartStore((state) => state.itemCount);
   const isLoggedIn = useAuthStore((state) => !!state.accessToken);
   const { data: profile } = useProfile({ enabled: isLoggedIn });
+  const { data: cart } = useCart(isLoggedIn && variant === "customer");
+  const setItemCount = useCartStore((state) => state.setItemCount);
   const [searchValue, setSearchValue] = useState("");
+
+  useEffect(() => {
+    setItemCount(isLoggedIn ? cart?.totalItems ?? 0 : 0);
+  }, [cart?.totalItems, isLoggedIn, setItemCount]);
 
   const isProfileActive =
     pathname.startsWith("/profile") || pathname.startsWith("/addresses") || pathname.startsWith("/admin/profile");

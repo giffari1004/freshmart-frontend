@@ -18,7 +18,10 @@ import {
   useRemoveCart,
   useUpdateCart,
 } from "@/features/cart/hooks";
-import type { CartItem, CartResponse } from "@/features/cart/cartType";
+import type {
+  CartItem,
+  CartResponse,
+} from "@/features/cart/cartType";
 
 type UpdateMutation = ReturnType<typeof useUpdateCart>;
 type RemoveMutation = ReturnType<typeof useRemoveCart>;
@@ -30,9 +33,29 @@ export default function CartPage() {
   const remove = useRemoveCart();
   const clearCart = useClearCart();
 
-  if (isLoading) return <Page><CartLoading /></Page>;
-  if (isError) return <Page><CartError /></Page>;
-  if (!data?.items.length) return <Page><EmptyContent /></Page>;
+  if (isLoading) {
+    return (
+      <Page>
+        <CartLoading />
+      </Page>
+    );
+  }
+
+  if (isError) {
+    return (
+      <Page>
+        <CartError />
+      </Page>
+    );
+  }
+
+  if (!data?.items.length) {
+    return (
+      <Page>
+        <EmptyContent />
+      </Page>
+    );
+  }
 
   return (
     <Page>
@@ -46,7 +69,11 @@ export default function CartPage() {
   );
 }
 
-function Page({ children }: { children: React.ReactNode }) {
+function Page({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <SiteHeader />
@@ -56,10 +83,15 @@ function Page({ children }: { children: React.ReactNode }) {
   );
 }
 
-function CartLayout({ children }: { children: React.ReactNode }) {
+function CartLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <main className="mx-auto max-w-7xl space-y-10 px-4 py-6 md:px-8">
       <CartHeader />
+
       <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-8">
         {children}
       </div>
@@ -132,7 +164,10 @@ function CartItems({
     item: CartItem,
     quantity: number,
   ) => {
-    if (quantity < 1 || quantity === item.quantity) {
+    if (
+      quantity < 1 ||
+      quantity === item.quantity
+    ) {
       return;
     }
 
@@ -143,16 +178,17 @@ function CartItems({
   };
 
   const removeItem = (item: CartItem) => {
-    if (!remove.isPending) {
-      remove.mutate(item.id);
+    if (remove.isPending) {
+      return;
     }
+
+    remove.mutate(item.id);
   };
 
   return (
     <div className="min-w-0">
       <CartList
         items={data.items}
-        storeId={data.storeId}
         onChangeQuantity={changeQuantity}
         onRemove={removeItem}
       />

@@ -25,7 +25,11 @@ export const CREATE_VOUCHER = z
       .positive("Min Rp 1.000")
       .min(1000, "Min Rp 1.000")
       .optional(),
-    productId: z.string().uuid("Invalid product id").optional(),
+    productId: z
+      .string()
+      .optional()
+      .transform((val) => (val === "" ? undefined : val))
+      .pipe(z.string().uuid("Invalid product id").optional()),
     expiredAt: z.coerce.date({
       error: "Expired date is required",
     }),

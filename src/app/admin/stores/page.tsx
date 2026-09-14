@@ -98,10 +98,6 @@ export default function StoreManagementPage() {
 
   const stores = storesResponse?.data ?? [];
   const meta = storesResponse?.meta;
-
-  // Dihitung dari halaman yang lagi ditampilkan — bukan agregat seluruh
-  // data (butuh endpoint stats terpisah kalau mau akurat lintas halaman),
-  // tapi cukup buat kasih gambaran cepat tanpa request tambahan.
   const activeNow = stores.filter((s) => s.isActive).length;
   const avgRadiusKm =
     stores.length > 0
