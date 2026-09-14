@@ -76,6 +76,12 @@ export interface OrderListResponse {
   pagination: OrderListPagination;
 }
 
+export interface OrderStatusHistory {
+  status: OrderStatus;
+  notes: string | null;
+  createdAt: string;
+}
+
 export interface OrderDetail extends OrderListItem {
   store: {
     id: string;
@@ -109,6 +115,7 @@ export interface OrderDetail extends OrderListItem {
   shippingCost: number;
   totalAmount: number;
   payment: { method: string; status: string; amount: number } | null;
+  statusHistory: OrderStatusHistory[];
 }
 
 export interface CancelOrderResponse {
