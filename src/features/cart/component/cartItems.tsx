@@ -79,7 +79,12 @@ function ProductInfo({
 }
 
 function BogoBenefit({ item, promotion }: { item: CartItemType; promotion?: CartPromotion }) {
-  if (!promotion || promotion.freeQuantity <= 0) return null;
+  if (
+    !promotion ||
+    promotion.type !== "BUY1GET1" ||
+    item.quantity !== 1 ||
+    promotion.freeQuantity !== 1
+  ) return null;
   return (
     <>
       <div className="mt-2 inline-flex items-center gap-2 rounded-lg bg-primary/10 px-2.5 py-1.5 text-primary">
