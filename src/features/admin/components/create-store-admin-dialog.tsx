@@ -50,7 +50,7 @@ export function CreateStoreAdmin() {
             <Label htmlFor="name">Name</Label>
             <Input
               id="name"
-              placeholder="Your Name"
+              placeholder="Store admin Name"
               {...form.register("name")}
               className="h-11 w-full rounded-xl border border-stone-200 bg-green-50/40 px-3 text-sm outline-none transition focus:border-green-700 focus:bg-white focus:ring-4 focus:ring-green-100"
             />
@@ -65,7 +65,7 @@ export function CreateStoreAdmin() {
             <input
               id="email"
               type="email"
-              placeholder="Your email"
+              placeholder="Store admin email"
               {...form.register("email")}
               className="h-11 w-full rounded-xl border border-stone-200 bg-green-50/40 px-3 text-sm outline-none transition focus:border-green-700 focus:bg-white focus:ring-4 focus:ring-green-100"
             />
@@ -80,7 +80,7 @@ export function CreateStoreAdmin() {
             <input
               type="password"
               id="password"
-              placeholder="Your password"
+              placeholder="Store admin password"
               {...form.register("password")}
               className="h-11 w-full rounded-xl border border-stone-200 bg-green-50/40 px-3 text-sm outline-none transition focus:border-green-700 focus:bg-white focus:ring-4 focus:ring-green-100"
             />
