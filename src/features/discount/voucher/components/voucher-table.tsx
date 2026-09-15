@@ -46,9 +46,7 @@ export function VoucherTable({
     return (
       <div className="flex flex-col items-center gap-2 rounded-xl border border-stone-200 bg-white py-16 text-center">
         <Inbox className="size-5 text-stone-400" />
-        <p className="text-sm font-medium text-stone-700">
-          No vouchers found
-        </p>
+        <p className="text-sm font-medium text-stone-700">No vouchers found</p>
       </div>
     );
   }
@@ -80,7 +78,7 @@ export function VoucherTable({
 
               {isSuperAdmin && (
                 <TableCell className="text-stone-700">
-                  {voucher.store.name}
+                  {voucher.store?.name ?? "-"}
                 </TableCell>
               )}
 
