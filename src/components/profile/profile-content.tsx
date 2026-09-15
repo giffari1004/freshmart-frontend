@@ -12,6 +12,8 @@ import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/auth-store";
+import { ReferralSection } from "./referral-section";
+import { MyVoucherSection } from "./my-voucher-section";
 
 /**
  * Isi halaman "Account Settings" — dipakai bersama oleh customer
@@ -59,6 +61,11 @@ export function ProfileContent() {
       </div>
 
       <AvatarSection profile={profile} />
+
+      <div className="grid grid-cols-1 gap-6">
+        <ReferralSection profile={profile} />
+        <MyVoucherSection />
+      </div>
 
       {/* Main Card wrapper wrapping both Tabs Header & Form Content */}
       <div className="border border-border bg-background rounded-xl shadow-sm overflow-hidden">

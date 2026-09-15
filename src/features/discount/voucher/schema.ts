@@ -154,6 +154,22 @@ export interface Voucher {
   createdAt: string;
 }
 
+export interface MyVoucher {
+  id: string;
+  source: string;
+  isUsed: boolean;
+  voucher: {
+    id: string;
+    code: string;
+    usageType: "PRODUCT_SPECIFIC" | "CART_TOTAL" | "SHIPPING";
+    valueType: "PERCENTAGE" | "NOMINAL";
+    value: number;
+    maxDiscountAmount: number | null;
+    minPurchaseAmount: number | null;
+    expiredAt: string;
+  };
+}
+
 export type getAllVoucherSchema = z.infer<typeof GET_ALL_VOUCHER>;
 export type createVoucherInput = z.input<typeof CREATE_VOUCHER>;
 export type createVoucherOutput = z.output<typeof CREATE_VOUCHER>;

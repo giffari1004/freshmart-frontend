@@ -2,6 +2,7 @@ import { api } from "@/lib/axios";
 import {
   createVoucherOutput,
   getAllVoucherSchema,
+  MyVoucher,
   updateVoucherOutput,
 } from "./schema";
 export async function fetchVoucher(query: getAllVoucherSchema) {
@@ -23,4 +24,9 @@ export async function deleteVoucher(id: string) {
 export async function getVoucherById(id: string) {
   const { data } = await api.get(`/admin/vouchers/${id}`);
   return data;
+}
+export async function getMyVouchers(): Promise<MyVoucher[]> {
+  const { data } = await api.get("/vouchers/my");
+
+  return data.data;
 }
