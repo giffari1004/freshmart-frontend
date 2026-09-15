@@ -60,10 +60,10 @@ export function DiscountTable({
           {discounts.map((discount) => (
             <TableRow key={discount.id}>
               <TableCell className="font-medium text-stone-900">
-                {discount.product.name}
+                {discount.product?.name ?? "-"}
               </TableCell>
               <TableCell className="text-stone-700">
-                {discount.store.name}
+                {discount.store?.name ?? "-"}
               </TableCell>
               <TableCell className="text-stone-700">
                 {discount.valueType === "PERCENTAGE"

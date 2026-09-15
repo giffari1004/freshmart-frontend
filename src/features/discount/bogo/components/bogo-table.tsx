@@ -60,10 +60,10 @@ export function BogoTable({
           {bogos.map((bogo) => (
             <TableRow key={bogo.id}>
               <TableCell className="font-medium text-stone-900">
-                {bogo.product.name}
+                {bogo.product?.name ?? "-"}
               </TableCell>
               <TableCell className="text-stone-700">
-                {bogo.store.name}
+                {bogo.store?.name ?? "-"}
               </TableCell>
               <TableCell className="text-stone-700">
                 {format(new Date(bogo.startDate), "d MMM yyyy")}
