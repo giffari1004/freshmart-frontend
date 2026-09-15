@@ -4,10 +4,14 @@ import { createDiscount, deleteDiscount, fetchDiscounts, updateDiscount } from "
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 
-export function useGetAllDiscounts(query: getDiscountsOutput) {
+export function useGetAllDiscounts(
+  query: getDiscountsOutput,
+  options?: { enabled?: boolean }
+) {
   return useQuery({
     queryKey: ["discounts", query],
     queryFn: () => fetchDiscounts(query),
+    enabled: options?.enabled,
   });
 }
 export function useCreateDiscount() {

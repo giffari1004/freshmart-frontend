@@ -11,10 +11,14 @@ import {
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 
-export function useGetAllVouchers(query: getAllVoucherSchema) {
+export function useGetAllVouchers(
+  query: getAllVoucherSchema,
+  options?: { enabled?: boolean },
+) {
   return useQuery({
     queryKey: ["vouchers", query],
     queryFn: () => fetchVoucher(query),
+    enabled: options?.enabled,
   });
 }
 export function useGetVoucherById(id: string) {

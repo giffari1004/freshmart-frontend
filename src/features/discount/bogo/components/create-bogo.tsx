@@ -40,24 +40,33 @@ export function CreateBogo({ isSuperAdmin }: CreateBogoProps) {
     defaultValues: { storeId: "", productId: "" },
   });
   const storeId = form.watch("storeId");
-  const { data: inventoryData } = useGetAllInventories({
-    page: 1,
-    limit: 20,
-    storeId,
-    sortBy: "createdAt",
-    sortOrder: "desc",
-  });
-  const { data: activeBOGOData } = useGetAllBogo({
-    page: 1,
-    limit: 20,
-    storeId,
-  });
+  const canFetch = open && (!isSuperAdmin || !!storeId);
+
+  const { data: inventoryData } = useGetAllInventories(
+    {
+      page: 1,
+      limit: 20,
+      storeId,
+      sortBy: "createdAt",
+      sortOrder: "desc",
+    },
+    { enabled: canFetch },
+  );
+  const { data: activeBOGOData } = useGetAllBogo(
+    {
+      page: 1,
+      limit: 20,
+      storeId,
+    },
+    { enabled: canFetch },
+  );
   const bogoProduct = new Set(
     activeBOGOData?.data.map((b: Bogo) => b.productId) ?? [],
   );
-  const availableProducts = inventoryData?.data
-    .map((inv: Inventory) => inv.product)
-    .filter((product: Product) => !bogoProduct.has(product.id)) ?? [];
+  const availableProducts =
+    inventoryData?.data
+      .map((inv: Inventory) => inv.product)
+      .filter((product: Product) => !bogoProduct.has(product.id)) ?? [];
   const { data: storesData } = useStores({ page: 1, limit: 20 });
   useEffect(() => {
     form.setValue("productId", "");
@@ -111,16 +120,18 @@ export function CreateBogo({ isSuperAdmin }: CreateBogoProps) {
           <div className="space-y-2">
             <Label>Product name</Label>
             <DiscountProductComboBox
-            products={availableProducts}
-            productId={form.watch("productId")}
-            onProductIdChange={(v) => form.setValue("productId" , v ?? "" , {shouldValidate:true})}
+              products={availableProducts}
+              productId={form.watch("productId")}
+              onProductIdChange={(v) =>
+                form.setValue("productId", v ?? "", { shouldValidate: true })
+              }
             />
             {form.formState.errors.productId && (
               <p className="text-sm text-red-500">
                 {form.formState.errors.productId.message}
               </p>
             )}
-            </div>
+          </div>
           <div className="space-y-2">
             <Label>Start date</Label>
             <Controller
@@ -163,4 +174,3 @@ export function CreateBogo({ isSuperAdmin }: CreateBogoProps) {
     </Dialog>
   );
 }
-

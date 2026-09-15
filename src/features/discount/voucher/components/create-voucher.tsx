@@ -65,23 +65,30 @@ export function CreateVoucher({ isSuperAdmin }: CreateVoucherProps) {
   useEffect(() => {
     form.setValue("productId", "");
   }, [storeId, form]);
-  const { data: inventoryData } = useGetAllInventories({
-    page: 1,
-    limit: 50,
-    storeId,
-    sortBy: "createdAt",
-    sortOrder: "desc",
-  });
-  const { data: vouchersData } = useGetAllVouchers({
-    page: 1,
-    limit: 50,
-    storeId,
-    sortBy: "createdAt",
-    sortOrder: "desc",
-  });
+  const canFetch = open && (!isSuperAdmin || !!storeId);
+  const { data: inventoryData } = useGetAllInventories(
+    {
+      page: 1,
+      limit: 50,
+      storeId,
+      sortBy: "createdAt",
+      sortOrder: "desc",
+    },
+    { enabled: canFetch },
+  );
+  const { data: vouchersData } = useGetAllVouchers(
+    {
+      page: 1,
+      limit: 50,
+      storeId,
+      sortBy: "createdAt",
+      sortOrder: "desc",
+    },
+    { enabled: canFetch },
+  );
   const voucherProducts = new Set(
     vouchersData?.data
-      ?.filter((voucher:Voucher) => voucher.usageType === "PRODUCT_SPECIFIC")
+      ?.filter((voucher: Voucher) => voucher.usageType === "PRODUCT_SPECIFIC")
       .map((voucher: Voucher) => voucher.productId) ?? [],
   );
   const availableProducts =

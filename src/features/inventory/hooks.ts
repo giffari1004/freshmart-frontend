@@ -18,10 +18,14 @@ import {
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 
-export function useGetAllInventories(query: getAllInventorySchema) {
+export function useGetAllInventories(
+  query: getAllInventorySchema,
+  options?: { enabled?: boolean }
+) {
   return useQuery({
     queryKey: ["inventories", query],
     queryFn: () => fetchInventory(query),
+    enabled: options?.enabled,
   });
 }
 export function useCreateInventory() {

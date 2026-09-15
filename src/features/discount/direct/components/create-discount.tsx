@@ -30,9 +30,11 @@ import { Plus } from "lucide-react";
 import { useGetAllInventories } from "@/features/inventory/hooks";
 import { Inventory } from "@/features/inventory/schema";
 import { DiscountProductComboBox } from "@/lib/discount-combobox";
+
 interface CreateDiscountProps {
   isSuperAdmin: boolean;
 }
+
 export function CreateDiscount({ isSuperAdmin }: CreateDiscountProps) {
   const [open, setOpen] = useState(false);
   const mutation = useCreateDiscount();
@@ -48,28 +50,42 @@ export function CreateDiscount({ isSuperAdmin }: CreateDiscountProps) {
   const storeId = form.watch("storeId");
   const valueType = form.watch("valueType");
   const isPercentage = valueType === "PERCENTAGE";
+
   useEffect(() => {
     form.setValue("productId", "");
   }, [storeId, form]);
-  const { data: inventoryData } = useGetAllInventories({
-    page: 1,
-    limit: 50,
-    storeId,
-    sortBy: "createdAt",
-    sortOrder: "desc",
-  });
-  const { data: activeDiscountsData } = useGetAllDiscounts({
-    page: 1,
-    limit: 50,
-    storeId,
-  });
+  const canFetch = open && (!isSuperAdmin || !!storeId);
+
+  const { data: inventoryData } = useGetAllInventories(
+    {
+      page: 1,
+      limit: 50,
+      storeId,
+      sortBy: "createdAt",
+      sortOrder: "desc",
+    },
+    { enabled: canFetch },
+  );
+
+  const { data: activeDiscountsData } = useGetAllDiscounts(
+    {
+      page: 1,
+      limit: 50,
+      storeId,
+    },
+    { enabled: canFetch },
+  );
+
   const { data: storesData } = useStores({ page: 1, limit: 50 });
+
   const discountProduct = new Set(
     activeDiscountsData?.data?.map((d: Discount) => d.productId) ?? [],
   );
-  const availableProducts = inventoryData?.data
-    .map((inv: Inventory) => inv.product)
-    .filter((product: Product) => !discountProduct.has(product.id)) ?? [];
+  const availableProducts =
+    inventoryData?.data
+      .map((inv: Inventory) => inv.product)
+      .filter((product: Product) => !discountProduct.has(product.id)) ?? [];
+
   function onSubmitButton(value: createDiscountOutput) {
     mutation.mutate(value, {
       onSuccess: () => {
@@ -78,6 +94,7 @@ export function CreateDiscount({ isSuperAdmin }: CreateDiscountProps) {
       },
     });
   }
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>

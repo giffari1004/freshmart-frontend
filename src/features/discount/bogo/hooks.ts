@@ -4,10 +4,14 @@ import { createBogo, deleteBogo, fetchBogos, updateBogo } from "./bogo-api";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 
-export function useGetAllBogo(query: getBogoOutput) {
+export function useGetAllBogo(
+  query: getBogoOutput,
+  options?: { enabled?: boolean },
+) {
   return useQuery({
     queryKey: ["bogo", query],
     queryFn: () => fetchBogos(query),
+    enabled: options?.enabled,
   });
 }
 export function useCreateBogo() {
@@ -26,7 +30,8 @@ export function useCreateBogo() {
 export function useUpdateBogo() {
   const mutate = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, body }: { id: string; body: updateBogoOutput }) => updateBogo(body, id),
+    mutationFn: ({ id, body }: { id: string; body: updateBogoOutput }) =>
+      updateBogo(body, id),
     onSuccess: () => {
       toast.success("Update BOGO successfully");
       mutate.invalidateQueries({ queryKey: ["bogo"] });
