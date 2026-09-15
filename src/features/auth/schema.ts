@@ -6,6 +6,7 @@ export const registerFormSchema = z.object({
     .trim()
     .min(2, { message: "Name must be at least 2 characters" }),
   email: z.string().trim().email({ message: "Enter a valid email address" }),
+  referralCode: z.string().trim().optional(),
 });
 
 export const loginFormSchema = z.object({

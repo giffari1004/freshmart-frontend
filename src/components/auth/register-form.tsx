@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input";
 export function RegisterForm() {
   const [submittedEmail, setSubmittedEmail] = useState<string | null>(null);
   const searchParams = useSearchParams();
-  const referralCode = searchParams.get("ref") || undefined;
+  const referralCodeFromUrl = searchParams.get("ref") || "";
 
   const { mutate, isPending } = useRegister();
 
@@ -26,18 +26,26 @@ export function RegisterForm() {
     register,
     handleSubmit,
     setError,
+    watch,
     formState: { errors },
   } = useForm<RegisterFormInput>({
     resolver: zodResolver(registerFormSchema),
     defaultValues: {
       name: "",
       email: "",
+      referralCode: referralCodeFromUrl,
     },
   });
 
+  const referralCode = watch("referralCode");
+
+  const socialReferralQuery = referralCode
+    ? `?ref=${encodeURIComponent(referralCode.trim())}`
+    : "";
+
   const onSubmit = (data: RegisterFormInput) => {
     mutate(
-      { ...data, referralCode },
+      { ...data, referralCode: data.referralCode || undefined },
       {
         onSuccess: () => {
           setSubmittedEmail(data.email);
@@ -114,7 +122,7 @@ export function RegisterForm() {
       {/* Social OAuth buttons */}
       <div className="space-y-3 mb-6">
         <a
-          href={`${apiUrl}/social-login/google`}
+          href={`${apiUrl}/social-login/google${socialReferralQuery}`}
           className="flex items-center justify-center w-full py-2.5 px-4 rounded-md border border-border bg-background hover:bg-accent text-sm font-medium text-foreground transition-colors"
         >
           <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24">
@@ -139,7 +147,7 @@ export function RegisterForm() {
         </a>
 
         <a
-          href={`${apiUrl}/social-login/facebook`}
+          href={`${apiUrl}/social-login/facebook${socialReferralQuery}`}
           className="flex items-center justify-center w-full py-2.5 px-4 rounded-md border border-border bg-background hover:bg-accent text-sm font-medium text-foreground transition-colors"
         >
           <svg className="w-5 h-5 mr-3" viewBox="0 0 24 24" fill="#1877F2">
@@ -206,6 +214,35 @@ export function RegisterForm() {
             <div className="flex items-center gap-1 mt-1 text-xs text-destructive">
               <AlertCircle className="h-3.5 w-3.5" />
               <span>{errors.email.message}</span>
+            </div>
+          )}
+        </div>
+
+        <div className="space-y-1">
+          <label
+            htmlFor="referralCode"
+            className="text-sm font-medium text-foreground"
+          >
+            Referral Code{" "}
+            <span className="text-muted-foreground">(Optional)</span>
+          </label>
+
+          <Input
+            id="referralCode"
+            type="text"
+            placeholder="Enter referral code"
+            {...register("referralCode")}
+            className={
+              errors.referralCode
+                ? "border-destructive focus-visible:ring-destructive"
+                : ""
+            }
+          />
+
+          {errors.referralCode && (
+            <div className="flex items-center gap-1 mt-1 text-xs text-destructive">
+              <AlertCircle className="h-3.5 w-3.5" />
+              <span>{errors.referralCode.message}</span>
             </div>
           )}
         </div>
