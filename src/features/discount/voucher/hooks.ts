@@ -4,6 +4,7 @@ import {
   createVoucher,
   deleteVoucher,
   fetchVoucher,
+  getMyVouchers,
   getVoucherById,
   updateVoucher,
 } from "./voucher-api";
@@ -21,6 +22,12 @@ export function useGetVoucherById(id: string) {
     queryKey: ["voucher", id],
     queryFn: () => getVoucherById(id),
     enabled: !!id,
+  });
+}
+export function useMyVouchers() {
+  return useQuery({
+    queryKey: ["my-vouchers"],
+    queryFn: getMyVouchers,
   });
 }
 export function useCreateVoucher() {
