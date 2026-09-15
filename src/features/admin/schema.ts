@@ -15,7 +15,7 @@ export const GET_ALL_USER = z.object({
 export const CREATE_STORE_ADMIN = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Invalid email format"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  password: z.string().min(6, "Password must be at least 8 characters"),
 });
 export const UPDATE_STORE_ADMIN = z.object({
   name: z.string().min(1).optional(),
